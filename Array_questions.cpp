@@ -4,6 +4,7 @@
 /**
 //max till i
 //2 0 7 5 11
+//TC O(n)  SC O(1)
 #include<iostream>
 using namespace std;
 
@@ -29,6 +30,9 @@ int main()
 /**
 //Sum of all subarrays of array
 //1 2 0 4
+//Brut Force: TC O(n^3)
+//Optimal: TC O(n^2)
+
 #include<iostream>
 using namespace std;
 
@@ -54,6 +58,7 @@ int main()
 /**
 //Largest arithmetic subarray
 //-4 4 -6 6 10 -11 12
+//TC O(n)  SSC O(1)
 #include<iostream>
 using namespace std;
 
@@ -146,132 +151,6 @@ int main()
         }
     }
         return 0;
-    }
-/**
-//Find the subarray of maximum sum
-//-1 4 7 2
-//Brut force aproach:O(n^3)
-#include<iostream>
-#include<climits>
-using namespace std;
-
-int main()
-{
-    int n;
-    cin>>n;
-
-    int a[n];
-    for(int i=0; i<n; i++){
-       cin>>a[i];
-    }
-
-    int maxSum = INT_MIN;
-    int sum = 0;
-    for (int i = 0; i < n; i++){
-        for (int j = i; j < n; j++){
-            sum = 0;
-            for (int k = i; k <= j; k++){
-                sum += a[k];
-            }
-            maxSum = max(maxSum, sum);
-        }
-    }
-    cout << maxSum << endl;
-    return 0;
-    }
-/**
-//find subarray of maximum sum
-//Brute force aproach:O(n^2)
-#include<iostream>
-#include<climits>
-using namespace std;
-
-int main(){
-    int n;
-    cin>>n;
-
-    int a[n];
-    for(int i=0; i<n; i++){
-         cin>>a[i];
-    }
-
-    int maxsum = INT_MIN;
-    int sum = 0;
-    for(int i=0; i<n; i++){
-        sum = 0;
-        for (int j = i; j < n; j++){
-            sum += a[j];
-            maxsum = max(maxsum, sum);
-        }
-    }
-
-    cout << maxsum << endl;
-    return 0;
-}
-/**
-//Find the subarray of maximum sum
-//Cumilative sum:O(n^2)
-#include<iostream>
-#include<climits>
-using namespace std;
-
-int main()
-{
-    int n;
-    cin>>n;
-
-    int a[n];
-    for(int i=0; i<n; i++){
-       cin>>a[i];
-    }
-
-    int currSum[n + 1];
-    currSum[0] = 0;
-    for (int i = 1; i <= n; i++){
-        currSum[i] = currSum[i - 1] + a[i - 1];
-    }
-
-    int maxSum = INT_MIN;
-    for (int i = 1; i <= n; i++){
-        int sum = 0;
-        for (int j = 0; j < i; j++){
-            sum = currSum[i] - currSum[j];
-            maxSum = max(sum, maxSum);
-        }
-    }
-
-    cout << maxSum << endl;
-    return 0;
-    }
-/**
-//Find the subarray of maximum sum
-//Kadane method:O(n)
-#include<iostream>
-#include<climits>
-using namespace std;
-
-int main()
-{
-    int n;
-    cin>>n;
-
-    int a[n];
-    for(int i=0; i<n; i++){
-       cin>>a[i];
-    }
-
-    int sum = 0;
-    int maxsum = INT_MIN;
-    for (int i=0; i<n; i++){
-        sum += a[i];
-        maxsum = max(maxsum, sum);//Our credit
-        if(sum<0){
-            sum = 0;
-        }
-    }
-
-    cout << maxsum << endl;
-    return 0;
     }
 /**
 //Find the circular subarray of maximum sum
@@ -409,6 +288,7 @@ int main(){
 /**
 //find repeat elment wuth minimum index
 //Optimal aproach
+//TC O(N)  SC O(N)
 #include<iostream>
 #include<climits>
 using namespace std;
@@ -445,6 +325,9 @@ int main(){
 /**
 //To find if there exist subarray with sum equal to given s in unsorted array
 //2 3 7 12
+//Brut Force: TC O(n^2)  like previous problems
+//Optimal Aproach
+//TC O(n)  SC O(1)
 #include<iostream>
 using namespace std;
 
@@ -491,6 +374,7 @@ int main()
     }
 /**
 //Smallest positive missing number
+//TC: O(n), SC O(N)    N = 1e6 + 2;
 #include<iostream>
 using namespace std;
 
@@ -686,98 +570,262 @@ int main()
     return 0;
 }
 /**
-//Chocolate distribution
-//7 3
-//7 3 2 4 9 12 56
+//Find the subarray of maximum sum
+//-1 4 7 2
+//Brut force aproach:O(n^3)
 #include<iostream>
-#include<array>
+#include<climits>
 using namespace std;
-
-int mindiff(int a[], int n, int m){
-    for(int i=0; i<n-1; i++) {
-        for(int j=i+1; j<n; j++) {
-            if(a[j] < a[i]) {
-                int temp = a[j];
-                a[j] = a[i];
-                a[i] = temp;
-
-            }
-        }
-    }
-
-    int mindiff = INT_MAX;
-    int diff = 0;
-    for (int i = 0; i<n-m+1; i++){
-        diff = a[m-1 + i] - a[i];
-        mindiff = min(mindiff, diff);
-    }
-    return mindiff;
-}
 
 int main()
 {
-    int n, m, result;
-    cin >> n >> m;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    result = mindiff(a, n, m);
-    cout << result;
+    int n;
+    cin>>n;
 
+    int a[n];
+    for(int i=0; i<n; i++){
+       cin>>a[i];
+    }
+
+    int maxSum = INT_MIN;
+    int sum = 0;
+    for (int i = 0; i < n; i++){
+        for (int j = i; j < n; j++){
+            sum = 0;
+            for (int k = i; k <= j; k++){
+                sum += a[k];
+            }
+            maxSum = max(maxSum, sum);
+        }
+    }
+    cout << maxSum << endl;
+    return 0;
+    }
+/**
+//find subarray of maximum sum
+//Brute force aproach:O(n^2)
+#include<iostream>
+#include<climits>
+using namespace std;
+
+int main(){
+    int n;
+    cin>>n;
+
+    int a[n];
+    for(int i=0; i<n; i++){
+         cin>>a[i];
+    }
+
+    int maxsum = INT_MIN;
+    int sum = 0;
+    for(int i=0; i<n; i++){
+        sum = 0;
+        for (int j = i; j < n; j++){
+            sum += a[j];
+            maxsum = max(maxsum, sum);
+        }
+    }
+
+    cout << maxsum << endl;
     return 0;
 }
+/**
+//Find the subarray of maximum sum
+//Cumilative sum:O(n^2)
+#include<iostream>
+#include<climits>
+using namespace std;
+
+int main()
+{
+    int n;
+    cin>>n;
+
+    int a[n];
+    for(int i=0; i<n; i++){
+       cin>>a[i];
+    }
+
+    int currSum[n + 1];
+    currSum[0] = 0;
+    for (int i = 1; i <= n; i++){
+        currSum[i] = currSum[i - 1] + a[i - 1];
+    }
+
+    int maxSum = INT_MIN;
+    for (int i = 1; i <= n; i++){
+        int sum = 0;
+        for (int j = 0; j < i; j++){
+            sum = currSum[i] - currSum[j];
+            maxSum = max(sum, maxSum);
+        }
+    }
+
+    cout << maxSum << endl;
+    return 0;
+    }
+/**
+//Find the subarray of maximum sum
+//Kadane method:O(n)
+#include<iostream>
+#include<climits>
+using namespace std;
+
+int main()
+{
+    int n;
+    cin>>n;
+
+    int a[n];
+    for(int i=0; i<n; i++){
+       cin>>a[i];
+    }
+
+    int sum = 0;
+    int maxsum = INT_MIN;
+    for (int i=0; i<n; i++){
+        sum += a[i];
+        maxsum = max(maxsum, sum);//Our credit
+        if(sum<0){
+            sum = 0;
+        }
+    }
+
+    cout << maxsum << endl;
+    return 0;
+    }
+/**
+//Contain duplicates or not
+//Brut force: TC O(n^2)  SC O(1)
+for(int i=0; i<nums.size(); i++){
+    for(int j=i+1; j<nums.size(); j++){
+        if(nums[i]==nums[j]){
+            return true;
+        }
+    }
+    return false;
+}
+/**
+//Better Aproach: TC O(nlogn),  SC O(1)
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < (nums.size() - 1); i++) {
+            if (nums[i] == nums[i + 1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+/**
+//Optimal Aproach: TC O(n)  SC O(n)
+class Solution {
+  public:
+    bool checkDuplicates(vector<int> &arr) {
+        // code here
+        int n=arr.size();
+        vector<int> temp(1e4+1, -1);
+        for(int i=0; i<n; i++){
+            if(temp[arr[i]]==-1){
+                temp[arr[i]]=1;
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+};
+/**
+//Chocolate distribution
+//7 3
+//7 3 2 4 9 12 56
+//Time Complexity: O(n log n)
+//Auxiliary Space: O(1)
+
+class Solution {
+  public:
+    int findMinDiff(vector<int>& a, int m) {
+        // code here
+        //if(m==1) return 0;
+        
+        int n = a.size();
+        sort(a.begin(), a.end());
+        int i=0, j=m-1, ans=INT_MAX;
+        
+        while(j<n){
+            ans=min(ans, a[j]-a[i]);
+            i++,j++;
+        }
+        
+        return ans;
+    }
+};
 
 /**
 //SearchInrotatedArray
 //7 0
 //4 5 6 7 0 1 2
+//Brut Force: TC O(n), SC O(1)
+//Linear Search
+
+//SearchInrotatedArray
+//7 0
+//4 5 6 7 0 1 2
+//Optimal Aproach: TC O(logn),  SC O(1)
+//Binary Search
+
 #include<iostream>
 using namespace std;
 
-int search(int a[], int n, int key, int left, int right){
-    if(left>right){
+class Solution {
+  public:
+    int search(vector<int>& arr, int key) {
+        // Code Here
+        int n=arr.size();
+        int i=0, j=n-1;
+        
+        while(i<=j){
+            int m=(i+j)/2;
+            
+            if(arr[m]==key){
+                return m;
+            }
+            
+            if(arr[i]<=arr[m]){
+                if(arr[i]<=key && key<=arr[m]){
+                    j=m-1;
+                }
+                else{
+                    i=m+1;
+                }
+            }
+            else {
+                if(arr[m]<=key && key<=arr[j]){
+                    i=m+1;
+                }
+                else {
+                    j=m-1;
+                } 
+            }
+        }
         return -1;
     }
-
-    int mid = (left + right) / 2;
-    if(a[mid]==key){
-        return mid;
-    }
-    if(a[left]<a[mid]){
-        if(key<a[mid] && key>a[left]){
-            return search(a, n, key, left, mid - 1);
-        }
-        return search(a, n, key, mid + 1, right);
-    }
-    if(key>a[mid] && key<a[right]){
-        return search(a, n, key, mid + 1, right);
-    }
-    return search(a, n, key, left, mid - 1);
-}
-
-int main()
-{
-    int a[] = {5, 6, 7, 8, 1, 2, 3, 4};
-    int result = search(a, 8, 8, 0, 7);
-    if(result==-1){
-        cout << "Element does not exist";
-    }
-    else{
-        cout << "Element is prsent at index: " << result;
-    }
-
-    return 0;
-}
+};
 /**/
-//Next Permutation
-//1 3 6 5 4 2 1
-#include<iostream>
+// Next Permutation
+// 1 3 6 5 4 2 1
+#include <iostream>
 using namespace std;
 
-void reverse(int a[], int n, int start){
+void reverse(int a[], int n, int start)
+{
     int end = n - 1;
-    while(start<end){
+    while (start < end)
+    {
         int temp = a[start];
         a[start] = a[end];
         a[end] = temp;
@@ -786,18 +834,22 @@ void reverse(int a[], int n, int start){
     }
 }
 
-void nextPermutation(int a[], int n){
+void nextPermutation(int a[], int n)
+{
     int i = n - 2;
-    while(i>=0 && a[i]>=a[i+1]){
+    while (i >= 0 && a[i] >= a[i + 1])
+    {
         i--;
     }
-    if(i>=0){
+    if (i >= 0)
+    {
         int j = n - 1;
-        while(j>=0 && a[i]>=a[j]){
+        while (j >= 0 && a[i] >= a[j])
+        {
             j--;
         }
-        int temp=a[i];
-        a[i]=a[j];
+        int temp = a[i];
+        a[i] = a[j];
         a[j] = temp;
     }
     reverse(a, n, i + 1);
@@ -808,17 +860,20 @@ int main()
     int n;
     cin >> n;
     int a[n];
-    for (int i = 0; i<n; i++){
+    for (int i = 0; i < n; i++)
+    {
         cin >> a[i];
     }
     cout << "Current permutation: ";
-    for (int i = 0; i<n; i++){
+    for (int i = 0; i < n; i++)
+    {
         cout << a[i] << " ";
     }
     cout << endl;
     nextPermutation(a, n);
     cout << "Next peermutation: ";
-    for (int i = 0; i<n; i++){
+    for (int i = 0; i < n; i++)
+    {
         cout << a[i] << " ";
     }
 
