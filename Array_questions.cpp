@@ -570,6 +570,42 @@ int main()
     return 0;
 }
 /**
+//Minimum and Maximum element in array
+//TC O(n)  SC O(1)
+class Solution {
+  public:
+    pair<int, int> getMinMax(vector<int> arr) {
+        // code here
+        int n = arr.size();
+        if (n == 0) return {-1, -1};
+
+        int mini = arr[0], maxi = arr[0];
+
+        for (int i = 1; i < n; i++) {
+            if (arr[i] < mini) mini = arr[i];
+            if (arr[i] > maxi) maxi = arr[i];
+        }
+
+        return {mini, maxi};
+
+    }
+};
+/**
+//Reverse the array
+//TC O(n)   SC O(1)
+class Solution {
+  public:
+    void reverseArray(vector<int> &arr) {
+        // code here
+        int n=arr.size();
+        for (int i=0; i<n/2; i++){
+            int temp=arr[i];
+            arr[i]=arr[n-1-i];
+            arr[n-1-i]=temp;
+        }
+    }
+};
+/**
 //Find the subarray of maximum sum
 //-1 4 7 2
 //Brut force aproach:O(n^3)
@@ -751,16 +787,16 @@ class Solution {
     int findMinDiff(vector<int>& a, int m) {
         // code here
         //if(m==1) return 0;
-        
+
         int n = a.size();
         sort(a.begin(), a.end());
         int i=0, j=m-1, ans=INT_MAX;
-        
+
         while(j<n){
             ans=min(ans, a[j]-a[i]);
             i++,j++;
         }
-        
+
         return ans;
     }
 };
@@ -787,14 +823,14 @@ class Solution {
         // Code Here
         int n=arr.size();
         int i=0, j=n-1;
-        
+
         while(i<=j){
             int m=(i+j)/2;
-            
+
             if(arr[m]==key){
                 return m;
             }
-            
+
             if(arr[i]<=arr[m]){
                 if(arr[i]<=key && key<=arr[m]){
                     j=m-1;
@@ -809,80 +845,51 @@ class Solution {
                 }
                 else {
                     j=m-1;
-                } 
+                }
             }
         }
         return -1;
     }
 };
-/**/
+/**
 // Next Permutation
 // 1 3 6 5 4 2 1
-#include <iostream>
-using namespace std;
+//Time Complexity: O(n)
+//Auxiliary Space: O(1)
+class Solution {
+    public:
+      void nextPermutation(vector<int>& arr) {
+          // code here
+          int n=arr.size();
+          int i=n-2, j=n-1, temp;
 
-void reverse(int a[], int n, int start)
-{
-    int end = n - 1;
-    while (start < end)
-    {
-        int temp = a[start];
-        a[start] = a[end];
-        a[end] = temp;
-        start++;
-        end--;
-    }
-}
+          while(i>=0 && arr[i]>=arr[i+1]){
+              i--;
+          }
 
-void nextPermutation(int a[], int n)
-{
-    int i = n - 2;
-    while (i >= 0 && a[i] >= a[i + 1])
-    {
-        i--;
-    }
-    if (i >= 0)
-    {
-        int j = n - 1;
-        while (j >= 0 && a[i] >= a[j])
-        {
-            j--;
-        }
-        int temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
-    reverse(a, n, i + 1);
-}
+          if(i>=0){
+              while(arr[i]>=arr[j]){
+                  j--;
+              }
+              temp=arr[i];
+              arr[i]=arr[j];
+              arr[j]=temp;
+          }
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++)
-    {
-        cin >> a[i];
-    }
-    cout << "Current permutation: ";
-    for (int i = 0; i < n; i++)
-    {
-        cout << a[i] << " ";
-    }
-    cout << endl;
-    nextPermutation(a, n);
-    cout << "Next peermutation: ";
-    for (int i = 0; i < n; i++)
-    {
-        cout << a[i] << " ";
-    }
-
-    return 0;
-}
+          i++, j=n-1;
+          while(i<j){
+              temp=arr[i];
+              arr[i]=arr[j];
+              arr[j]=temp;
+              i++,j--;
+          }
+      }
+  };
 /**
 //Best day to buy and sell stock
 //7 1 5 3 6 4
 //Brut force aproach
+//TC O(n^2)
 #include<iostream>
 using namespace std;
 
@@ -912,6 +919,8 @@ int main()
 /**
 //Best day to buy and sell stock
 //7 1 5 3 6 4
+//Optimal Aproach
+//TC O(n)
 #include<iostream>
 using namespace std;
 
@@ -937,7 +946,30 @@ int main()
     return 0;
 }
 /**
+//Best time to buy and sell stock||
+//TC O(n)  SC O(1)
+ Solution {
+  public:
+    // Function to find the days of buying and selling stock for max profit.
+    int stockBuySell(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        int i, j=0, ans=0;
+
+        for(i=0; i<n-1; i++){
+            if(arr[i]>arr[i+1]){
+                ans+=arr[i]-arr[j];
+                j=i+1;
+            }
+        }
+        ans += arr[i]-arr[j];
+
+        return ans;
+    }
+};
+/**
 //To find repeat and missing number
+//TC O(n)
 #include<iostream>
 using namespace std;
 
@@ -979,6 +1011,7 @@ int main()
 }
 /**
 //To find kth largest element
+//TC O(nlogn) SC O(1)
 #include<iostream>
 using namespace std;
 
@@ -996,50 +1029,191 @@ int larg(int a[], int n, int k){
     }
     return a[n - k];
 }
+/**
+//To find kth smallest element
+//TC O(nlogn) SC O(1)
+#include<iostream>
+using namespace std;
 
-int main()
-{
-    int n, k;
-    cin >> n >> k;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        sort(arr.begin(), arr.end());
+        int n = arr.size();
+        return arr[k-1];
     }
-    cout << larg(a, n, k);
+};
+/**
+//To find kth smallest element
+//max heap
+//TC O(nlogk) SC O(1)
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        priority_queue<int, vector<int>> pq;
+        int n=arr.size();
+        for(int i=0; i<n; i++){
+            if(pq.size()<k){
+                pq.push(arr[i]);
+            }
+            else if(arr[i]<pq.top()){
+                pq.pop();
+                pq.push(arr[i]);
+            }
+        }
 
+        return pq.top();
+    }
+};
+//Note:Use min heap to find kth larges element
+/**
+//To find kth smallest element
+//Count Fort method
+//Time Complexity: O(n + max_element-min_element)
+//Auxiliary Space: O(n + max_element-min_element)
+class Solution {
+  public:
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        int n=arr.size();
+        int mn=INT_MAX;
+        int mx=INT_MIN;
+        int remain=k;
+
+        for (int i=0; i<n; i++){
+            mn=min(mn, arr[i]);
+            mx=max(mx, arr[i]);
+        }
+        vector<int> count(mx-mn+1, 0);
+        for (int i=0; i<n; i++){
+            count[arr[i]-mn]++;
+        }
+        for(int i=0; i<count.size(); i++){
+            remain -=count[i];
+            if(remain<=0){
+                return i+mn;
+            }
+        }
+
+        return -1;
+    }
+};
+/**
+//To find trapped rain water
+//4 2 0 3 2 5
+//Brut Force Aproach:TC O(n^2)   SC O(1)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Function to return the maximum water that can be stored
+int maxWater(vector<int>& arr) {
+    int res = 0;
+
+    // For every element of the array
+    for (int i = 1; i < arr.size() - 1; i++) {
+
+        // Find the maximum element on its left
+        int left = arr[i];
+        for (int j = 0; j < i; j++)
+            left = max(left, arr[j]);
+
+        // Find the maximum element on its right
+        int right = arr[i];
+        for (int j = i + 1; j < arr.size(); j++)
+            right = max(right, arr[j]);
+
+        // Update the maximum water
+        res += (min(left, right) - arr[i]);
+    }
+
+    return res;
+}
+
+int main() {
+    vector<int> arr = { 2, 1, 5, 3, 1, 0, 4 };
+    cout << maxWater(arr);
     return 0;
 }
 /**
 //To find trapped rain water
 //4 2 0 3 2 5
-#include<iostream>
+//Better Aproach:TC O(n)   SC O(n)
+#include <bits/stdc++.h>
 using namespace std;
 
-int water(int a[], int n){
-    int left = 0, right=n-1, ans=0;
-    int leftmax = 0, rightmax = 0;
-    while(left<=right){
-        if(leftmax<=rightmax){
-            if(leftmax<=a[left]){
-                leftmax = a[left];
-            }
-            else{
-                ans = ans + (leftmax - a[left]);
-            }
-            left++;
-        }
-        else{
-            if(rightmax<=a[right]){
-                rightmax = a[right];
-            }
-            else{
-                ans = ans + (rightmax - a[right]);
-            }
-            right--;
-        }
+int maxWater(vector<int>& arr) {
+    int n = arr.size();
+
+    // Left[i] contains height of tallest bar to the
+    // left of i'th bar including itself
+    vector<int> left(n);
+
+    // Right[i] contains height of tallest bar to
+    // the right of i'th bar including itself
+    vector<int> right(n);
+
+    int res = 0;
+
+    // Fill left array
+    left[0] = arr[0];
+    for (int i = 1; i < n; i++)
+        left[i] = max(left[i - 1], arr[i]);
+
+    // Fill right array
+    right[n - 1] = arr[n - 1];
+    for (int i = n - 2; i >= 0; i--)
+        right[i] = max(right[i + 1], arr[i]);
+
+    // Calculate the accumulated water element by element
+    for (int i = 1; i < n - 1; i++) {
+        int minOf2 = min(left[i], right[i]);
+            res += minOf2 - arr[i];
     }
-    return ans;
+
+    return res;
 }
+
+int main() {
+    vector<int> arr = { 2, 1, 5, 3, 1, 0, 4 };
+    cout << maxWater(arr);
+    return 0;
+}
+
+/**
+//To find trapped rain water
+//4 2 0 3 2 5
+//Optimal Aproach: TC O(n)   SC O(1)
+#include <iostream>
+#include <vector>
+using namespace std;
+class Solution {
+  public:
+    int maxWater(vector<int> &arr) {
+        // code here
+        int n=arr.size();
+        int left=0, right=n-1;
+        int lmx=arr[left], rmx=arr[right];
+        int ans=0;
+
+        while(left<right){
+            if(arr[left]<arr[right]){
+                lmx=max(lmx, arr[left]);
+                ans+=(lmx-arr[left]);
+                left++;
+            }
+            else{
+                rmx=max(rmx, arr[right]);
+                ans+=(rmx-arr[right]);
+                right--;
+            }
+        }
+
+        return ans;
+    }
+};
 
 int main()
 {
@@ -1057,228 +1231,215 @@ int main()
 //1 3 4 2
 //Product of an array except self
 //Brut force aproach
+//TC O(n^2)   SC O(n)
 #include<iostream>
 using namespace std;
 
-void product(int a[], int n){
-    int res[n];
-    for (int i = 0; i < n; i++){
-        int ans = 1;
-        for (int j = 0; j < n; j++){
-            if(j!=i){
-                ans = ans * a[j];
-            }
-        }
-        res[i] = ans;
-    }
-    for(int i=0; i<n; i++){
-        cout << res[i] << " ";
-    }
-    cout << endl;
-}
+class Solution {
+    public:
+      vector<int> productExceptSelf(vector<int>& arr) {
+          // code here
+          int n=arr.size();
+          vector<int>res(n, 1);
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << "Original array: ";
-    for(int i=0; i<n; i++){
-        cout << a[i] << " ";
-    }
-    cout << endl;
-    cout << "Product array: ";
-    product(a, n);
-    return 0;
-}
+          for(int i=0; i<n; i++){
+              for(int j=0; j<n; j++){
+                  if(i!=j){
+                      res[i]*=arr[j];
+                  }
+              }
+          }
+
+          return res;
+      }
+  };
 
 /**
 //Product of an array except self
 //1 4 3 2
+//Better Aproach
+//TC O(n)   SC O(n)
 #include<iostream>
 using namespace std;
 
-void product(int a[], int n){
-    int prefixsum[n], sufixsum[n], res[n];
-    prefixsum[0] = 1, sufixsum[n - 1] = 1;
-    for (int i = 1; i < n; i++){
-        prefixsum[i] = prefixsum[i - 1] * a[i - 1];
-    }
-    for (int i = n-2; i >-1; i--){
-        sufixsum[i] = sufixsum[i + 1] * a[i + 1];
-    }
-    for (int i = 0; i < n; i++){
-        res[i] = prefixsum[i] * sufixsum[i];
-    }
-    for (int i = 0; i < n; i++){
-        cout << res[i] << " ";
-    }
-    cout << endl;
-}
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> prefix(n, 1);
+        vector<int> sufix(n, 1);
+        vector<int> res(n);
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
+        for (int i = 1; i < n; i++) {
+            prefix[i] = prefix[i - 1] * nums[i - 1];
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            sufix[i] = sufix[i + 1] * nums[i + 1];
+        }
+        for (int i = 0; i < n; i++) {
+            res[i] = prefix[i] * sufix[i];
+        }
+        return res;
     }
-    cout << "Original array: ";
-    for (int i = 0; i < n; i++){
-        cout << a[i] << " ";
-    }
-    cout << endl;
-    cout << "Product array: ";
-    product(a, n);
+};
+/**
+//Product of an array except self
+//1 4 3 2
+//Time Complexity: O(n)
+//Auxiliary Space: O(1)
 
-    return 0;
-}
+class Solution {
+  public:
+    vector<int> productExceptSelf(vector<int>& arr) {
+        // code here
+        int n=arr.size();
+        vector<int>res(n, 1);
+        long long left=1;
+        long long right=1;
+
+        for(int i=0; i<n; i++){
+            res[i]=left;
+            left*=arr[i];
+        }
+        for(int i=n-1; i>=0; i--){
+            res[i]*=right;
+            right*=arr[i];
+        }
+
+        return res;
+    }
+};
 /**
 //Maximum product subarray
 //Brut force aproach
+//TC O(n^2)   SC O(1)
 //2 3 -2 4,  -2 0 -1,  1 -3 2 -5 -4 2
-#include<iostream>
+// C++ program to find Maximum Product Subarray
+// using nested loops
+
+#include <bits/stdc++.h>
 using namespace std;
 
-int maxprosub(int a[], int n){
-    int pro = 1;
-    int maxpro = INT_MIN;
-    for (int i = 0; i < n; i++){
-        pro = pro * a[i];
-        maxpro = max(maxpro, pro);
-        if(pro<=0){
-            pro = 1;
+// Function to return the product of max product subarray
+int maxProduct(vector<int> &arr) {
+    int n = arr.size();
+
+    // Initializing result
+    int result = arr[0];
+
+    for (int i = 0; i < n; i++) {
+        int mul = 1;
+
+        // traversing in current subarray
+        for (int j = i; j < n; j++) {
+            mul *= arr[j];
+
+            // updating result every time
+            // to keep track of the maximum product
+            result = max(result, mul);
         }
     }
-    return maxpro;
+    return result;
 }
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << maxprosub(a, n);
-
+int main() {
+    vector<int> arr = { -2, 6, -3, -10, 0, 2 };
+    cout << maxProduct(arr);
     return 0;
 }
+
 /**
 //Optimal aproach
+//TC O(n)  SC O(1)
 //2 3 -2 4,  -2 0 -1,  1 -3 2 -5 -4 2
-#include<iostream>
-using namespace std;
+class Solution {
+  public:
+    // Function to find maximum product subarray
+    int maxProduct(vector<int> &arr) {
+        // Your Code Here
+        int n=arr.size();
+        int left=1, right=1;
+        int max_prdct=INT_MIN;
 
-int maxprosub(int a[], int n){
-    int prefix = 1;
-    int sufix = 1;
-    int maxpro = INT_MIN;
-    for (int i = 0; i < n; i++){
-        prefix = prefix * a[i];
-        sufix = sufix * a[n - 1 - i];
-        maxpro = max(maxpro, max(prefix, sufix));
-        if(prefix==0){
-            prefix = 1;
+        for(int i=0; i<n; i++){
+            if(left==0) left=1;
+            if(right==0) right=1;
+
+            left *= arr[i];
+            right *= arr[n-1-i];
+
+            max_prdct=max(max_prdct, max(left, right));
         }
-        if(sufix==0){
-            sufix = 1;
-        }
-    }
-    return maxpro;
-}
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
+        return max_prdct;
     }
-    cout << maxprosub(a, n);
-
-    return 0;
-}
+};
 /**
 //Minimum in roted sorted array
 //3 4 5 1 2,  4 5 6 7 0 1 2
-//My brut force aproach
-#include<iostream>
+//Brut force aproach: TC O(n)   SC O(1)
+#include <iostream>
+#include <vector>
 using namespace std;
-int minimum(int a[], int n){
-    int low = 0, high = n - 1;
-    int minimum = INT_MAX;
-    while(low<=high){
-        minimum = min(minimum, min(a[low], a[high]));
-        low++;
-        high--;
-    }
-    return minimum;
-}
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << minimum(a, n) << endl;
 
+int findMin(vector<int>& arr) {
+
+    int res = arr[0];
+
+    // Traverse over arr[] to find minimum element
+    for (int i = 1; i < arr.size(); i++)
+        res = min(res, arr[i]);
+
+    return res;
+}
+
+int main() {
+    vector<int> arr = {5, 6, 1, 2, 3, 4};
+    int n = arr.size();
+
+    cout << findMin(arr) << endl;
     return 0;
 }
 
 /**
 //Minimum in roted sorted array
 //Optimal aproach
+//TC O(logn)   SC O(1)
 //3 4 5 1 2, 4 5 6 7 0 1 2
-#include<iostream>
-using namespace std;
-
-int minimum(int a[], int n){
-    int low = 0, mid, high = n - 1, ans = INT_MAX;
-    while(low<=high){
-        mid = (low + high) / 2;
-
-        //if(a[low]<=a[mid] && a[mid]<=a[high]){ this syntax is 100% correct
-        //    ans = min(ans, a[low]);
-        //    break;
-        //}
-
-        if(a[low]<a[mid]){
-            ans = min(ans, a[low]);
-            low = mid + 1;
-        }
-        else{
-            ans=min(ans, a[mid]);
-            high = mid - 1;
-        }
-    }
-    return ans;
-}
-
-int main()
+class Solution
 {
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
+    public:
+    //Function to find the minimum element in sorted and rotated array.
+    int minNumber(int arr[], int low, int high)
+    {
+        // Your code here
+        int mn=INT_MAX;
 
-    cout << minimum(a, n);
-    return 0;
-}
+        while(low<=high){
+            int mid=(low+high)/2;
+
+            if(arr[low]<=arr[high]) {
+                return min(mn,  arr[low]);
+            }
+
+            if(arr[low]<=arr[mid]){
+                mn=min(mn, arr[low]);
+                low=mid+1;
+            }
+            else {
+                mn=min(mn, arr[mid]);
+                high=mid-1;
+            }
+        }
+
+        return mn;
+    }
+};
 /*
 //11 15 6 8 9 10 x=16,  11 15 26 38 9 10 x=35=45,
 //If there is pair with sum equal to given k in rotated sorted array
 //Brut force aproach
+//TC O(n^2)   SC O(1)
 #include<iostream>
 using namespace std;
 
@@ -1309,44 +1470,50 @@ int main()
 /*
 //11 15 6 8 9 10 x=16,  11 15 26 38 9 10 x=35=45,
 //If there is pair with sum equal to given k in rotated sorted array
-//Optimal aproach
+//better aproach:TC O(nlogn)  SC O(1)
+//Sort the array and aply Two-Pointer aproach
+/*
+//11 15 6 8 9 10 x=16,  11 15 26 38 9 10 x=35=45,
+//If there is pair with sum equal to given k in rotated sorted array
+//Optimal aproach:TC O(n)  SC O(1)
+//Two-Pointer Aproach
 #include<iostream>
 using namespace std;
 
-bool pairsum(int a[], int n, int key){
-    int i, low, high;
-    for (i = 0; i < n; i++){
-        if(a[i]>a[i+1]){
-            break;
+class Solution {
+  public:
+    bool pairInSortedRotated(vector<int>& arr, int target) {
+        // code here
+        int n=arr.size();
+        int pivot=-1, low, high;
+        
+        for (int i=0; i<n-1; i++){
+            if(arr[i]>arr[i+1]) {
+                pivot=i;
+            }
         }
+        
+        if(pivot==-1){
+            pivot=n-1;
+        }
+        
+        low=(pivot+1)%n;
+        high=pivot;
+        
+        while(low!=high){
+            int sum=arr[low]+arr[high];
+            if(sum==target) return true;
+            
+            if(sum<target){
+                low=(low+1)%n;
+            }else{
+                high=(n+high-1)%n;
+            }
+        }
+        
+        return false;
     }
-    high = i, low = i + 1;
-    while(low!=high){
-        if(a[low]+a[high] == key){
-            return true;
-        }
-        else if(a[low]+a[high] < key){
-            low = (low + 1) % n;
-        }
-        else{
-            high = (n + high - 1) % n;
-        }
-    }
-    return false;
-}
-
-int main()
-{
-    int n, k;
-    cin >> n >> k;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << pairsum(a, n, k) << endl;
-
-    return 0;
-}
+};
 /*
 //3sum
 //-1 0 1 2 -1 -4,  0 1 1,  0 0 0,
