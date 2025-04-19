@@ -1486,117 +1486,167 @@ class Solution {
         // code here
         int n=arr.size();
         int pivot=-1, low, high;
-        
+
         for (int i=0; i<n-1; i++){
             if(arr[i]>arr[i+1]) {
                 pivot=i;
             }
         }
-        
+
         if(pivot==-1){
             pivot=n-1;
         }
-        
+
         low=(pivot+1)%n;
         high=pivot;
-        
+
         while(low!=high){
             int sum=arr[low]+arr[high];
             if(sum==target) return true;
-            
+
             if(sum<target){
                 low=(low+1)%n;
             }else{
                 high=(n+high-1)%n;
             }
         }
-        
+
         return false;
     }
 };
 /*
 //3sum
+//Brutforce Aproach: TC O(n^3)   SC O(1)
+//for(i=0)for(j=i+1)for(k=j+1)....
+
+//3sum
+//Optimal Aproach: TC O(n^2)   SC O(1)
+//-1 0 1 2 -1 -4,  0 1 1,  0 0 0,
+class Solution {
+  public:
+    bool hasTripletSum(vector<int> &arr, int target) {
+        // Your Code Here
+        int n=arr.size();
+        sort(arr.begin(), arr.end());
+
+        for(int i=0; i<n-2; i++){
+            if(i>0 && arr[i]==arr[i-1]) continue;
+            int low=i+1, high=n-1;
+
+            while(low<high){
+                int sum=arr[i]+arr[low]+arr[high];
+                if(sum==target){
+                    return true;
+                }
+                else if(sum<target){
+                    low++;
+                }
+                else{
+                    high--;
+                }
+            }
+        }
+
+        return false;
+    }
+};
+//3sum  LeetCode Problem
+//Optimal Aproach: TC O(n^2)   SC O(1)
 //-1 0 1 2 -1 -4,  0 1 1,  0 0 0,
 #include<iostream>
 #include<algorithm>
 using namespace std;
 
-int main()
-{
-    int n, k;
-    cin >> n >> k;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-
-    sort(a, a+n);
-
-    for(int i=0; i<n-2; i++){
-        if (i > 0 && a[i] == a[i - 1]) {
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> result;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-        int low = i + 1, high = n - 1;
-        while(low<high){
-            int sum = a[i] + a[low] + a[high];
-            if(sum==k){
-                cout << a[i] << " " << a[low] << " " << a[high] << endl;
-                while (low < high && a[low] == a[low + 1]) {
+            int low = i + 1, high = n - 1;
+            while (low < high) {
+                int sum = nums[i] + nums[low] + nums[high];
+                if (sum == 0) {
+                    result.push_back({nums[i], nums[low], nums[high]});
+                    while (low < high && nums[low] == nums[low + 1]) {
                         low++;
                     }
-                while (low < high && a[high] == a[high - 1]) {
-                    high--;
+                    while (low < high && nums[high] == nums[high - 1]) {
+                        high--;
                     }
-                low++;
-                high--;
-            }
-            else if(sum<k){
-                low++;
-            }
-            else{
-                high--;
+                    low++;
+                    high--;
+                } else if (sum < 0) {
+                    low++;
+                } else {
+                    high--;
+                }
             }
         }
+        return result;
     }
-
-    return 0;
-}
+};
 /**
 //Container with most water
 //1 8 6 2 5 4 8 3 7
-//Brute force aproach: O(n^2)
-//Optimal aproach: O(n)
-#include<iostream>
+//Brute force aproach: TC O(n^2)   SC O(1)
+// C++ Program to find the maximum amount of water
+// by iterating over all possible boundaries
+
+#include <vector>
+#include <iostream>
 using namespace std;
 
-int water(int a[], int n){
-    int l = 0, r = n - 1, ans = 0;
-    while(l<r){
-        int lh = a[l];
-        int rh = a[r];
-        int minh = min(lh, rh);
-        ans = max(ans, minh * (r - l));
-        if(lh<rh){
-            l++;
-        }
-        else{
-            r--;
+int maxWater(vector<int> &arr) {
+    int n = arr.size();
+    int res = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+
+            // Calculate the amount of water
+            int amount = min(arr[i], arr[j]) * (j - i);
+
+            // Keep track of maximum amount of water
+            res = max(amount, res);
         }
     }
-    return ans;
+    return res;
 }
 
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << water(a, n);
-    return 0;
+int main() {
+    vector<int> arr = {2, 1, 8, 6, 4, 6, 5, 5};
+    cout << maxWater(arr);
 }
+/**
+//Optimal aproach:Two-Pointer
+//Time Complexity: O(n)
+//Auxiliary Space: O(1)
+class Solution {
+
+  public:
+    int maxWater(vector<int> &arr) {
+        // code here
+        int n=arr.size();
+        int i=0, j=n-1, max_water=0;
+
+        while(i<j){
+            int water=(j-i)*min(arr[i], arr[j]);
+            max_water = max(water, max_water);
+
+            if(arr[i]<arr[j]){
+                i++;
+            }else{
+                j--;
+            }
+        }
+
+        return max_water;
+    }
+};
 /**
 //Kth smallest element with left and right index
 //7 10 4 3 20 15 k=3
@@ -1626,46 +1676,36 @@ int main()
 }
 /**
  //Merge Overlaping intervals
+ //Time Complexity: O(n log n)
+ //Note:We have solve problem in O(n) time but we also have sorted array which took O(n log n) time
+//Auxiliary Space: O(1)
  //{{1,3},{2,4},{6,8},{9,10}}  {{6,8},{1,9},{2,4},{4,7}}
- #include<iostream>
- #include<vector>
- #include<algorithm>
- using namespace std;
+ Solution {
+  public:
+    vector<vector<int>> mergeOverlap(vector<vector<int>>& arr) {
+        // Code here
+        int n=arr.size();
+        vector<vector<int>>res;
+        int i=0;
 
-vector<vector<int>> overlappedInterval(vector<vector<int>> intervals){
-    vector<vector<int>> res;
-    if(intervals.size()==0){
+        sort(arr.begin(), arr.end());
+
+        while(i<n){
+            int j=i+1;
+            while(j<n && arr[i][1]>=arr[j][0]){
+                arr[i][1]=max(arr[i][1],arr[j][1]);
+                j++;
+            }
+            res.push_back(arr[i]);
+            i=j;
+        }
+
         return res;
     }
-    sort(intervals.begin(), intervals.end());
-    vector<int> temp = intervals[0];
-    for(auto it : intervals){
-        if(temp[1]>=it[0]){
-            temp[1] = max(temp[1], it[0]);
-        }
-        else{
-            res.push_back(temp);
-            temp = it;
-        }
-    }
-    res.push_back(temp);
-    return res;
-}
-
- int main()
- {
-    vector<vector<int>> intervals = {{6, 8}, {1, 9}, {2, 4}, {4, 7}};
-    vector<vector<int>> merged = overlappedInterval(intervals);
-
-    cout << "The Merged Intervals are: ";
-    for (auto it : merged) {
-        cout << "[" << it[0] << ", " << it[1] << "] ";
-    }
-    cout << endl;
-    return 0;
- }
+};
 /**
 //Minimum number of merge operations to make an array polindrom
+//TC O(n)   SC O(1)
 //15 4 15,  1 4 5 1, 11 14 15 99
 #include<iostream>
 using namespace std;
@@ -1707,139 +1747,89 @@ int main()
 
 /*
 //Arrange the numbers to form biggest number
-#include <iostream>
-#include<bits/stdc++.h>
-using namespace std;
-
-bool comparator(string first,string second)
-{
-    string one = first+second;
-    string two = second+first;
-
-    int i=0;
-    while(one[i] && two[i])
-    {
-        if(one[i]>two[i])
-            return true;
-        else if(one[i]<two[i])
-            return false;
-        ++i;
+//Time Complexity: O(n log n)
+//Auxiliary Space: O(n)
+class Solution {
+  public:
+    static bool myCompaire(string &s1, string &s2) {
+        return (s1 + s2) > (s2 + s1);
     }
 
-    return false;
-}
-
-int main() {
-    //code
-    int tc;
-    cin>>tc;
-    while(tc--)
-    {
-        int len;
-        vector<string> arr;
-
-        //Take Array inputs
-        int i;
-        string temp;
-        cin>>len;
-        for(i=0; i<len; ++i)
-        {
-            cin>>temp;
-            arr.push_back(temp);
+    string findLargest(vector<int> &arr) {
+        int n = arr.size();
+        vector<string> numbers;
+        for (int i = 0; i < n; i++) {
+            numbers.push_back(to_string(arr[i]));
         }
 
-        sort(arr.begin(),arr.end(),comparator);
+        sort(numbers.begin(), numbers.end(), myCompaire);
 
-        for(i=0; i<len; ++i)
-            cout<<arr[i]<<" ";
-        cout<<"\n";
+        if (numbers[0] == "0") {
+            return "0";
+        }
+
+        string res = "";
+        for (string &num : numbers) {
+            res += num;
+        }
+
+        return res;
     }
-    return 0;
-}
+};
 /**
 // Longest subarray with sum divisible by k
 //Brute force aproach  TC O(n^2)  SC O(1)
 // 2 7 6 1 4 5 k=3;
-#include<iostream>
-using namespace std;
-
-int length(int a[],int n, int k){
-    int count = 0, maxCount = 0;
-    for (int i = 0; i < n; i++){
-        int sum = 0;
-        for (int j = i; j < n; j++){
-            sum += a[j];
-            if(sum%k == 0){
-                count = j - i + 1;
+class Solution {
+  public:
+    int longestSubarrayDivK(vector<int>& arr, int k) {
+        // Complete the function
+        int n=arr.size();
+        int max_len=0;
+        
+        for(int i=0; i<n; i++){
+            int sum=0;
+            for(int j=i; j<n; j++){
+                sum = (sum + arr[j]) % k;
+                
+                if(sum==0){
+                    max_len=max(j-i+1, max_len);
+                }
             }
-            maxCount = max(maxCount, count);
         }
+        
+        return max_len;
     }
-    return maxCount;
-}
-
-int main()
-{
-    int n, k;
-    cin >> n >> k;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << length(a, n, k);
-    return 0;
-}
+};
 /*
 // function to find the longest subarray with sum divisible by k
-#include <bits/stdc++.h>
-using namespace std;
+//Optimal Aproach:PrefixSum Time Complexity: O(n)   Auxiliary Space: O(min(n, k))
+//Note:every onen has some extra value and trying to subtract and become divisible by k
+//positive try to become 0 and negative try to become -k*n
 
-int longestSubarrWthSumDivByK(int arr[], int n, int k)
-{
-    // unordered map 'um' implemented as
-    // hash table
-    unordered_map<int, int> um;
-
-    int max_len = 0;
-    int curr_sum = 0;
-
-    for (int i = 0; i < n; i++) {
-        curr_sum += arr[i];
-
-        int mod = ((curr_sum % k) + k) % k;
-
-        // if true then sum(0..i) is divisible
-        // by k
-        if (mod == 0)
-            // update 'max_len'
-            max_len = i + 1;
-
-        // if value 'mod_arr[i]' not present in 'um'
-        // then store it in 'um' with index of its
-        // first occurrence
-        else if (um.find(mod) == um.end())
-            um[mod] = i;
-
-        else
-            // if true, then update 'max_len'
-            if (max_len < (i - um[mod]))
-            max_len = i - um[mod];
+class Solution {
+  public:
+    int longestSubarrayDivK(vector<int>& arr, int k) {
+        // Complete the function
+        int n=arr.size();
+        unordered_map<int, int>prefix;
+        int max_len=0, sum=0;
+        
+        for(int i=0; i<n; i++){
+            sum = (((sum + arr[i]) % k)+k)%k;
+            
+            if(sum==0){
+                max_len=i+1;
+            }
+            else if(prefix.find(sum) != prefix.end()){
+                max_len=max(i-prefix[sum], max_len);
+            }
+            else{
+                prefix[sum]=i;
+            }
+        }
+        
+        return max_len;
     }
-
-    // return the required length of longest subarray with
-    // sum divisible by 'k'
-    return max_len;
-}
-
-int main()
-{
-    int arr[] = { 2, 7, 6, 1, 4, 5 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int k = 3;
-
-    cout << "Length = "
-        << longestSubarrWthSumDivByK(arr, n, k);
-
-    return 0;
-}
+};
 */
