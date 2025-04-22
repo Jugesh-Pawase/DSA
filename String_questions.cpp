@@ -102,8 +102,10 @@ int main()
 
     return 0;
 }
+-----------------------------------------------------------------------------------------------
 /**
 // Vallid polindrome
+//Time Complexity: O(n)   Auxiliary Space: O(1)
 #include <iostream>
 #include <string>
 using namespace std;
@@ -116,7 +118,6 @@ bool isPalindrome(string s)
     {
         s[i] = tolower(s[i]);
     }
-    // transform(s.begin(), s.end(), s.begin(), ::tolower);
     string b;
     for (int i = 0; i < n; i++)
     {
@@ -126,13 +127,12 @@ bool isPalindrome(string s)
         }
     }
     n = b.size();
-    for (int i = 0; i < n / 2; i++)
-    {
-        if (b[i] != b[n - 1 - i])
-        {
-            return false;
-        }
+    int i=0, j=n-1;
+    while(i<j){
+        if(b[i] != b[j]) return false;
+        i++, j--;
     }
+        
     return true;
 }
 
@@ -149,162 +149,122 @@ int main()
 }
 /*
 // Valid Anagram
-#include <iostream>
-#include <string>
-#include<vector>
-using namespace std;
-
-bool isAnagram(string s, string t)
-{
-    if(s.size() != t.size()){
+//Time Complexity: O(n + m)    Auxiliary Space: O(1)
+class Solution {
+  public:
+    bool areAnagrams(string& s1, string& s2) {
+        if(s1.size() != s2.size()) return false;
+        int n=s1.size();
+        vector<int> a(26, 0), b(26, 0);
+        
+        for(int i=0; i<n; i++){
+            a[s1[i]-'a']++;
+            b[s2[i]-'a']++;
+        }
+        for(int i=0; i<26; i++){
+            if(a[i] != b[i]) return false;
+        }
+        
+        return true;
+    }
+};
+/**
+//Valid Parantheses
+//Time Complexity: O(n)    Auxiliary Space: O(n)
+class Solution {
+  public:
+    bool isMatch(char a, char b) {
+        if ((a == '(' && b == ')') || (a == '[' && b == ']') ||
+            (a == '{' && b == '}')) {
+            return true;
+        }
         return false;
     }
-    int n = s.size();
-    vector<int> res(26, 0);
-    vector<int> test(26, 0);
-    for (int i = 0; i < n; i++)
-    {
-        res[s[i] - 'a']++;
-        test[t[i] - 'a']++;
-    }
-
-    for (int i = 0; i < 26; i++)
-    {
-        if (res[i] != test[i])
-        {
+    
+    bool isBalanced(string& s) {
+        // code here
+        int n=s.size();
+        stack<char>st;
+        
+        for(int i=0; i<n; i++){
+            if(s[i]=='(' || s[i]=='[' || s[i]=='{'){
+                st.push(s[i]);
+            }
+            else{
+                if (st.empty()) {
+                    return false;
+                }
+                if(isMatch(st.top(), s[i])){
+                    st.pop();
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+        
+        if(st.empty()){
+            return true;
+        }
+        else{
             return false;
         }
     }
-    return true;
-}
-
-int main()
-{
-    string s = "anagram";
-    string t = "nagaram";
-
-    cout << isAnagram(s, t);
-
-    return 0;
-}
-/**/
-//Valid Parantheses
-#include <iostream>
-#include <stack>
-#include <string>
-using namespace std;
-
-bool isMatch(char a, char b)
-{
-    if ((a == '(' && b == ')') || (a == '[' && b == ']') || (a == '{' && b == '}'))
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isValidParentheses(string s)
-{
-    stack<char> st;
-    for (int i = 0; i < s.size(); i++)
-    {
-        if (s[i] == '(' || s[i] == '[' || s[i] == '{')
-        {
-            st.push(s[i]);
-        }
-        else
-        {
-            if (st.empty())
-            {
-                return false;
-            }
-           else if (isMatch(st.top(), s[i]))
-            {
-                st.pop();
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-    if (st.empty())
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-int main()
-{
-    string s1 = "()";
-    string s2 = "()[]{}";
-    string s3 = "{]";
-    string s4 = "{[{}]}";
-    cout << isValidParentheses(s1) << endl;
-    cout << isValidParentheses(s2) << endl;
-    cout << isValidParentheses(s3) << endl;
-    cout << isValidParentheses(s4) << endl;
-
-    return 0;
-}
+};
 /**
 //Remove Consecutive Characters
-#include<iostream>
-using namespace std;
-
-string removeConsecutive(string s){
-    string res;
-    for (int i = 0; i < s.size(); i++){
-        if(s[i]==s[i+1]){
-            continue;
+//Time Complexity: O(n)    Auxiliary Space: O(n)
+class Solution {
+  public:
+    string removeConsecutiveCharacter(string& s) {
+        // code here.
+        int n = s.size();
+        string res;
+        
+        for(int i=0; i<n-1; i++){
+            if(s[i] != s[i+1]){
+                res.push_back(s[i]);
+            }
         }
-        res.push_back(s[i]);
+        res.push_back(s[n-1]);
+        
+        return res;
     }
-    return res;
-}
-
-int main()
-{
-    string s1 = "aabb";
-    string s2 = "aabaa";
-    cout << removeConsecutive(s1) << endl;
-    cout << removeConsecutive(s2) << endl;
-    return 0;
-}
+};
 /*
 //Longest Common Prefix
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-string longestCommonPrefix(vector<string> s){
-    string prefix = s[0];
-    for (int i = 1; i < s.size(); i++){
-        int j = 0;
-        while (j < prefix.size() && j < s[i].size() && prefix[j] == s[i][j]){
-            j++;
+//Time Complexity: O(n*min(|arri|))    Auxiliary Space: O(min(|arri|))
+class Solution {
+  public:
+    string longestCommonPrefix(vector<string> arr) {
+        // your code here
+        string res=arr[0];
+        int n=arr.size();
+        
+        for(int i=1; i<n; i++){
+            string str=arr[i];
+            int j=0;
+            while(j<res.size() && j<str.size()){
+                if(res[j]==str[j]){
+                    j++;
+                }
+                else{
+                    res=res.substr(0, j);
+                    break;
+                }
+            }
+            if(res.size()==0){
+                return "";
+            }
         }
-        prefix = prefix.substr(0, j);
-        if(prefix.empty()){
-            break;
-        }
+        
+        return res;
     }
-    return prefix;
-}
-
-int main()
-{
-    vector<string> v = {"flower", "flow", "flight"};
-    cout << longestCommonPrefix(v) << endl;
-    return 0;
-}
+};
 /*
 //Mobile Numeric Keypad
+//Expected Time Complexity: O(Length of String)
+//Expected Auxiliary Space: O(Length of String)
 #include<iostream>
 #include<string>
 #include<vector>
@@ -316,7 +276,7 @@ string sentnum(string s){
         "6", "66", "666", "7", "77", "777", "7777", "8", "88", "888", "9", "99", "999", "9999"};
     for (int i = 0; i < s.size(); i++){
         if(s[i]==' '){
-            res += '0';
+            res += "0";
         }
         else{
             res += v[s[i] - 'A'];
@@ -359,117 +319,195 @@ int main()
 }
 /**
 //Longest substring without repeating character
-#include<iostream>
-using namespace std;
-#include<string>
-int main()
-{
-    string s;
-    cin >> s;
-    int a[256] = {-1};
-    int start = -1,maxlength=0;
-
-    for (int i = 0; i < s.size(); i++){
-        if(a[s[i]]>start){
-            start = a[s[i]];
+//Optimal Aproach 1st: Sliding Window     (dont care about 2nd solution, use this always)
+//TC = = O(n + n) = O(n)    SC = O(1)   because vector<int> freq(26, 0) is of fixed size
+class Solution {
+  public:
+    int longestUniqueSubstring(string &s) {
+        // code
+        vector<int>freq(26, 0);
+        int n=s.size();
+        int j=0, cnt=0,max_cnt=0;
+        
+        for(int i=0; i<n; i++){
+            freq[s[i]-'a']++;
+            cnt++;
+            if(freq[s[i]-'a']<=1){
+                max_cnt=max(cnt, max_cnt);
+            }
+            else{
+                while(freq[s[i]-'a']>1){
+                    freq[s[j]-'a']--;
+                    j++, cnt--;
+                }
+            }
         }
-        a[s[i]] = i;
-        maxlength = max(maxlength, i - start);
+        
+        return max_cnt;
     }
-
-    cout << maxlength << endl;
-
-    return 0;
-}
+};
+//Longest substring without repeating character
+//Optimal Aproach 2nd: TC O(1)  SC O(1)      sloding window with advance logic
+class Solution {
+  public:
+    int longestUniqueSubstring(string &s) {
+        // code
+        vector<int>temp(26, -1);
+        int n=s.size();
+        int start=-1,max_len=0;
+        
+        for(int i=0; i<n; i++){
+            if(temp[s[i]-'a']>start){
+                start=temp[s[i]-'a'];
+            }
+            temp[s[i]-'a']=i;
+            
+            max_len=max(max_len, i-start);
+        }
+        
+        return max_len;
+    }
+};
 /**
 //Longest repeating character replacement
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-int longestRepeating(string s, int k){
-    vector<int> charCount(26, 0);
-    int maxCount = 0;
-    int maxLength = 0;
-    int start = 0;//AABABB
-    for (int end = 0; end < s.size(); end++){
-        maxCount = max(maxCount, ++charCount[s[end] - 'A']);
-        while (end - start + 1 - maxCount > k)
-        {
-            charCount[s[start] - 'A']--;
-            start++;
-        }
-        maxLength = max(maxLength, end - start + 1);
+//BrutForce Aproach:TC O(n^2)   SC O(1)
+class Solution {
+  public:
+    int characterReplacement(string& s, int k) {
+        // code here
+         int n=s.size();
+         int max_cnt=0;
+         
+         for(int i=0; i<n; i++){
+             int cnt=0, ops=k, j=i;
+             
+             while(j<n){
+                 if(s[i]==s[j]){
+                     cnt++, j++;
+                 }
+                 else{
+                    if(ops>0){
+                        cnt++,ops--,j++;
+                    }
+                    else{
+                        break;
+                    }
+                 }
+             }
+             max_cnt=max(cnt, max_cnt);
+         }
+         
+         return max_cnt;
     }
-    return maxLength;
-}
-
-int main()
-{
-    string str = "AABABBA";
-    int k = 1;
-    cout << longestRepeating(str, k);
-
-    return 0;
-}
-/*#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-//AABABBA
-int replace(string s, int k){
-    int n = s.size();
-    
-    vector<int> v(26, 0);
-    int length, maxcount=0, ans=0, j=-1;
-    for (int i = 0; i < n; i++){
-        v[s[i] - 'A']++;
-        maxcount=max(maxcount, v[s[i] - 'A']);
-        length = i - j;
-        if(maxcount+k>=length){
-            ans = max(ans, length);
-        }
-        else{
-            j++;
-            v[s[j] - 'A']--;
-        }
+};
+//Longest repeating character replacement
+//Optimal:SlidingWindow but not usefull: TC O(26*(n+n))  SC O(1)
+class Solution {
+  public:
+    int characterReplacement(string& s, int k) {
+        // code here
+         int n=s.size();
+         int left=0, max_freq=0, max_len=0;
+         int freq[26]={0};
+         
+         for(int right=0; right<n; right++){
+             freq[s[right]-'A']++;
+             max_freq=max(max_freq, freq[s[right]-'A']);
+             
+             while((right-left+1-max_freq)>k){
+                 freq[s[left]-'A']--;
+                 left++, max_freq=0;
+                 for(int i=0; i<26; i++){
+                     max_freq=max(freq[i], max_freq);
+                 }
+             }
+             
+             max_len=max(max_len, right-left+1);
+         }
+         
+         return max_len;
     }
-    return ans;
-}
-
-int main()
-{
-    string s ="BAAAB";
-    int k = 2;
-    cout<<replace(s, k)<<endl;
-
-    return 0;
-}
+};
+//Longest repeating character replacement
+//Optimal:SlidingWindow but not usefull: TC O((n+n))  SC O(1)
+class Solution {
+  public:
+    int characterReplacement(string& s, int k) {
+        // code here
+         int n=s.size();
+         int left=0, max_freq=0, max_len=0;
+         int freq[26]={0};
+         
+         for(int right=0; right<n; right++){
+             freq[s[right]-'A']++;
+             max_freq=max(max_freq, freq[s[right]-'A']);
+             
+             while((right-left+1-max_freq)>k){
+                 freq[s[left]-'A']--;
+                 left++;
+             }
+             
+             max_len=max(max_len, right-left+1);
+         }
+         
+         return max_len;
+    }
+};
+};
+//Longest repeating character replacement
+//Optimal:SlidingWindow TC O(n)  SC O(1)
+class Solution {
+  public:
+    int characterReplacement(string& s, int k) {
+        // code here
+         int n=s.size();
+         int left=0, max_freq=0, max_len=0;
+         int freq[26]={0};
+         
+         for(int right=0; right<n; right++){
+             freq[s[right]-'A']++;
+             max_freq=max(max_freq, freq[s[right]-'A']);
+             
+             if((right-left+1-max_freq)>k){
+                 freq[s[left]-'A']--;
+                 left++;
+             }
+             
+             max_len=max(max_len, right-left+1);
+         }
+         
+         return max_len;
+    }
+};
 /*
 //Group Anagrams
-//Time Complexity: O(m*nlogn)
+//Time Complexity: O(m*nlogn)     Space Complexity: O(m*n)
 #include<iostream>
 #include<vector>
 #include<unordered_map>
 #include<algorithm>
 using namespace std;
 
-vector<vector<string>> groupAnagrams(vector<string> strs){
-    unordered_map<string, vector<string>> mp;
-    for(auto s:strs){
-        string original = s;
-        sort(s.begin(), s.end());
-        mp[s].push_back(original);
-    }
+class Solution {
+  public:
+    vector<vector<string>> anagrams(vector<string>& arr) {
+        // code here
+        unordered_map<string, vector<string>>mp;
+        
+        for(auto s:arr){
+            string original=s;
+            sort(s.begin(), s.end());
+            mp[s].push_back(original);
+        }
+        
+        vector<vector<string>> anagrams;
+        for(auto vec: mp){
+            anagrams.push_back(vec.second);
+        }
 
-    vector<vector<string>> anagrams;
-    for(auto [key, anagramStrings]: mp){
-        anagrams.push_back(anagramStrings);
+        return anagrams;
     }
-
-    return anagrams;
-}
+};
 
 //Dont see in main function
 int main()
@@ -489,35 +527,40 @@ int main()
 }
 /**
 //Group Anagrams
-//Time Complexity: O(m*n)
+//Time Complexity: O(m*n)     Space Complexity: O(m*n)
 #include<iostream>
 #include<vector>
 #include<unordered_map>
 #include<algorithm>
 using namespace std;
 
-vector<vector<string>> groupAnagrams(vector<string> strs){
-    unordered_map<string, vector<string>> mp;
-    for(auto s:strs){
-        vector<int> freq(26, 0);
-        string hashString = "";
-        for(auto ch:s){
-            freq[ch - 'a']++;
+class Solution {
+  public:
+    vector<vector<string>> anagrams(vector<string>& arr) {
+        // code here
+        unordered_map<string, vector<string>>mp;
+        
+        for(auto s:arr){
+            vector<int> freq(26, 0);
+            string hashstring="";
+            for(int i=0; i<s.size(); i++){
+                freq[s[i]-'a']++;
+            }
+            for(int i=0; i<26; i++){
+                hashstring.push_back(freq[i]);
+                hashstring.push_back('#');
+            }
+            mp[hashstring].push_back(s);
         }
-        for (int i = 0; i<26; i++){
-            hashString.push_back(freq[i]);
-            hashString.push_back('#');
+        
+        vector<vector<string>> anagrams;
+        for(auto vec: mp){
+            anagrams.push_back(vec.second);
         }
-        mp[hashString].push_back(s);
-    }
 
-    vector<vector<string>> anagrams;
-    for(auto [key, anagramStrings]: mp){
-        anagrams.push_back(anagramStrings);
+        return anagrams;
     }
-
-    return anagrams;
-}
+};
 
 //Dont see in main function
 int main()
@@ -537,80 +580,129 @@ int main()
 }
 /*
 //Longest palindromic substring
-#include<iostream>
-#include<string>
+//BrutForce Aproach:TC O(n^3)    SC O(1)
+#include <bits/stdc++.h>
 using namespace std;
 
-string LPS(string s){
+bool checkPal(string &s, int low, int high) {
+    while (low < high) {
+        if (s[low] != s[high])
+            return false;
+        low++;
+        high--;
+    }
+    return true;
+}
+
+// function to find the longest palindrome substring
+string longestPalindrome(string& s) {
     int n = s.size();
-    int maxlength = 0;
-    string str;
-    for (int i = 0; i < n; i++){
-        int left = i, right = i;
-        while(left>=0 && right<n && s[left]==s[right]){
-            left--;
-            right++;
-        }
-        if(maxlength<right-left-1){
-            maxlength = right - left - 1;
-            str = s.substr(left + 1, maxlength);
-        }
+    int maxLen = 1, start = 0;
 
-        left = i, right = i+1;
-        while(left>=0 && right<n && s[left]==s[right]){
-            left--;
-            right++;
-        }
-        if(maxlength<right-left-1){
-            maxlength = right - left - 1;
-            str = s.substr(left + 1, maxlength);
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            if (checkPal(s, i, j) && (j - i + 1) > maxLen) {
+                start = i;
+                maxLen = j - i + 1;
+            }
         }
     }
-    return str;
+
+    return s.substr(start, maxLen);
 }
 
-int main()
-{
-    string s = "ababd";
-    cout << LPS(s);
-
+int main() {
+    string s = "forgeeksskeegfor";
+    cout << longestPalindrome(s) << endl;
     return 0;
 }
-/**
-//Count palindromic substrings
-#include<iostream>
-using namespace std;
-
-int palindromeSUbstrings(string s){
-    int ans = 0;
-    for (int i = 0; i < s.size(); i++){
-        int left = i, right = i;
-        while(left>=0 && right<s.size() && s[left]==s[right]){
-            ans++;
-            right++;
-            left--;
+/*
+//Longest palindromic substring
+//Optimal Aproach: TC O(n^2)   Sc O(1)
+class Solution {
+  public:
+    string longestPalindrome(string s) {
+        // code here
+        int n=s.size();
+        int start=0, max_len=1;
+        for(int i=0; i<n; i++){
+            int left=i, right=i;
+            while(left>=0 && right<n && s[left]==s[right]){
+                left--, right++;
+            }
+            if((right-left-1)>max_len){
+                max_len=right-left-1;
+                start=left+1;
+            }
+            
+            left=i, right=i+1;
+            while(left>=0 && right<n && s[left]==s[right]){
+                left--, right++;
+            }
+            if((right-left-1)>max_len){
+                max_len=right-left-1;
+                start=left+1;
+            }
         }
-
-        left = i, right = i+1;
-        while(left>=0 && right<s.size() && s[left]==s[right]){
-            ans++;
-            right++;
-            left--;
-        }
+        
+        return s.substr(start, max_len);
     }
-    return ans;
-}
+};
+/*
+//Count palindromic substrings leetCode problem solution
+//TC O(n^2)   SC O(1)
+class Solution {
+  public:
+    int countPS(string &s) {
+        // code here
+        int ans = 0, n=s.size();
+        for (int i = 0; i < n; i++) {
+            int left = i, right = i;
+            while (left>=0 && right<n && s[left]==s[right]) {
+                ans++;   
+                right++;
+                left--;
+            }
 
-int main()
-{
-    string str1 = "abc";
-    string str2 = "aaa";
+            left = i, right = i + 1;
+            while (left>=0 && right<n && s[left]==s[right]) {
+                ans++;   
+                right++;
+                left--;
+            }
+        }
+        return ans;
+    }
+};
+//Count palindromic substrings gfg problem solution
+//TC O(n^2)   SC O(1)
+class Solution {
+  public:
+    int countPS(string &s) {
+        // code here
+        int ans = 0, n=s.size();
+        for (int i = 0; i < n; i++) {
+            int left = i, right = i;
+            while (left>=0 && right<n && s[left]==s[right]) {
+                if((right-left+1)>1){
+                    ans++;   
+                }    
+                right++;
+                left--;
+            }
 
-    cout << palindromeSUbstrings(str1) << endl;
-    cout << palindromeSUbstrings(str2) << endl;
-
-    return 0;
-}
+            left = i, right = i + 1;
+            while (left>=0 && right<n && s[left]==s[right]) {
+                if((right-left+1)>1){
+                    ans++;   
+                }  
+                right++;
+                left--;
+            }
+        }
+        return ans;
+    }
+};
 /*
 //Count palindromic subsequences
 #include<iostream>
