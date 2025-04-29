@@ -1,267 +1,176 @@
 /**
-// C++ program to check whether permutation of two
-// arrays satisfy the condition a[i] + b[i] >= k.
-#include <bits/stdc++.h>
-using namespace std;
-
-// Check whether any permutation exists which
-// satisfy the condition.
-bool isPossible(int a[], int b[], int n, int k)
-{
-    // Sort the array a[] in decreasing order.
-    sort(a, a + n);
-
-    // Sort the array b[] in increasing order.
-    sort(b, b + n, greater<int>());
-
-    // Checking condition on each index.
-    for (int i = 0; i < n; i++)
-        if (a[i] + b[i] < k)
-            return false;
-
-    return true;
-}
-
-// Driven Program
-int main()
-{
-    int a[] = { 2, 1, 3 };
-    int b[] = { 7, 8, 9 };
-    int k = 10;
-    int n = sizeof(a) / sizeof(a[0]);
-
-    isPossible(a, b, n, k) ? cout << "Yes" : cout << "No";
-    return 0;
-}
-/*
-
-//Common Elements in Three Sorted Arrays
-//GFG Solution
-#include <iostream>
-using namespace std;
-
-// Function to find the intersection of two arrays
-void FindIntersection(int arr1[], int arr2[], int temp[],
-                      int m, int n, int& k)
-{
-    int i = 0, j = 0;
-    // vector to store the intersection of the arr1[] and
-    // arr2[]
-    while (i < m && j < n) {
-        // ith element can not be common element
-        if (arr1[i] < arr2[j]) {
-            i++;
+//Check whether permutation of two arrays satisfy the condition a[i] + b[i] >= k.
+//TC: O(nlogn)    SC O(1)
+class Solution {
+  public:
+    bool isPossible(int k, vector<int> &arr1, vector<int> &arr2) {
+        // Your code goes here
+        sort(arr1.begin(), arr1.end());
+        sort(arr2.begin(), arr2.end(), greater<int>());
+        
+        for(int i=0; i<arr1.size(); i++){
+            if(arr1[i]+arr2[i]<k) return false;
         }
-
-        // jth element can not be common element
-        else if (arr2[j] < arr1[i]) {
-            j++;
-        }
-
-        // if arr1[i] == arr2[j]
-        else {
-            temp[k] = arr1[i];
-            i++;
-            j++;
-            k++;
-        }
+        
+        return true;
     }
-}
-
-int main()
-{
-
-    int arr1[] = { 1, 5, 10, 20, 40, 80 };
-    int arr2[] = { 6, 7, 20, 80, 100 };
-    int arr3[] = { 3, 4, 15, 20, 30, 70, 80, 120 };
-    int n1 = sizeof(arr1) / sizeof(arr1[0]);
-    int n2 = sizeof(arr2) / sizeof(arr2[0]);
-    int n3 = sizeof(arr3) / sizeof(arr3[0]);
-
-    // temp array to store the common elements of arr1 and
-    // arr2 arrays
-    int temp[200000];
-
-    // ans array to store the common elements of temp and
-    // arr3 arrays (i.e common elements of all 3 arrays)
-    int ans[200000];
-
-    int k = 0;
-
-    // function call to find the temp array
-    FindIntersection(arr1, arr2, temp, n1, n2, k);
-    int tempSize = k;
-    k = 0;
-
-    // function call to find the ans array.
-    FindIntersection(arr3, temp, ans, n3, tempSize, k);
-    cout << "Common elements present in arrays are : \n";
-
-    for (int i = 0; i < k; i++) {
-        cout << ans[i] << " ";
-    }
-    cout << endl;
-
-    return 0;
-}
+};
 /*
 //Common Elements in Three Sorted Arrays
-//My Solution
+//BrutForce Aproach
+//TC O(n1+n2+n3)   SC O(n1+n2+n3) of unordered_map
 #include<iostream>
 #include<unordered_map>
 using namespace std;
 
-void searchCommon(int arr1[], int arr2[], int arr3[], int m, int n, int k){
-    unordered_map<int, int> mp;
-    for (int i = 0; i < m; i++){
+vector<int> commonElements(vector<int> &arr1, vector<int> &arr2, vector<int> &arr3)
+{
+    int n1 = arr1.size(), n2 = arr2.size(), n3 = arr3.size();
+    map<int, int> mp;
+
+    for (int i = 0; i < n1; i++){
         mp[arr1[i]] = 1;
     }
-    for (int i = 0; i < n; i++){
-        if(mp[arr2[i]] == 1){
-            mp[arr2[i]]++;
+    for (int i = 0; i < n2; i++){
+        if(mp[arr2[i]]==1){
+            mp[arr2[i]] = 2;
         }
     }
-    for (int i = 0; i < k; i++){
-        if(mp[arr3[i]] == 2){
-            cout << arr3[i] << " ";
-            mp[arr3[i]]++;
+    for (int i = 0; i < n3; i++){
+        if(mp[arr3[i]]==2){
+            mp[arr3[i]] = 3;
         }
     }
-}
 
-int main()
-{
-    int arr1[] = { 1, 5, 10, 20, 40, 80 };
-    int arr2[] = { 6, 7, 20, 80, 100 };
-    int arr3[] = { 3, 4, 15, 20, 30, 70, 80, 120 };
-    int n1 = sizeof(arr1) / sizeof(arr1[0]);
-    int n2 = sizeof(arr2) / sizeof(arr2[0]);
-    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+    vector<int> res;
+    for (auto ele : mp){
+        if (ele.second == 3){
+            res.push_back(ele.first);
+        }
+    }
 
-    searchCommon(arr1, arr2, arr3, n1, n2, n3);
-
-    return 0;
+    return res;
 }
 /**
+// Function to find common elements in three arrays.
+//Optimal Aproach:TC O(l+m+n)   SC O(1)
+class Solution {
+  public:
+    vector<int> commonElements(vector<int> &arr1, vector<int> &arr2,
+                               vector<int> &arr3) {
+        // Code Here
+        int i=0, j=0, k=0;
+        int l=arr1.size(), m=arr2.size(), n=arr3.size();
+        vector<int> res;
+        
+        while(i<l && j<m && k<n){
+            if(arr1[i]==arr2[j] && arr2[j]==arr3[k]){
+                res.push_back(arr1[i]);
+                
+                while(arr1[i]==arr1[i+1] && i<l){
+                    i++;
+                } 
+                while(arr2[j]==arr2[2+1] && j<m){
+                    j++;
+                } 
+                while(arr3[k]==arr3[k+1] && k<n){
+                    k++;
+                } 
+                i++,j++,k++;
+            }
+            else if(arr1[i]<arr2[j]){
+                i++;
+            }
+            else if(arr2[j]<arr3[k]){
+                j++;
+            }
+            else{
+                k++;
+            }
+        }
+        
+        if(res.empty()){
+            res.push_back(-1);
+            return res;
+        }
+        else{
+            return res;
+        }
+    }
+};
+/**
 //Search an element in an array where difference between adjacent elements is atmost k
+//Brutforce:TC O(n). SC O(1)
+class Solution {
+  public:
+    int findStepKeyIndex(vector<int>& arr, int k, int x) {
+        // code here
+        int n=arr.size();
+        for(int i=0; i<n; i++){
+            if(arr[i]==x) return i;
+        }
+        return -1;
+    }
+};
+/**
+//Search an element in an array where difference between adjacent elements is atmost k
+//Optimal Approach: TC O(n) SC O(1)
 #include<bits/stdc++.h>
 using namespace std;
 
-int search(int arr[], int n, int x, int k)
-{
-    int i = 0;
-    while (i < n)
-    {
-        // If x is found at index i
-        if (arr[i] == x) {
-            return i;
+class Solution {
+  public:
+    int findStepKeyIndex(vector<int>& arr, int k, int x) {
+        // code here
+        int n=arr.size(), i=0;
+        while(i<n){
+            if(arr[i]==x) return i;
+            i = i+max(1, abs(arr[i]-x)/k);
         }
-
-        i = i + max(1, abs(arr[i]-x)/k);
+        return -1;
     }
-
-    cout << "number is not present!";
-    return -1;
-}
-
-int main()
-{
-    int arr[] = {2, 4, 5, 7, 7, 6};
-    int x = 6;
-    int k = 2;
-    int n = sizeof(arr)/sizeof(arr[0]);
-    cout << search(arr, n, x, k);
-
-    return 0;
-}
+};
 /**
 //Celling in sorted array
-//Brut Force: O(n)
-#include <bits/stdc++.h>
-using namespace std;
-
-// Function to get index of ceiling of x in arr[low..high]
-int ceilSearch(int arr[], int low, int high, int x)
-{
-    int i;
-
-
-    if(x <= arr[low])
-        return low;
-
-    for(i = low; i < high-1; i++)
-    {
-        if(arr[i] < x && arr[i+1] >= x)
-        return i+1;
+//Brut Force: TC O(n)   SC O(1)
+class Solution {
+  public:
+    int findCeil(vector<int>& arr, int x) {
+        // code here
+        int n=arr.size();
+        if(arr[n-1]<x) return -1;
+        for(int i=0; i<n; i++){
+            if(arr[i]>=x) return i;
+        }
     }
-
-    // If we reach here then x is greater than the last element
-    // of the array, return -1 in this case
-    return -1;
-}
-
-int main()
-{
-    int arr[] = {1, 2, 8, 10, 10, 12, 19};
-    int n = sizeof(arr)/sizeof(arr[0]);
-    int x = 3;
-    int index = ceilSearch(arr, 0, n-1, x);
-    if(index == -1)
-        cout << "Ceiling of " << x << " doesn't exist in array ";
-    else
-        cout << "ceiling of " << x << " is " << arr[index];
-
-    return 0;
-}
+};
 
 /*
 //Celling in sorted array
-//Optimal Aproach: O(nlogn)
+//Optimal Aproach: TC O(logn) SC O(1)
 #include <bits/stdc++.h>
 using namespace std;
 
-int ceilSearch(int arr[], int low, int high, int x)
-{
-    int mid;
-
-    if (x <= arr[low])
-        return low;
-
-    if (x > arr[high])
-        return -1;
-
-    mid = (low + high) / 2;
-
-    if (arr[mid] == x)
-        return mid;
-    else if (arr[mid] < x) {
-        if (mid + 1 <= high && x <= arr[mid + 1])
-            return mid + 1;
-        else
-            return ceilSearch(arr, mid + 1, high, x);
-    }
-    else {
-        if (mid - 1 >= low && x > arr[mid - 1])
-            return mid;
-        else
-            return ceilSearch(arr, low, mid - 1, x);
-    }
-}
-
-int main()
-{
-    int arr[] = { 1, 2, 8, 10, 10, 12, 19 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int x = 20;
-    int index = ceilSearch(arr, 0, n - 1, x);
-    if (index == -1)
-        cout << "Ceiling of " << x
-             << " doesn't exist in array ";
-    else
-        cout << "ceiling of " << x << " is " << arr[index];
-
-    return 0;
-}
+class Solution {
+  public:
+    int findCeil(vector<int>& arr, int x) {
+        // code here
+        int n=arr.size();
+        if(arr[n-1]<x) return -1;
+        int low=0, high=n-1, res=-1;
+        while(low<=high){
+            int mid=(low+high)/2;
+            if(arr[mid]<x){
+                low=mid+1;
+            }
+            else{
+                res=mid;
+                high=mid-1;
+            }
+        }
+        return res;
+    }
+};
 /**
 //Pair with given difference
 //Brut force
@@ -1533,3 +1442,4 @@ int main() {
 
     return 0;
 }
+**/

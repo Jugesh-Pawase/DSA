@@ -132,7 +132,7 @@ bool isPalindrome(string s)
         if(b[i] != b[j]) return false;
         i++, j--;
     }
-        
+
     return true;
 }
 
@@ -156,7 +156,7 @@ class Solution {
         if(s1.size() != s2.size()) return false;
         int n=s1.size();
         vector<int> a(26, 0), b(26, 0);
-        
+
         for(int i=0; i<n; i++){
             a[s1[i]-'a']++;
             b[s2[i]-'a']++;
@@ -164,7 +164,7 @@ class Solution {
         for(int i=0; i<26; i++){
             if(a[i] != b[i]) return false;
         }
-        
+
         return true;
     }
 };
@@ -180,12 +180,12 @@ class Solution {
         }
         return false;
     }
-    
+
     bool isBalanced(string& s) {
         // code here
         int n=s.size();
         stack<char>st;
-        
+
         for(int i=0; i<n; i++){
             if(s[i]=='(' || s[i]=='[' || s[i]=='{'){
                 st.push(s[i]);
@@ -202,7 +202,7 @@ class Solution {
                 }
             }
         }
-        
+
         if(st.empty()){
             return true;
         }
@@ -220,14 +220,14 @@ class Solution {
         // code here.
         int n = s.size();
         string res;
-        
+
         for(int i=0; i<n-1; i++){
             if(s[i] != s[i+1]){
                 res.push_back(s[i]);
             }
         }
         res.push_back(s[n-1]);
-        
+
         return res;
     }
 };
@@ -240,7 +240,7 @@ class Solution {
         // your code here
         string res=arr[0];
         int n=arr.size();
-        
+
         for(int i=1; i<n; i++){
             string str=arr[i];
             int j=0;
@@ -257,7 +257,7 @@ class Solution {
                 return "";
             }
         }
-        
+
         return res;
     }
 };
@@ -272,7 +272,7 @@ using namespace std;
 
 string sentnum(string s){
     string res;
-    vector<string> v = {"2", "22", "222", "3", "33", "333", "4", "44", "444", "5", "55", "555", 
+    vector<string> v = {"2", "22", "222", "3", "33", "333", "4", "44", "444", "5", "55", "555",
         "6", "66", "666", "7", "77", "777", "7777", "8", "88", "888", "9", "99", "999", "9999"};
     for (int i = 0; i < s.size(); i++){
         if(s[i]==' '){
@@ -328,7 +328,7 @@ class Solution {
         vector<int>freq(26, 0);
         int n=s.size();
         int j=0, cnt=0,max_cnt=0;
-        
+
         for(int i=0; i<n; i++){
             freq[s[i]-'a']++;
             cnt++;
@@ -342,7 +342,7 @@ class Solution {
                 }
             }
         }
-        
+
         return max_cnt;
     }
 };
@@ -355,16 +355,16 @@ class Solution {
         vector<int>temp(26, -1);
         int n=s.size();
         int start=-1,max_len=0;
-        
+
         for(int i=0; i<n; i++){
             if(temp[s[i]-'a']>start){
                 start=temp[s[i]-'a'];
             }
             temp[s[i]-'a']=i;
-            
+
             max_len=max(max_len, i-start);
         }
-        
+
         return max_len;
     }
 };
@@ -377,10 +377,10 @@ class Solution {
         // code here
          int n=s.size();
          int max_cnt=0;
-         
+
          for(int i=0; i<n; i++){
              int cnt=0, ops=k, j=i;
-             
+
              while(j<n){
                  if(s[i]==s[j]){
                      cnt++, j++;
@@ -396,7 +396,7 @@ class Solution {
              }
              max_cnt=max(cnt, max_cnt);
          }
-         
+
          return max_cnt;
     }
 };
@@ -409,11 +409,11 @@ class Solution {
          int n=s.size();
          int left=0, max_freq=0, max_len=0;
          int freq[26]={0};
-         
+
          for(int right=0; right<n; right++){
              freq[s[right]-'A']++;
              max_freq=max(max_freq, freq[s[right]-'A']);
-             
+
              while((right-left+1-max_freq)>k){
                  freq[s[left]-'A']--;
                  left++, max_freq=0;
@@ -421,10 +421,10 @@ class Solution {
                      max_freq=max(freq[i], max_freq);
                  }
              }
-             
+
              max_len=max(max_len, right-left+1);
          }
-         
+
          return max_len;
     }
 };
@@ -437,19 +437,19 @@ class Solution {
          int n=s.size();
          int left=0, max_freq=0, max_len=0;
          int freq[26]={0};
-         
+
          for(int right=0; right<n; right++){
              freq[s[right]-'A']++;
              max_freq=max(max_freq, freq[s[right]-'A']);
-             
+
              while((right-left+1-max_freq)>k){
                  freq[s[left]-'A']--;
                  left++;
              }
-             
+
              max_len=max(max_len, right-left+1);
          }
-         
+
          return max_len;
     }
 };
@@ -463,19 +463,19 @@ class Solution {
          int n=s.size();
          int left=0, max_freq=0, max_len=0;
          int freq[26]={0};
-         
+
          for(int right=0; right<n; right++){
              freq[s[right]-'A']++;
              max_freq=max(max_freq, freq[s[right]-'A']);
-             
+
              if((right-left+1-max_freq)>k){
                  freq[s[left]-'A']--;
                  left++;
              }
-             
+
              max_len=max(max_len, right-left+1);
          }
-         
+
          return max_len;
     }
 };
@@ -493,13 +493,13 @@ class Solution {
     vector<vector<string>> anagrams(vector<string>& arr) {
         // code here
         unordered_map<string, vector<string>>mp;
-        
+
         for(auto s:arr){
             string original=s;
             sort(s.begin(), s.end());
             mp[s].push_back(original);
         }
-        
+
         vector<vector<string>> anagrams;
         for(auto vec: mp){
             anagrams.push_back(vec.second);
@@ -539,7 +539,7 @@ class Solution {
     vector<vector<string>> anagrams(vector<string>& arr) {
         // code here
         unordered_map<string, vector<string>>mp;
-        
+
         for(auto s:arr){
             vector<int> freq(26, 0);
             string hashstring="";
@@ -552,7 +552,7 @@ class Solution {
             }
             mp[hashstring].push_back(s);
         }
-        
+
         vector<vector<string>> anagrams;
         for(auto vec: mp){
             anagrams.push_back(vec.second);
@@ -634,7 +634,7 @@ class Solution {
                 max_len=right-left-1;
                 start=left+1;
             }
-            
+
             left=i, right=i+1;
             while(left>=0 && right<n && s[left]==s[right]){
                 left--, right++;
@@ -644,7 +644,7 @@ class Solution {
                 start=left+1;
             }
         }
-        
+
         return s.substr(start, max_len);
     }
 };
@@ -659,14 +659,14 @@ class Solution {
         for (int i = 0; i < n; i++) {
             int left = i, right = i;
             while (left>=0 && right<n && s[left]==s[right]) {
-                ans++;   
+                ans++;
                 right++;
                 left--;
             }
 
             left = i, right = i + 1;
             while (left>=0 && right<n && s[left]==s[right]) {
-                ans++;   
+                ans++;
                 right++;
                 left--;
             }
@@ -685,8 +685,8 @@ class Solution {
             int left = i, right = i;
             while (left>=0 && right<n && s[left]==s[right]) {
                 if((right-left+1)>1){
-                    ans++;   
-                }    
+                    ans++;
+                }
                 right++;
                 left--;
             }
@@ -694,8 +694,8 @@ class Solution {
             left = i, right = i + 1;
             while (left>=0 && right<n && s[left]==s[right]) {
                 if((right-left+1)>1){
-                    ans++;   
-                }  
+                    ans++;
+                }
                 right++;
                 left--;
             }
@@ -705,373 +705,285 @@ class Solution {
 };
 /*
 //Count palindromic subsequences
-#include<iostream>
-#include<vector>
-using namespace std;
+//TC: O(n^2)     SC O(n^2)
+class Solution {
+  public:
+    int func(int i, int j, string s, vector<vector<int>>& dp){
+        if(i > j){
+            return 0;
+        }
+        if(i == j){
+            return 1;
+        }
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+        if(s[i] == s[j]){
+            return dp[i][j] = func(i, j-1, s, dp) + func(i+1, j, s, dp) + 1;
+        }
+        else{
+            return dp[i][j] = func(i, j-1, s, dp) + func(i+1, j, s, dp) - func(i+1, j-1, s, dp);
+        }
+    }
 
-int countPS(int i, int j, string s, vector<vector<int>>& dp){
-    if(i > j){
-        return 0;
-    }
-    if(i == j){
-        return 1;
-    }
-    if(dp[i][j] != -1){
-        return dp[i][j];
-    }
-    if(s[i] == s[j]){
-        return dp[i][j] = countPS(i, j-1, s, dp) + countPS(i+1, j, s, dp) + 1;
-    }
-    else{
-        return dp[i][j] = countPS(i, j-1, s, dp) + countPS(i+1, j, s, dp) - countPS(i+1, j-1, s, dp);
-    }
-}
+    int countPS(string &s) {
+        // Your code here
+        int n=s.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
 
-int main()
-{
-    string s;
-    cin >> s; // Input example: aba or abca
-    int n = s.size();
-    vector<vector<int>> dp(n, vector<int>(n, -1)); // Initializing dp with -1
-    cout << countPS(0, n - 1, s, dp);
-
-    return 0;
-}
+        return func(0, n-1, s, dp);
+    }
+};
 /*
 //SmallestWindow
-#include<iostream>
-#include<string>
-#include<unordered_map>
-using namespace std;
-
-string smallestWindow(string s, string t){
-    int n = s.size();
-    if(n<t.size()){
-        return "-1";
-    }
-    unordered_map<char, int> mp;
-    for(char ch:t){//auto
-        mp[ch]++;
-    }
-    int requiredCount = t.size();
-    int i = 0, j = 0;
-    int minWindowSize = INT_MAX;
-    int start_i = 0;
-    while(j<n){
-        char ch = s[j];
-        if(mp[ch]>0){
-            requiredCount--;
+//TC O(n)   SC O(1)
+class Solution {
+  public:
+    string smallestWindow(string &s1, string &s2) {
+        // Your code here
+        int n=s1.size(), m=s2.size();
+        vector<int> freq(26, 0);
+        int frq=0, start=0, left=0, min_len=INT_MAX;
+        for(int i=0; i<m; i++){
+            freq[s2[i]-'a']--;
+            frq++;
         }
-        mp[ch]--;
 
-        while(requiredCount == 0){
-            int currentWindowSize = j - i + 1;
-            if(minWindowSize > currentWindowSize){
-                minWindowSize = currentWindowSize;
-                start_i = i;
-            }
-            mp[s[i]]++;
-            if(mp[s[i]] > 0){
-                requiredCount++;
-            }
-            i++;
-        }
-        j++;
-    }
-    if(minWindowSize==INT_MAX){
-        return "-1";
-    }
-    return s.substr(start_i, minWindowSize);
-}
+        for(int right=0; right<n; right++){
+            if(freq[s1[right]-'a']<0) frq--;
+            freq[s1[right]-'a']++;
 
-int main()
-{
-    string s, t;
-    cin >> s >> t;
-    cout << smallestWindow(s, t) << endl;
+            while(frq<=0 && left<n){
+                if(min_len > (right-left+1)){
+                    min_len=right-left+1;
+                    start=left;
+                }
 
-    return 0;
-}
-/**
-//Wildcard Matching
-//Recursion method
-// wild = ge*ks
-// pattern = geeks
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-bool f(int i, int j, string pattern, string text){
-    if(i<0 && j<0){
-        return true;
-    }
-    if(i<0 && j>=0){
-        return false;
-    }
-    if(j<0 && i>=0){
-        for (int ii = 0; ii<=i; ii++){
-            if(pattern[ii] != '*'){
-                return false;
+                if(freq[s1[left]-'a']<=0) frq++;
+                freq[s1[left]-'a']--;
+                left++;
             }
         }
-        return true;
-    }
-    if(pattern[i]==text[j] || pattern[i]=='?'){
-        return f(i - 1, j - 1, pattern, text);
-    }
-    if(pattern[i]=='*'){
-        return f(i - 1, j, pattern, text) | f(i, j - 1, pattern, text);
-    }
-    return false;
-}
 
-bool wildCardMatching(string pattern, string text){
-    int n = pattern.size();
-    int m = text.size();
-    return f(n-1, m-1, pattern, text);
-}
-
-int main()
-{
-    string s, t;
-    cin >> s >> t;
-    
-    cout << wildCardMatching(s, t)<< endl;
-    return 0;
-}
-/**
-//Wildcard Matching
-//Meorizaton method
-// wild = ge*ks
-// pattern = geeks
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-bool f(int i, int j, string pattern, string text, vector<vector<int>> dp){
-    if(i<0 && j<0){
-        return true;
-    }
-    if(i<0 && j>=0){
-        return false;
-    }
-    if(j<0 && i>=0){
-        for (int ii = 0; ii<=i; ii++){
-            if(pattern[ii] != '*'){
-                return false;
-            }
-        }
-        return true;
-    }
-    if(dp[i][j] != -1){
-        return dp[i][j];
-    }
-    if(pattern[i]==text[j] || pattern[i]=='?'){
-        return dp[i][j] = f(i - 1, j - 1, pattern, text, dp);
-    }
-    if(pattern[i]=='*'){
-        return dp[i][j] = f(i - 1, j, pattern, text, dp) | f(i, j - 1, pattern, text, dp);
-    }
-    return false;
-}
-
-bool wildCardMatching(int i, int j, string pattern, string text, vector<vector<int>> dp){
-    
-    return f(i, j, pattern, text, dp);
-}
-
-int main()
-{
-    string s, t;
-    cin >> s >> t;
-    int n = s.size();
-    int m = t.size();
-    vector<vector<int>> dp(n, vector<int>(m, -1));
-    cout << wildCardMatching(n-1, m-1, s, t, dp) << endl;
-    return 0;
-}
-/**
-//Longest proper prefix suffix
-//My aproach
-//Optimal aproach
-#include<iostream>
-#include<vector>
-using namespace std;
-
-int LPS(string s){
-    int n=s.size();
-    string prefix;
-    string suffix;
-    int ans = 0;
-    for (int i = 0; i < n-1; i++){
-        prefix = prefix + s[i];
-        suffix = s[n - 1 - i] + suffix;
-        if(prefix == suffix){
-            ans = prefix.size();
-        }
-    }
-    return ans;
-}
-
-int main()
-{
-    string str;
-    cin >> str;
-
-    cout << LPS(str) << endl;
-    return 0;
-}
-/*
-//"abab" "aaaa" "abcdeabcd" "abcdeabab"
-//Longest proper prefix suffix
-//Optimal aproach
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-int LPS(string s){
-    int n=s.size();
-    vector<int> v(n, 0);
-    int i = 0, j = 1;
-
-    if(n==0){
-        return 0;
-    }
-    while(j<n){
-        if(s[i]==s[j]){
-            v[j] = i + 1;
-            i++; j++;
+        if(min_len==INT_MAX){
+            return "";
         }
         else{
-            if (i != 0){
-                //i = v[i-1];
-                i = 0;
-            }
-            else{
-                j++;
-            }
+            return s1.substr(start, min_len);
         }
     }
-    return v[n - 1];
-}
-
-int main()
-{
-    string str;
-    cin >> str;
-
-    cout << LPS(str) << endl;
-    return 0;
-}
+};
 /**
-//Rabin Karp algorithm for pattern search
-#include<iostream>
-#include<bits/stdc++.h>
-using namespace std;
+//Wildcard Matching
+//Recursion method: TC O(2^(n + m))   SC O(n+m){recursion stack}
+// wild = ge*ks   pattern = geeks
+class Solution{
+    public:
+    bool func(int i, int j, string &wild, string &pattern){
+        if(i<0 && j<0) return true;
+        if(i<0 && j>=0) return false;
 
-#define d 256
-
-void search(char txt[], char pat[], int q){
-    int n = strlen(txt);
-    int m = strlen(pat);    
-    int h = 1;
-    int t = 0, p = 0;
-    int i, j;
-
-    for (i = 0; i < m - 1; i++){
-        h = (h * d) % q;
-    }
-
-    for (i = 0; i < m; i++){
-        p = (p * d + pat[i]) % q;
-        t = (t * d + txt[i]) % q;
-    }
-
-    for (i = 0; i <= n - m; i++){
-        if(t==p){
-            for (j = 0; j < m; j++){
-                if(txt[i+j] != pat[j]){
-                    break;
+        if(j<0 && i>=0){
+            for (int ii = 0; ii<=i; ii++){
+                if(wild[ii] != '*'){
+                    return false;
                 }
             }
-            if(j==m){
-                cout << "Pattern found at index " << i << endl;
-            }
+            return true;
         }
-        if(i<n-m){
-            t = ((d * (t - (txt[i] * h))) + txt[i + m]) % q;
 
-            if(t<0){
-            t = t + q;
-            }
+        if(wild[i]==pattern[j] || wild[i]=='?'){
+            return func(i-1, j-1, wild, pattern);
         }
+        if(wild[i]=='*'){
+            return func(i-1, j, wild, pattern) | func(i, j-1, wild, pattern);
+        }
+        return false;
     }
-}
 
-int main()
+    bool match(string wild, string pattern)
+    {
+        // code here
+        int n=wild.size(), m=pattern.size();
+        return func(n-1, m-1, wild, pattern);
+    }
+};
+/**
+//Wildcard Matching
+//Memoizaton method: TC O(n*m)      SC O(n*m)
+// wild = ge*ks    pattern = geeks
+class Solution{
+    public:
+    bool func(int i, int j, string &wild, string &pattern, vector<vector<int>> &dp){
+        if(i<0 && j<0) return true;
+        if(i<0 && j>=0) return false;
+
+        if(j<0 && i>=0){
+            for (int ii = 0; ii<=i; ii++){
+                if(wild[ii] != '*'){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+
+        if(wild[i]==pattern[j] || wild[i]=='?'){
+            return dp[i][j] = func(i-1, j-1, wild, pattern, dp);
+        }
+        if(wild[i]=='*'){
+            return dp[i][j] = func(i-1, j, wild, pattern, dp) | func(i, j-1, wild, pattern, dp);
+        }
+        return false;
+    }
+
+    bool match(string wild, string pattern)
+    {
+        // code here
+        int n=wild.size(), m=pattern.size();
+        vector<vector<int>> dp(n, vector<int>(m, -1));
+        return func(n-1, m-1, wild, pattern, dp);
+    }
+};
+/**
+//Longest proper prefix suffix
+//BrutForce aproach: TC O(n^2)   SC O(1)
+class Solution {
+  public:
+    int longestPrefixSuffix(string &s) {
+        // Your code goes here
+        int n=s.size();
+        int max_len=0;
+        for(int i=1; i<n; i++){
+            int j=0, k=i;
+            while(k<n && s[j]==s[k]){
+                j++, k++;
+            }
+            if(k==n){
+                max_len=max(max_len, n-i);
+            }
+        }
+
+        return max_len;
+    }
+};
+/*
+//"abab" "aaaa" "abcdeabcd" "abcdeabab"
+//Longest prefix suffix
+//Optimal aproach: TC O(n)    SC O(n)
+class Solution {
+  public:
+    int longestPrefixSuffix(string &s) {
+        // Your code goes here
+        int n=s.size();
+        vector<int> res(n, 0);
+        int i=0, j=1;
+        
+        while(j<n){
+            if(s[i]==s[j]){
+                res[j]=i+1;
+                i++, j++;
+            }
+            else{
+                if(i==0){
+                    j++;
+                }
+                else{
+                    i=res[i-1];       //In almost all cases found that i=0
+                }
+            }
+        }
+        
+        return res[n-1];
+    }
+};
+/**
+//Rabin Karp algorithm for pattern search
+//TC O(n+m)   SC O(1)
+class Solution
 {
-    char text[]="GEEKS FOR GEEKS";
-    char pattern[] = "GEEK";
-    int q = 101;
+    public:
+        vector <int> search(string pattern, string text)
+        {
+            //code here.
+            int n = text.size();
+            int m = pattern.size();
+            int h = 1, d=256;
+            int t = 0, p = 0, q=11;
+            int i, j;
+            vector<int>res;
 
-    search(text, pattern, q);
+            for (i = 0; i < m - 1; i++){
+                h = (h * d) % q;
+            }
 
-    return 0;
-}
+            for (i = 0; i < m; i++){
+                p = (p * d + pattern[i]) % q;
+                t = (t * d + text[i]) % q;
+            }
+
+            for (i = 0; i <= n - m; i++){
+                if(t==p){
+                    for (j = 0; j < m; j++){
+                        if(text[i+j] != pattern[j]){
+                            break;
+                        }
+                    }
+                    if(j==m){
+                        res.push_back(i+1);
+                    }
+                }
+                if(i<n-m){
+                    t = ((d * (t - (text[i] * h))) + text[i + m]) % q;
+
+                    if(t<0){
+                        t = t + q;
+                    }
+                }
+            }
+            
+            return res;
+        }
+     
+};
 /**
 //Transform one string to another string
-#include<iostream>
-#include<vector>
-#include<string>
-using namespace std;
-
-int transform(string A, string B){
-    int m=A.size();
-    int n = B.size();
-    int c = 0;
-
-    if(m!=n){
-        return -1;
-    }
-
-    vector<int> v1(256, 0);
-    vector<int> v2(256, 0);
-
-    for (int i = 0; i < m; i++){
-        v1[A[i]]++;
-        v2[B[i]]++;
-    }
-    for (int i = 0; i < 256; i++){
-        if(v1[i]!=v2[i]){
-            return -1;
-        }
-    }
-    
-    int i = m - 1, j = n - 1;
-    while(i>=0 && j>=0){
-        if (A[i] == B[j]){
-            i--;
-            j--;
-        }
-        else{
-            c++;
-            i--;
-        }
-    }
-    return c;
-}
-
-int main()
+//TC O(n)     SC O(1)
+class Solution
 {
-    string A="EACBD";
-    string B="EABCD";
-
-    cout << transform(A, B) << endl;
-    return 0;
-}
+    public:
+    int transform (string A, string B)
+    {
+        //code here.
+        int n=A.size(), m=B.size();
+        if(n!=m) return -1;
+        
+        vector<int>freq1(256, 0), freq2(256, 0);       dont be smart take size 256
+        for(int i=0; i<n; i++){
+            freq1[A[i]]++;
+            freq2[B[i]]++;
+        }
+        for(int i=0; i<256; i++){
+            if(freq1[i] != freq2[i]) return -1;
+        }
+        
+        int i=n-1, j=n-1, cnt=0;
+        while(i>=0 && j>=0){
+            if(A[i]==B[j]){
+                i--, j--;
+            }
+            else{
+                cnt++;
+                i--;
+            }
+        }
+        
+        return cnt;
+    }
+};
 /**
 //Boye Moore algorithm for pattern search
 //Its looking my aproach
@@ -1106,39 +1018,32 @@ int main()
 }
 /**
 //WordWrap
-#include<iostream>
-#include<string>
-#include<vector>
-using namespace std;
-
-int wordWrap(int i, int rem, int arr[], int k, vector<vector<int>> dp){
-    if(i==4){
-        return 0;
-    }
-    if(dp[i][rem] != -1){
-        return dp[i][rem];
-    }
+//TC O(n^2)     SC O(n^2)
+class Solution {
+  public:
+int rec(int i, int rem, vector<int> &arr, int k, vector<vector<int>> &dp){
+    if(i==arr.size()) return 0;
+    if(dp[i][rem] != -1) return dp[i][rem];
+    
     int ans;
     if(arr[i]>rem){
-        ans = (rem + 1) * (rem + 1) + wordWrap(i + 1, k - arr[i] - 1, arr, k, dp);
+        ans=(rem+1)*(rem+1) + rec(i+1, k-arr[i]-1, arr, k, dp);
     }
     else{
-        int choice1=(rem+1)*(rem+1)+ wordWrap(i + 1, k - arr[i] - 1, arr, k, dp);
-        int choice2 = wordWrap(i + 1, rem - arr[i] - 1, arr, k, dp);
-        ans = min(choice1, choice2);
+        int choice1=rec(i+1, rem-arr[i]-1, arr, k, dp);
+        int choice2=(rem+1)*(rem+1) + rec(i+1, k-arr[i]-1, arr, k, dp);
+        ans=min(choice1, choice2);
     }
-    dp[i][rem] = ans;
+    dp[i][rem]=ans;
     return dp[i][rem];
 }
 
-int main()
-{
-    int arr[] = {3, 2, 2, 5};
-    int k = 6;
-    vector < vector<int>> dp(505, vector<int>(2005, -1));
+int solveWordWrap(vector<int> arr, int k) {
+    // Code here
+    int n=arr.size();
+    vector<vector<int>> dp(n, vector<int>(k+1, -1));
     
-    cout << wordWrap(0, k, arr, k, dp);
-
-    return 0;
+    return rec(0, k, arr, k, dp);
 }
+};
 */
