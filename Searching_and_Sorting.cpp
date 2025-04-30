@@ -7,11 +7,11 @@ class Solution {
         // Your code goes here
         sort(arr1.begin(), arr1.end());
         sort(arr2.begin(), arr2.end(), greater<int>());
-        
+
         for(int i=0; i<arr1.size(); i++){
             if(arr1[i]+arr2[i]<k) return false;
         }
-        
+
         return true;
     }
 };
@@ -62,20 +62,20 @@ class Solution {
         int i=0, j=0, k=0;
         int l=arr1.size(), m=arr2.size(), n=arr3.size();
         vector<int> res;
-        
+
         while(i<l && j<m && k<n){
             if(arr1[i]==arr2[j] && arr2[j]==arr3[k]){
                 res.push_back(arr1[i]);
-                
+
                 while(arr1[i]==arr1[i+1] && i<l){
                     i++;
-                } 
+                }
                 while(arr2[j]==arr2[2+1] && j<m){
                     j++;
-                } 
+                }
                 while(arr3[k]==arr3[k+1] && k<n){
                     k++;
-                } 
+                }
                 i++,j++,k++;
             }
             else if(arr1[i]<arr2[j]){
@@ -88,7 +88,7 @@ class Solution {
                 k++;
             }
         }
-        
+
         if(res.empty()){
             res.push_back(-1);
             return res;
@@ -173,234 +173,173 @@ class Solution {
 };
 /**
 //Pair with given difference
-//Brut force
-//TC O(n*m)
-//SC O(1)
-
-#include<bits/stdc++.h>
-using namespace std;
-
-void findPair(int arr[], int n, int diff) {
-    for(int i=0; i<n; i++) {
-        for(int j=i+1; j<n; j++) {
-            if(abs(arr[j] - arr[i]) == diff) {
-                cout << "Pair Found: (" << arr[i] << ", " << arr[j] << ")";
-                  return;
+//Brut force: TC O(n*m) SC O(1)
+class Solution {
+  public:
+    bool findPair(vector<int> &arr, int x) {
+        // code here
+        int n=arr.size();
+        for(int i=0; i<n-1; i++) {
+            for(int j=i+1; j<n; j++) {
+                int diff=abs(arr[j] - arr[i]);
+                if(diff == x) {
+                    return true;
+                }
             }
         }
+        return false;
     }
-
-      cout << "No such pair";
-}
-
-int main() {
-
-    int arr[] = { 5, 20, 3, 2, 50, 80 };
-    int n = sizeof(arr)/sizeof(arr[0]);
-    int diff = 78;
-
-    findPair(arr, n, diff);
-
-    return 0;
-}
+};
 /**
 // Pair with given difference
-// Better aproach:
-//TC O(n*logn)
-//SC O(1)
- #include<iostream>
- #include<algorithm>
- using namespace std;
-
-void findPair(int arr[], int n, int diff) {
-    sort(arr, arr + n);
-    for(int i=0; i<n; i++) {
-        int y = arr[i] + diff;
-        int low = 0, high = n - 1;
-        while(low<high){
-            int mid = (low + high);
-            if(arr[mid]==y){
-                cout << "Pair Found: (" << arr[i] << ", " << arr[mid] << ")";
-                  return;
-            }
-            else if(arr[mid]<y){
-                low = mid + 1;
-            }
-            else{
-                high = mid - 1;
+// Better aproach(binary search): TC O(n*logn) SC O(1)
+ class Solution {
+  public:
+    bool findPair(vector<int> &arr, int x) {
+        sort(arr.begin(), arr.end());
+    
+        int n = arr.size();
+        for (int i = 0; i < n-1; i++) {
+            int target = arr[i] + x;
+            if (binary_search(arr.begin() + i + 1, arr.end(), target)) {
+                return true;
             }
         }
+    
+        return false;
     }
-      cout << "No such pair";
-}
-
- int main()
- {
-    int arr[] = { 5, 20, 3, 2, 50, 80 };
-    int n = sizeof(arr)/sizeof(arr[0]);
-    int diff = 78;
-
-    findPair(arr, n, diff);
-
-    return 0;
- }
+};
  /**
  // Pair with given difference
-// Optimal aproach:
-//TC O(n)
-//SC O(n)
- #include<iostream>
- #include<unordered_map>
- using namespace std;
-
-void findPair(int arr[], int n, int diff) {
-    unordered_map<int, int> mp;
-
-    for (int i = 0; i < n; i++){
-        mp[arr[i]] = 1;
+// Better aproach(two pointer): TC O(n*logn) SC O(1)
+ class Solution {
+  public:
+   bool findPair(vector<int> &arr, int x) {
+    int n = arr.size();
+  
+    sort(arr.begin(), arr.end());
+    int j = 1;
+    for (int i=0; i<n-1; i++) {
+        while (j<n && arr[j]-arr[i] < x) j++;
+        if(i==j) j++;  //when x=0
+        if (j<n && i != j && arr[j]-arr[i] == x) return true;
     }
-    for (int i = 0; i < n; i++){
-        int y = arr[i] + diff;
-        if(mp[y]){
-            cout << "Pair Found: (" << arr[i] << ", " << y << ")";
-                  return;
+    
+    return false;
+   }
+};
+ /**
+ // Pair with given difference
+// Optimal aproach: TC O(n) SC O(n)
+class Solution {
+  public:
+    bool findPair(vector<int> &arr, int x) {
+        unordered_map<int, int> mp;
+        int n=arr.size();
+
+        for (int i = 0; i < n; i++){
+            mp[arr[i]] += 1;
         }
+        for (int i = 0; i < n; i++){
+            int y = arr[i] + x;
+            if(x==0){
+                if(mp[y]>=2) return true;   
+            }
+            else{
+                if(mp[y]) return true;
+            }
+        }
+        return false;
     }
-    cout << "Pair does not exist" << endl;
-}
-
- int main()
- {
-    int arr[] = { 5, 20, 3, 2, 50, 80 };
-    int n = sizeof(arr)/sizeof(arr[0]);
-    int diff = 78;
-
-    findPair(arr, n, diff);
-
-    return 0;
- }
+};
  /**
  // Majority element in an array
  //Brut force:  TC-O(n^2)  SC-O(1)
-#include <bits/stdc++.h>
-using namespace std;
+class Solution{
+public:
+    int majorityElement(vector<int> &arr){
+        // code here
+        int n = arr.size();
+        int maxCount = 0, ele;
+        for (int i = 0; i < n; i++){
+            int count = 0;
+            for (int j = 0; j < n; j++){
+                if (arr[i] == arr[j]) count++;
+            }
 
-void findMajority(int arr[], int n)
-{
-    int maxCount = 0;
-    int index = -1; // sentinels
-    for (int i = 0; i < n; i++) {
-        int count = 0;
-        for (int j = 0; j < n; j++) {
-            if (arr[i] == arr[j])
-                count++;
+            if (count > maxCount){
+                maxCount = count;
+                ele=arr[i];
+            }
         }
 
-        if (count > maxCount) {
-            maxCount = count;
-            index = i;
+        if (maxCount > n / 2){
+            return ele;
+        }
+        else{ 
+            return -1;
         }
     }
-
-    if (maxCount > n / 2)
-        cout << arr[index] << endl;
-
-    else
-        cout << "No Majority Element" << endl;
-}
-
-int main()
-{
-    int arr[] = { 1, 1, 2, 1, 3, 5, 1 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    findMajority(arr, n);
-
-    return 0;
-}
+};
 /*
 //Majority element in an array
 //Brut force:  TC-O(n)  SC-O(n)
-#include <bits/stdc++.h>
-using namespace std;
-
-void findMajority(int arr[], int size)
-{
-    unordered_map<int, int> m;
-    for(int i = 0; i < size; i++)
-        m[arr[i]]++;
-
-    for (int i = 0; i < size; i++)
-    {
-        if(m[arr[i]] > size / 2)
+class Solution{
+public:
+    int majorityElement(vector<int> &arr){
+        // code here
+        int n = arr.size();
+        unordered_map<int, int> mp;
+        for (int i = 0; i < n; i++)
         {
-            cout << "Majority found : " << arr[i] <<endl;
-            return;
+            mp[arr[i]]++;
         }
+        for (auto ele : mp)
+        {
+            if (ele.second > n / 2)
+                return ele.first;
+        }
+        return -1;
     }
-        cout << "No Majority element" << endl;
-}
-
-int main()
-{
-    int arr[] = {2, 2, 2, 2, 5, 5, 2, 3, 3};
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    findMajority(arr, n);
-
-    return 0;
-}
+};
 /*
 //Majority element in an array
 //Optimal Aproach: TC-O(n)   SC-O(1)
-#include<iostream>
-#include<vector>
-using namespace std;
-
-int findMejority(vector<int> v){
-    int n = v.size();
-    int ele;
-    int count = 0;
-
-    //Most Voting Algorithm
-    for (int i = 0; i < n; i++){
-        if(count==0){
-            ele = v[i];
-            count++;
+class Solution {
+  public:
+    int majorityElement(vector<int>& arr) {
+        // code here
+        int n=arr.size();
+        int ele=arr[0], count=1;
+        for(int i=1; i<n; i++){
+            if(ele==arr[i]){
+                count++;
+            }
+            else{
+                count--;
+                if(count<0){
+                    ele=arr[i];
+                    count=1;
+                }
+            }
         }
-        else if(ele==v[i]){
-            count++;
+        
+        int cnt=0;
+        for(int i=0; i<n; i++){
+            if(arr[i]==ele) cnt++;
+        }
+        
+        if(cnt > n/2){
+            return ele;
         }
         else{
-            count--;
+            return -1;
         }
     }
-
-    int cnt = 0;
-    for (int i = 0; i < n; i++){
-        if(ele==v[i]){
-            cnt++;
-        }
-    }
-
-    if(cnt>(n/2)){
-        return ele;
-    }
-    else{
-        return -1;
-    }
-}
-
-int main()
-{
-    vector<int> v = {3, 3, 4, 2, 4, 4, 2, 4, 4};
-    cout << findMejority(v) << endl;
-
-    return 0;
-}
+};
 /*
 // count triplets with sum smaller than a given value
-//Brut force  TC O(n^3)  SC O(1)
+//Brut force:  TC O(n^3)  SC O(1)
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -409,11 +348,8 @@ int countTriplets(int arr[], int n, int sum)
     // Initialize result
     int ans = 0;
 
-    // Fix the first element as A[i]
     for (int i = 0; i < n - 2; i++) {
-        // Fix the second element as A[j]
         for (int j = i + 1; j < n - 1; j++) {
-            // Now look for the third number
             for (int k = j + 1; k < n; k++)
                 if (arr[i] + arr[j] + arr[k] < sum)
                     ans++;
@@ -421,191 +357,127 @@ int countTriplets(int arr[], int n, int sum)
     }
     return ans;
 }
-
-// Driver program
-int main()
-{
-    int arr[] = { 5, 1, 3, 4, 7 };
-    int n = sizeof arr / sizeof arr[0];
-    int sum = 12;
-    cout << countTriplets(arr, n, sum) << endl;
-    return 0; 
-}
 /**
 //Triplets with sum is less than k
-//Optimal   TC O(n^2)  SC O(1)
-#include<iostream>
-#include<algorithm>
-using namespace std;
-
-int triplets(int a[], int n, int max){
-    sort(a, a + n);
-    int ans = 0;
-    for (int i = 0; i < n-2; i++){
-        int j = i + 1;
-        int k = n - 1;
-        while(j<k){
-            int sum = a[i] + a[j] + a[k];
-            if(sum<max){
-                ans += (k - j);
-                j++;
-            }
-            else{
-                k--;
+//Optimal Aproach (Three Pointer):   TC O(n^2)  SC O(1)
+class Solution {
+  public:
+    long long countTriplets(int n, long long sum, long long arr[]) {
+        // Your code goes here
+        sort(arr, arr+n);
+        int count = 0;
+        for(int i=0; i<n-2; i++){
+            int left=i+1, right=n-1;
+            while(left<right){
+                long long addition=arr[i]+arr[left]+arr[right];
+                if(addition<sum){
+                    count = count+(right-left);
+                    left++;
+                }
+                else{
+                    right--;
+                }
             }
         }
+        
+        return count;
     }
-    return ans;
-}
-
-int main()
-{
-    int arr[] = {5, 1, 3, 4, 7};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int max = 12;
-
-    cout << triplets(arr, n, max) << endl;
-
-    return 0;
-}
+};
 /**
 //Maximum sum subsequence with no adjacent elements
-#include<iostream>
-#include<bits/stdc++.h>
-using namespace std;
-
-int solve(int i, int arr[], int n, vector<int> dp){
-    if(i<=-1){
-        return 0;
+//DP/Memoization: TC (n)   SC O(n) of array and stack
+class Solution {
+  public:
+    int rec(int i, int n, vector<int>& arr, vector<int>& dp){
+        if(i>=n) return 0;
+        if(dp[i] != -1) return dp[i];
+        
+        int ch1=arr[i] + rec(i+2, n, arr, dp);
+        int ch2=rec(i+1, n, arr, dp);
+        return dp[i]  = max(ch1, ch2);
     }
-    if(dp[i]!=-1){
-        return dp[i];
+  
+    int findMaxSum(vector<int>& arr) {
+        // code here
+        int n=arr.size();
+        vector<int> dp(n, -1);
+        return rec(0, n, arr, dp);
     }
-
-    int op1 = arr[i] + solve(i - 2, arr, n, dp);
-    int op2 = solve(i - 1, arr, n, dp);
-
-    return dp[i] = max(op1, op2);
-}
-
-int main()
-{
-    int arr[] = {5, 5, 10, 100, 10, 5};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    vector<int> dp(n, -1);
-
-    cout << solve(n - 1, arr, n, dp) << endl;
-
-    return 0;
-}
+};
+//Recursion: TC O(2^n)  SC O(n) of arr due to recursive call
+//Using tabulation: TC (n)   SC O(n) of stack
+//Using space optimization: TC (n)   SC O(1)
 /*
 //Merge two sorted arrays
-//TC O(nlogn)
-#include<iostream>
-#include<bits/stdc++.h>
-using namespace std;
-
-void merge(int arr1[], int arr2[], int n, int m){
-    int left = 0, right = n - 1;
-    while(left<m && right>=0){
-        if(arr1[right]>arr2[left]){
-            swap(arr1[right], arr2[left]);
-            left++;
-            right--;
-        }
-        else{
-            break;
-        }
-    }
-    sort(arr1, arr1 + n);
-    sort(arr2, arr2 + m);
-
-    cout << "first array: ";
-    for (int i = 0; i < n; i++){
-        cout << arr1[i] << " ";
-    }
-    cout << endl;
-    cout << "second array: ";
-    for (int i = 0; i < m; i++){
-        cout << arr2[i] << " ";
-    }
-}
-
-int main()
-{
-    int arr1[] = {1, 5, 9, 10, 15, 20};
-    int arr2[] = {2, 3, 8, 13};
-    int n = sizeof(arr1) / sizeof(arr1[0]);
-    int m = sizeof(arr2) / sizeof(arr2[0]);
-
-    merge(arr1, arr2, n, m);
-
-    return 0;
-}
-/*
-//Merge two sorted arrays
-//Gap method
-//TC O((n+m)logn)
-#include<iostream>
-#include<bits/stdc++.h>
-using namespace std;
-
-void swapIfGreater(int arr1[], int arr2[], int ind1, int ind2){
-    if(arr1[ind1]>arr2[ind2]){
-        swap(arr1[ind1], arr2[ind2]);
-    }
-}
-
-void merge(int arr1[], int arr2[], int n, int m){
-    int len=(n+m);
-    int gap = (len / 2) + (len % 2);
-
-    while(gap>0){
-        int left = 0, right = left + gap;
-        while(right<len){
-            if(left<n && right>=n){
-                swapIfGreater(arr1, arr2, left, right - n);
-                left++, right++;
-            }
-            else if(left>=n){
-                swapIfGreater(arr2, arr2, left-n, right - n);
-                left++, right++;
+//Optimal Aproach-1O(nlogn + mlogm)   SC O(1)
+class Solution{
+public:
+    void mergeArrays(vector<int> &a, vector<int> &b){
+        // code here
+        int n=a.size(), m=b.size();
+        int left = 0, right = n - 1;
+        while (left < m && right >= 0){
+            if (a[right] > b[left]){
+                swap(a[right], b[left]);
+                left++;
+                right--;
             }
             else{
-                swapIfGreater(arr1, arr1, left, right);
-                left++, right++;
+                break;
             }
         }
-        if(gap>1){
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+    }
+};
+/*
+//Merge two sorted arrays
+//Optimal Aproach-2 (Gap method): TC O((n+m)logn)    SC O(1)
+class Solution
+{
+public:
+    void swapFunc(int left, int right, vector<int> &a, vector<int> &b, int n)
+    {
+        if (left < n && right < n)
+        {
+            // both in a
+            if (a[left] > a[right])
+                swap(a[left], a[right]);
+        }
+        else if (left < n && right >= n)
+        {
+            // a and b
+            if (a[left] > b[right - n])
+                swap(a[left], b[right - n]);
+        }
+        else
+        {
+            // both in b
+            if (b[left - n] > b[right - n])
+                swap(b[left - n], b[right - n]);
+        }
+    }
+
+    void mergeArrays(vector<int> &a, vector<int> &b)
+    {
+        int n = a.size(), m = b.size();
+        int len = n + m;
+        int gap = (len / 2) + (len % 2);
+
+        while (gap > 0)
+        {
+            int left = 0, right = gap;
+            while (right < len)
+            {
+                swapFunc(left, right, a, b, n);
+                left++, right++;
+            }
+
+            if (gap == 1) break;
             gap = (gap / 2) + (gap % 2);
         }
-        else{
-            break;
-        }
     }
-
-    cout << "first array: ";
-    for (int i = 0; i < n; i++){
-        cout << arr1[i] << " ";
-    }
-    cout << endl;
-    cout << "second array: ";
-    for (int i = 0; i < m; i++){
-        cout << arr2[i] << " ";
-    }
-}
-
-int main()
-{
-    int arr1[] = {1, 5, 9, 10, 15, 20};
-    int arr2[] = {2, 3, 8, 13};
-    int n = sizeof(arr1) / sizeof(arr1[0]);
-    int m = sizeof(arr2) / sizeof(arr2[0]);
-
-    merge(arr1, arr2, n, m);
-
-    return 0;
-}
+};
 /*
 //Count inversion
 //brut force: TC O(n^2) SC O(1)
@@ -725,15 +597,15 @@ vector<int> duplicates(long long arr[], int n) {
 int main() {
     long long a[] = {1, 6, 5, 2, 3, 3, 2};
     int n = sizeof(a) / sizeof(a[0]);
-    
+
     vector<int> duplicates_found = duplicates(a, n);
-    
+
     cout << "Duplicate elements: ";
     for (int element : duplicates_found) {
         cout << element << " ";
     }
     cout << endl;
-    
+
     return 0;
 }
 
@@ -815,58 +687,58 @@ int main()
     return 0;
 }
 /**
-// Check whether reversing a sub array make the array sorted or not 
+// Check whether reversing a sub array make the array sorted or not
 //Brut force   TC O(nlogn)   SC O(n)
-#include<bits/stdc++.h> 
-using namespace std; 
-  
-// Return true, if reversing the subarray will 
-// sort the array, else return false. 
-bool checkReverse(int arr[], int n) 
-{ 
-    // Copying the array. 
-    int temp[n]; 
-    for (int i = 0; i < n; i++) 
-        temp[i] = arr[i]; 
-  
-    // Sort the copied array. 
-    sort(temp, temp + n); 
-  
-    // Finding the first mismatch. 
-    int front; 
-    for (front = 0; front < n; front++) 
-        if (temp[front] != arr[front]) 
-            break; 
-  
-    // Finding the last mismatch. 
-    int back; 
-    for (back = n - 1; back >= 0; back--) 
-        if (temp[back] != arr[back]) 
-            break; 
-  
-    // If whole array is sorted 
-    if (front >= back) 
-        return true; 
-  
-    // Checking subarray is decreasing or not. 
+#include<bits/stdc++.h>
+using namespace std;
+
+// Return true, if reversing the subarray will
+// sort the array, else return false.
+bool checkReverse(int arr[], int n)
+{
+    // Copying the array.
+    int temp[n];
+    for (int i = 0; i < n; i++)
+        temp[i] = arr[i];
+
+    // Sort the copied array.
+    sort(temp, temp + n);
+
+    // Finding the first mismatch.
+    int front;
+    for (front = 0; front < n; front++)
+        if (temp[front] != arr[front])
+            break;
+
+    // Finding the last mismatch.
+    int back;
+    for (back = n - 1; back >= 0; back--)
+        if (temp[back] != arr[back])
+            break;
+
+    // If whole array is sorted
+    if (front >= back)
+        return true;
+
+    // Checking subarray is decreasing or not.
     while (front < back)
-    { 
-        if (arr[front] < arr[front+1]) 
-            return false; 
-        front++; 
+    {
+        if (arr[front] < arr[front+1])
+            return false;
+        front++;
     }
-  
-    return true; 
-} 
-  
-// Driver Program 
-int main() 
-{ 
-    int arr[] = { 1, 2, 5, 4, 3}; 
-    int n = sizeof(arr)/sizeof(arr[0]); 
-  
-    checkReverse(arr, n)? (cout << "Yes" << endl): 
-                          (cout << "No" << endl); 
+
+    return true;
+}
+
+// Driver Program
+int main()
+{
+    int arr[] = { 1, 2, 5, 4, 3};
+    int n = sizeof(arr)/sizeof(arr[0]);
+
+    checkReverse(arr, n)? (cout << "Yes" << endl):
+                          (cout << "No" << endl);
     return 0;
 }
 /**
@@ -1020,7 +892,7 @@ int main()
         cout << "] ";
     }
     cout << "\n";
-    
+
     return 0;
 }
 /**
@@ -1187,7 +1059,7 @@ class Solution
         minHeap.push(maxHeap.top());
         maxHeap.pop();
     }
-    
+
     //Function to balance heaps.
     void balanceHeaps()
     {
@@ -1196,9 +1068,9 @@ class Solution
             minHeap.pop();
         }
     }
-    
+
     //Function to return Median.
-    double getMedian() 
+    double getMedian()
     {
         if (maxHeap.size() > minHeap.size())
             return (double)maxHeap.top();
@@ -1213,18 +1085,18 @@ int main()
     cin>>t;
     while(t--)
     {
-    	Solution ob;
-    	cin >> n;
-    	for(int i = 1;i<= n; ++i)
-    	{
-    		cin >> x;
-    		ob.insertHeap(x);
-    	    cout << floor(ob.getMedian()) << endl;
-    	}
+        Solution ob;
+        cin >> n;
+        for(int i = 1;i<= n; ++i)
+        {
+            cin >> x;
+            ob.insertHeap(x);
+            cout << floor(ob.getMedian()) << endl;
+        }
     }
-	return 0;
+    return 0;
 }
-/** 
+/**
 //Median of stram data
 //SC O(nlogn)  TC O(n)
 #include<iostream>
@@ -1242,7 +1114,7 @@ priority_queue<int, vector<int>, greater<int>> right_min_heap;
             right_min_heap.push(x);
         }
     }
-    
+
     //Function to balance heaps.
     void balanceHeaps()
     {
@@ -1255,9 +1127,9 @@ priority_queue<int, vector<int>, greater<int>> right_min_heap;
             right_min_heap.pop();
         }
     }
-    
+
     //Function to return Median.
-    double getMedian() 
+    double getMedian()
     {
         if(left_max_heap.size() == right_min_heap.size()){
             return (double)(left_max_heap.top() + right_min_heap.top())/2;
@@ -1280,48 +1152,48 @@ using namespace std;
 vector<pair<int, int> > findSubArrays(int arr[], int n)
 {
 
-	// Array to store all the start and end
-	// indices of subarrays with 0 sum
-	vector<pair<int, int> > output;
-	for (int i = 0; i < n; i++) {
-		int prefix = 0;
-		for (int j = i; j < n; j++) {
-			prefix += arr[j];
-			if (prefix == 0)
-				output.push_back({ i, j });
-		}
-	}
+    // Array to store all the start and end
+    // indices of subarrays with 0 sum
+    vector<pair<int, int> > output;
+    for (int i = 0; i < n; i++) {
+        int prefix = 0;
+        for (int j = i; j < n; j++) {
+            prefix += arr[j];
+            if (prefix == 0)
+                output.push_back({ i, j });
+        }
+    }
 
-	return output;
+    return output;
 }
 
 // Function to print all subarrays with 0 sum
 void print(vector<pair<int, int> > output)
 {
-	for (auto it = output.begin(); it != output.end(); it++)
-		cout << "Subarray found from Index " << it->first
-			<< " to " << it->second << endl;
+    for (auto it = output.begin(); it != output.end(); it++)
+        cout << "Subarray found from Index " << it->first
+            << " to " << it->second << endl;
 }
 
 int main()
 {
 
-	// Given array
-	int arr[] = { 6, 3, -1, -3, 4, -2, 2, 4, 6, -12, -7 };
-	int n = sizeof(arr) / sizeof(arr[0]);
+    // Given array
+    int arr[] = { 6, 3, -1, -3, 4, -2, 2, 4, 6, -12, -7 };
+    int n = sizeof(arr) / sizeof(arr[0]);
 
-	// Function Call
-	vector<pair<int, int> > output = findSubArrays(arr, n);
+    // Function Call
+    vector<pair<int, int> > output = findSubArrays(arr, n);
 
-	// if we didn’t find any subarray with 0 sum,
-	// then subarray doesn’t exists
-	if (output.size() == 0) {
-		cout << "No subarray exists";
-	}
-	else {
-		print(output);
-	}
-	return 0;
+    // if we didn’t find any subarray with 0 sum,
+    // then subarray doesn’t exists
+    if (output.size() == 0) {
+        cout << "No subarray exists";
+    }
+    else {
+        print(output);
+    }
+    return 0;
 }
 /**
 //Find sub-arrays with zero sum
@@ -1338,7 +1210,7 @@ public:
         long long int sum=0;
         long long int ans=0;
         um[0]=1;
-        
+
         for(int i=0; i<n; i++){
             sum+=arr[i];
             if(um.find(sum)!=um.end()){
@@ -1359,15 +1231,15 @@ int main()
     {
         int n;
         cin>>n; //input size of array
-       
+
         vector<long long int> arr(n,0);
-        
+
         for(int i=0;i<n;i++)
             cin>>arr[i]; //input array elements
         Solution ob;
         cout << ob.findSubarray(arr,n) << "\n";
     }
-	return 0;
+    return 0;
 }
 /*
 //Agrssive Cows
@@ -1380,7 +1252,7 @@ class Solution {
 public:
 
     bool canWePlace(int n, int k, vector<int> &stalls, int dist){
-        int cntcows=1, last=stalls[0]; 
+        int cntcows=1, last=stalls[0];
         for(int i=1; i<n; i++){
             if((stalls[i] - last)>=dist){
                 cntcows+=1;
