@@ -197,7 +197,7 @@ class Solution {
   public:
     bool findPair(vector<int> &arr, int x) {
         sort(arr.begin(), arr.end());
-    
+
         int n = arr.size();
         for (int i = 0; i < n-1; i++) {
             int target = arr[i] + x;
@@ -205,7 +205,7 @@ class Solution {
                 return true;
             }
         }
-    
+
         return false;
     }
 };
@@ -216,7 +216,7 @@ class Solution {
   public:
    bool findPair(vector<int> &arr, int x) {
     int n = arr.size();
-  
+
     sort(arr.begin(), arr.end());
     int j = 1;
     for (int i=0; i<n-1; i++) {
@@ -224,7 +224,7 @@ class Solution {
         if(i==j) j++;  //when x=0
         if (j<n && i != j && arr[j]-arr[i] == x) return true;
     }
-    
+
     return false;
    }
 };
@@ -243,7 +243,7 @@ class Solution {
         for (int i = 0; i < n; i++){
             int y = arr[i] + x;
             if(x==0){
-                if(mp[y]>=2) return true;   
+                if(mp[y]>=2) return true;
             }
             else{
                 if(mp[y]) return true;
@@ -276,7 +276,7 @@ public:
         if (maxCount > n / 2){
             return ele;
         }
-        else{ 
+        else{
             return -1;
         }
     }
@@ -323,12 +323,12 @@ class Solution {
                 }
             }
         }
-        
+
         int cnt=0;
         for(int i=0; i<n; i++){
             if(arr[i]==ele) cnt++;
         }
-        
+
         if(cnt > n/2){
             return ele;
         }
@@ -379,7 +379,7 @@ class Solution {
                 }
             }
         }
-        
+
         return count;
     }
 };
@@ -391,12 +391,12 @@ class Solution {
     int rec(int i, int n, vector<int>& arr, vector<int>& dp){
         if(i>=n) return 0;
         if(dp[i] != -1) return dp[i];
-        
+
         int ch1=arr[i] + rec(i+2, n, arr, dp);
         int ch2=rec(i+1, n, arr, dp);
         return dp[i]  = max(ch1, ch2);
     }
-  
+
     int findMaxSum(vector<int>& arr) {
         // code here
         int n=arr.size();
@@ -495,81 +495,67 @@ int numberOfInversions(vector<int>&a, int n) {
     }
     return cnt;
 }
-
-int main()
-{
-    vector<int> a = {5, 4, 3, 2, 1};
-    int n = 5;
-    int cnt = numberOfInversions(a, n);
-    cout << "The number of inversions is: "
-         << cnt << endl;
- return 0;
-}
 /**
 //Count inversion
-//time complexity: O(nlogn)
-//Space complexity: O(n)
-#include<iostream>
-#include<vector>
-using namespace std;
+//Optimal Aproach: time complexity: O(nlogn) Space complexity: O(n)
+class Solution{
+public:
+    int merge(vector<int> &arr, int low, int mid, int high)
+    {
+        vector<int> temp;
+        int cnt = 0;
+        int left = low;
+        int right = mid + 1;
+        while (left <= mid && right <= high){
+            if (arr[left] <= arr[right]){
+                temp.push_back(arr[left]);
+                left++;
+            }
+            else{
+                temp.push_back(arr[right]);
+                cnt += (mid - left + 1);
+                right++;
+            }
+        }
 
-int merge(int arr[], int low, int mid, int high){
-    vector<int> temp;
-    int cnt = 0;
-    int left = low;
-    int right = mid + 1;
-    while(left<=mid && right<=high){
-        if(arr[left]<=arr[right]){
+        while (left <= mid){
             temp.push_back(arr[left]);
             left++;
         }
-        else{
+        while (right <= high){
             temp.push_back(arr[right]);
-            cnt += (mid - left + 1);
             right++;
         }
+
+        for (int i = low; i <= high; i++){
+            arr[i] = temp[i - low];
+        }
+
+        return cnt;
     }
 
-    while(left<=mid){
-        temp.push_back(arr[left]);
-            left++;
+    int mergeSort(vector<int> &arr, int low, int high){
+        int cnt = 0;
+        if (low >= high){
+            return 0;
+        }
+        int mid = (low + high) / 2;
+        cnt += mergeSort(arr, low, mid);
+        cnt += mergeSort(arr, mid + 1, high);
+        cnt += merge(arr, low, mid, high);
+
+        return cnt;
     }
-    while(right<=high){
-        temp.push_back(arr[right]);
-        right++;
+    // Function to count inversions in the array.
+    int inversionCount(vector<int> &arr){
+        // Your Code Here
+        int n=arr.size();
+        return mergeSort(arr, 0, n-1);
     }
-
-    for (int i = low; i <= high; i++){
-        arr[i] = temp[i - low];
-    }
-
-    return cnt;
-}
-
-int mergeSort(int arr[], int low, int high){
-    int cnt = 0;
-    if(low>=high){
-        return 0;
-    }
-    int mid = (low + high) / 2;
-    cnt += mergeSort(arr, low, mid);
-    cnt += mergeSort(arr, mid+1, high);
-    cnt += merge(arr, low, mid, high);
-
-    return cnt;
-}
-
-int main()
-{
-    int arr[] = {2, 4, 1, 3, 5};
-    cout << mergeSort(arr, 0, 4) << endl;
-
-    return 0;
-}
+};
 /*
 //Find duplicates
-//brut force aproach
-//time complexity O(n)   space complexity O(n)
+//brut force aproach: time complexity O(n)   space complexity O(n)
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -593,26 +579,9 @@ vector<int> duplicates(long long arr[], int n) {
     sort(result.begin(),result.end());
     return result;
 }
-
-int main() {
-    long long a[] = {1, 6, 5, 2, 3, 3, 2};
-    int n = sizeof(a) / sizeof(a[0]);
-
-    vector<int> duplicates_found = duplicates(a, n);
-
-    cout << "Duplicate elements: ";
-    for (int element : duplicates_found) {
-        cout << element << " ";
-    }
-    cout << endl;
-
-    return 0;
-}
-
 /*
 //Find duplicates
-//Optimal aproach
-//time complexity O(n)   space complexity O(1)
+//Optimal aproach: time complexity O(n)   space complexity O(1)
 #include<iostream>
 #include<bits/stdc++.h>
 using namespace std;
@@ -654,13 +623,26 @@ int main()
 
 /*
 //Make all elements equal with minimum cost
-//Optimal aproach
-//TC O(n)   SC O(1)
-#include<iostream>
-#include<bits/stdc++.h>
-using namespace std;
+//BrutForce aproach: TC O(n^2)   SC O(1)
+int minCost(vector<int> &arr) {
+    int n = arr.size();
+    int ans = INT_MAX;
 
+    for (int i = 0; i < n; i++) {
+        int currentCost = 0;
+        for (int j = 0; j < n; j++) {
+            currentCost += abs(arr[j] - arr[i]);
+        }
+        ans = min(ans, currentCost);
+    }
+
+    return ans;
+}
+/*
+//Make all elements equal with minimum cost
+//Optimal aproach-1(Meidan): TC O(n)   SC O(1)
 int mincost(int a[], int n){
+    //sort(a, a+n);  if given array is not sorted
     int res = 0;
     int y;
     if(n%2==1){
@@ -674,26 +656,28 @@ int mincost(int a[], int n){
         res += abs(a[i] - y);
     }
 
-        return res;
+    return res;
 }
-
-int main()
-{
-    int a[] = {1, 100, 101};
-    int n = sizeof(a) / sizeof(a[0]);
-    sort(a, a + n);
-
-    cout << mincost(a, n) << endl;
-    return 0;
+/*
+//Make all elements equal with minimum cost
+//Optimal aproach-2(add difference): TC O(n)  Sc (1)
+int minCost(vector<int> &arr) {
+    sort(arr.begin(), arr.end());
+    int n = arr.size();
+    int low = 0, high = n - 1;
+    int ans = 0;
+    
+    while(low<high){
+        ans += arr[high] - arr[low];
+        low++, high--;
+    }
+    
+    return ans;
 }
+//To be solve(leetCode):Make all elements equal with minimum cost 
 /**
 // Check whether reversing a sub array make the array sorted or not
-//Brut force   TC O(nlogn)   SC O(n)
-#include<bits/stdc++.h>
-using namespace std;
-
-// Return true, if reversing the subarray will
-// sort the array, else return false.
+//Brut force: TC O(nlogn)   SC O(n)
 bool checkReverse(int arr[], int n)
 {
     // Copying the array.
@@ -768,17 +752,6 @@ bool isSorted(int a[], int n){
     }
     return true;
 }
-
-int main()
-{
-    int a[] = {1, 2, 5, 4, 3};
-    int n = sizeof(a) / sizeof(a[0]);
-
-    isSorted(a, n) ? cout << "Yes" << endl : cout << "No" << endl;
-
-    return 0;
-}
-
 /*
 //4sum
 //Brut force   TC O(n^4)   SC O(n)
@@ -812,235 +785,167 @@ vector<vector<int>> fourSum(vector<int>& nums, int target) {
     vector<vector<int>> ans(st.begin(), st.end());
     return ans;
 }
-
-int main()
-{
-    vector<int> nums = {4, 3, 3, 4, 4, 2, 1, 2, 1, 1};
-    int target = 9;
-    vector<vector<int>> ans = fourSum(nums, target);
-    cout << "The quadruplets are: \n";
-    for (auto it : ans) {
-        cout << "[";
-        for (auto ele : it) {
-            cout << ele << " ";
-        }
-        cout << "] ";
-    }
-    cout << "\n";
-    return 0;
-}
-
 /**
 //4sum
-//Optimal aproach
-//time complexity O(n^3)   space complexity O(1)
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<vector<int>> fourSum(vector<int>& nums, int target) {
-    int n = nums.size(); //size of the array
-    vector<vector<int>> ans;
-
-    // sort the given array:
-    sort(nums.begin(), nums.end());
-
-    //calculating the quadruplets:
-    for (int i = 0; i < n; i++) {
-        // avoid the duplicates while moving i:
-        if (i > 0 && nums[i] == nums[i - 1]) continue;
-        for (int j = i + 1; j < n; j++) {
-            // avoid the duplicates while moving j:
-            if (j > i + 1 && nums[j] == nums[j - 1]) continue;
-
-            // 2 pointers:
-            int k = j + 1;
-            int l = n - 1;
-            while (k < l) {
-                long long sum = nums[i];
-                sum += nums[j];
-                sum += nums[k];
-                sum += nums[l];
-                if (sum == target) {
-                    vector<int> temp = {nums[i], nums[j], nums[k], nums[l]};
-                    ans.push_back(temp);
-                    k++; l--;
-
-                    //skip the duplicates:
-                    while (k < l && nums[k] == nums[k - 1]) k++;
-                    while (k < l && nums[l] == nums[l + 1]) l--;
+//Optimal aproach: time complexity O(n^3)   space complexity O(1)
+class Solution {
+  public:
+    vector<vector<int>> fourSum(vector<int> &arr, int target) {
+        sort(arr.begin(), arr.end());
+        int n=arr.size();
+        vector<vector<int>>res;
+        for(int i=0; i<n-3; i++){
+            if(i>0 && arr[i]==arr[i-1]) continue;
+            for(int j=i+1; j<n-2; j++){
+                if(j>i+1 && arr[j]==arr[j-1]) continue;
+                
+                int low=j+1, high=n-1;
+                while(low<high){
+                    long long sum=arr[i]+arr[j]+arr[low]+arr[high];
+                    if(sum==target){
+                        res.push_back({arr[i], arr[j], arr[low], arr[high]});
+                        low++, high--;
+                        
+                        while(arr[low]==arr[low-1] && low<high) low++;
+                        while(arr[high]==arr[high+1] && high>low) high--;
+                    }
+                    else if(sum<target){
+                        low++;
+                    }
+                    else{
+                        high--;
+                    }
                 }
-                else if (sum < target) k++;
-                else l--;
             }
         }
+        
+        return res;
     }
-
-    return ans;
-}
-
-int main()
-{
-    vector<int> nums = {4, 3, 3, 4, 4, 2, 1, 2, 1, 1};
-    int target = 9;
-    vector<vector<int>> ans = fourSum(nums, target);
-    cout << "The quadruplets are: \n";
-    for (auto it : ans) {
-        cout << "[";
-        for (auto ele : it) {
-            cout << ele << " ";
-        }
-        cout << "] ";
-    }
-    cout << "\n";
-
-    return 0;
-}
+};
 /**
 //Median of two sorted arrays
 //Brut force  TC O(n)  SC O(n)
-#include <bits/stdc++.h>
-using namespace std;
-
-double median(vector<int>& a, vector<int>& b) {
-    //size of two given arrays:
-    int n1 = a.size(), n2 = b.size();
-
-    vector<int> arr3;
-    //apply the merge step:
-    int i = 0, j = 0;
-    while (i < n1 && j < n2) {
-        if (a[i] < b[j]) arr3.push_back(a[i++]);
-        else arr3.push_back(b[j++]);
+class Solution {
+  public:
+    double medianOf2(vector<int>& a, vector<int>& b) {
+        // Your code goes here
+        int n1=a.size(), n2=b.size();
+        int n=n1+n2;
+        vector<int>temp;
+        
+        int i=0, j=0;
+        while(i<n1 && j<n2){
+            if(a[i]<b[j]){
+                temp.push_back(a[i++]);
+            }
+            else{
+                temp.push_back(b[j++]);
+            }
+        }
+        
+        while(i<n1) temp.push_back(a[i++]);
+        while(j<n2) temp.push_back(b[j++]);
+      
+        double ans;
+        if(n%2 == 1){
+            ans = temp[n/2];
+        }
+        else{
+            ans = (temp[(n-2)/2]+temp[n/2])/2;
+        }
+        
+        return ans;
     }
-
-    //copy the left-out elements:
-    while (i < n1) arr3.push_back(a[i++]);
-    while (j < n2) arr3.push_back(b[j++]);
-
-    //Find the median:
-    int n = n1 + n2;
-    if (n % 2 == 1) {
-        return (double)arr3[n / 2];
-    }
-
-    double median = ((double)arr3[n / 2] + (double)arr3[(n / 2) - 1]) / 2.0;
-    return median;
-}
-
-int main()
-{
-    vector<int> a = {1, 4, 7, 10, 12};
-    vector<int> b = {2, 3, 6, 15};
-    cout << "The median of two sorted array is " << fixed << setprecision(1)
-         << median(a, b) << '\n';
-}
+};
 /**
 //Median of two sorted arrays
 //Better Aproach  TC O(n)  SC O(1)
-#include <bits/stdc++.h>
-using namespace std;
+class Solution{
+public:
+    double medianOf2(vector<int> &a, vector<int> &b){
+        int n1 = a.size(), n2 = b.size();
+        int n = n1 + n2;
+        // required indices:
+        int ind2 = n / 2;
+        int ind1 = ind2 - 1;
+        int cnt = 0;
+        double ind1el = -1, ind2el = -1;
 
-double median(vector<int>& a, vector<int>& b) {
-    //size of two given arrays:
-    int n1 = a.size(), n2 = b.size();
-    int n = n1 + n2; //total size
-    //required indices:
-    int ind2 = n / 2;
-    int ind1 = ind2 - 1;
-    int cnt = 0;
-    int ind1el = -1, ind2el = -1;
+        int i = 0, j = 0;
+        while (i < n1 && j < n2){
+            if (a[i] < b[j]){
+                if (cnt == ind1) ind1el = a[i];
+                if (cnt == ind2) ind2el = a[i];
+                cnt++, i++;
+            }
+            else{
+                if (cnt == ind1) ind1el = b[j];
+                if (cnt == ind2) ind2el = b[j];
+                cnt++, j++;
+            }
+        }
 
-    //apply the merge step:
-    int i = 0, j = 0;
-    while (i < n1 && j < n2) {
-        if (a[i] < b[j]) {
+        // copy the left-out elements:
+        while (i < n1){
             if (cnt == ind1) ind1el = a[i];
             if (cnt == ind2) ind2el = a[i];
-            cnt++;
-            i++;
+            cnt++, i++;
         }
-        else {
+        while (j < n2){
             if (cnt == ind1) ind1el = b[j];
             if (cnt == ind2) ind2el = b[j];
-            cnt++;
-            j++;
+            cnt++, j++;
         }
-    }
 
-    //copy the left-out elements:
-    while (i < n1) {
-        if (cnt == ind1) ind1el = a[i];
-        if (cnt == ind2) ind2el = a[i];
-        cnt++;
-        i++;
-    }
-    while (j < n2) {
-        if (cnt == ind1) ind1el = b[j];
-        if (cnt == ind2) ind2el = b[j];
-        cnt++;
-        j++;
-    }
+        if (n % 2 == 1){
+            return ind2el;
+        }
 
-    //Find the median:
-    if (n % 2 == 1) {
-        return (double)ind2el;
+        return (ind1el + ind2el) / 2;
     }
-
-    return (double)((double)(ind1el + ind2el)) / 2.0;
-}
-
-int main()
-{
-    vector<int> a = {1, 4, 7, 10, 12};
-    vector<int> b = {2, 3, 6, 15};
-    cout << "The median of two sorted array is " << fixed << setprecision(1)
-         << median(a, b) << '\n';
-}
+};
 /**
 //Median of two sorted arrays
 //Optimal Aproach  TC O(min(logn1, logn2))  SC O(1)
-#include <bits/stdc++.h>
-using namespace std;
+class Solution{
+public:
+    double medianOf2(vector<int> &a, vector<int> &b){
+        int n1 = a.size(), n2 = b.size();
+        // if n1 is bigger swap the arrays:
+        if (n1 > n2) return medianOf2(b, a);
 
-double median(vector<int>& a, vector<int>& b) {
-    int n1 = a.size(), n2 = b.size();
-    //if n1 is bigger swap the arrays:
-    if (n1 > n2) return median(b, a);
+        int n = n1 + n2;              // total length
+        int left = (n1 + n2 + 1) / 2; // length of left half
+        // apply binary search:
+        int low = 0, high = n1;
+        while (low <= high)
+        {
+            int mid1 = (low + high) / 2;
+            int mid2 = left - mid1;
+            // calculate l1, l2, r1 and r2;
+            double l1 = INT_MIN, l2 = INT_MIN;
+            double r1 = INT_MAX, r2 = INT_MAX;
+            if (mid1 < n1) r1 = a[mid1];
+            if (mid2 < n2) r2 = b[mid2];
+            if (mid1 - 1 >= 0) l1 = a[mid1 - 1];
+            if (mid2 - 1 >= 0) l2 = b[mid2 - 1];
 
-    int n = n1 + n2; //total length
-    int left = (n1 + n2 + 1) / 2; //length of left half
-    //apply binary search:
-    int low = 0, high = n1;
-    while (low <= high) {
-        int mid1 = (low + high) /2;
-        int mid2 = left - mid1;
-        //calculate l1, l2, r1 and r2;
-        int l1 = INT_MIN, l2 = INT_MIN;
-        int r1 = INT_MAX, r2 = INT_MAX;
-        if (mid1 < n1) r1 = a[mid1];
-        if (mid2 < n2) r2 = b[mid2];
-        if (mid1 - 1 >= 0) l1 = a[mid1 - 1];
-        if (mid2 - 1 >= 0) l2 = b[mid2 - 1];
+            if (l1 <= r2 && l2 <= r1){
+                if (n % 2 == 1)
+                    return max(l1, l2);
+                else
+                    return (max(l1, l2) + min(r1, r2)) / 2;
+            }
 
-        if (l1 <= r2 && l2 <= r1) {
-            if (n % 2 == 1) return max(l1, l2);
-            else return ((double)(max(l1, l2) + min(r1, r2))) / 2.0;
+            // eliminate the halves:
+            else if (l1 > r2)
+                high = mid1 - 1;
+            else
+                low = mid1 + 1;
         }
-
-        //eliminate the halves:
-        else if (l1 > r2) high = mid1 - 1;
-        else low = mid1 + 1;
+        return 0; // dummy statement
     }
-    return 0; //dummy statement
-}
-
-int main()
-{
-    vector<int> a = {1, 4, 7, 10, 12};
-    vector<int> b = {2, 3, 6, 15};
-    cout << "The median of two sorted array is " << fixed << setprecision(1)
-         << median(a, b) << '\n';
-}
+};
 /**
 //Median of stram data
 //SC O(nlogn)  TC O(n)
