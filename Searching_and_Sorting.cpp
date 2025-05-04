@@ -666,15 +666,15 @@ int minCost(vector<int> &arr) {
     int n = arr.size();
     int low = 0, high = n - 1;
     int ans = 0;
-    
+
     while(low<high){
         ans += arr[high] - arr[low];
         low++, high--;
     }
-    
+
     return ans;
 }
-//To be solve(leetCode):Make all elements equal with minimum cost 
+//To be solve(leetCode):Make all elements equal with minimum cost
 /**
 // Check whether reversing a sub array make the array sorted or not
 //Brut force: TC O(nlogn)   SC O(n)
@@ -798,14 +798,14 @@ class Solution {
             if(i>0 && arr[i]==arr[i-1]) continue;
             for(int j=i+1; j<n-2; j++){
                 if(j>i+1 && arr[j]==arr[j-1]) continue;
-                
+
                 int low=j+1, high=n-1;
                 while(low<high){
                     long long sum=arr[i]+arr[j]+arr[low]+arr[high];
                     if(sum==target){
                         res.push_back({arr[i], arr[j], arr[low], arr[high]});
                         low++, high--;
-                        
+
                         while(arr[low]==arr[low-1] && low<high) low++;
                         while(arr[high]==arr[high+1] && high>low) high--;
                     }
@@ -818,7 +818,7 @@ class Solution {
                 }
             }
         }
-        
+
         return res;
     }
 };
@@ -832,7 +832,7 @@ class Solution {
         int n1=a.size(), n2=b.size();
         int n=n1+n2;
         vector<int>temp;
-        
+
         int i=0, j=0;
         while(i<n1 && j<n2){
             if(a[i]<b[j]){
@@ -842,10 +842,10 @@ class Solution {
                 temp.push_back(b[j++]);
             }
         }
-        
+
         while(i<n1) temp.push_back(a[i++]);
         while(j<n2) temp.push_back(b[j++]);
-      
+
         double ans;
         if(n%2 == 1){
             ans = temp[n/2];
@@ -853,7 +853,7 @@ class Solution {
         else{
             ans = (temp[(n-2)/2]+temp[n/2])/2;
         }
-        
+
         return ans;
     }
 };
@@ -948,236 +948,148 @@ public:
 };
 /**
 //Median of stram data
-//SC O(nlogn)  TC O(n)
-#include <bits/stdc++.h>
-using namespace std;
+//BrutForce: TC O(n*nlogn)=O(n^2logn)  SC O(n)
+class Solution {
+  public:
+    vector<double> getMedian(vector<int> &arr) {
+        int n=arr.size();
+        vector<double>temp, res;
+        for(int i=0; i<n; i++){
+            temp.push_back(arr[i]);
+            sort(temp.begin(), temp.end());
 
-class Solution
-{
-    public:
-    //Function to insert heap.
-    priority_queue<int> maxHeap;
-    priority_queue<int, vector<int>, greater<int>> minHeap;
-    void insertHeap(int &x)
-    {
-        maxHeap.push(x);
-        minHeap.push(maxHeap.top());
-        maxHeap.pop();
-    }
-
-    //Function to balance heaps.
-    void balanceHeaps()
-    {
-        if (minHeap.size() > maxHeap.size()) {
-            maxHeap.push(minHeap.top());
-            minHeap.pop();
+            int m=temp.size();
+            double ans;
+            if(m%2 == 1){
+                ans=temp[m/2];
+            }
+            else{
+                ans=(temp[(m-2)/2]+temp[m/2])/2;
+            }
+            res.push_back(ans);
         }
-    }
 
-    //Function to return Median.
-    double getMedian()
-    {
-        if (maxHeap.size() > minHeap.size())
-            return (double)maxHeap.top();
-        return (double)(maxHeap.top() + minHeap.top()) / 2.0;
+        return res;
     }
 };
-
-int main()
-{
-    int n, x;
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        Solution ob;
-        cin >> n;
-        for(int i = 1;i<= n; ++i)
-        {
-            cin >> x;
-            ob.insertHeap(x);
-            cout << floor(ob.getMedian()) << endl;
-        }
-    }
-    return 0;
-}
 /**
 //Median of stram data
-//SC O(nlogn)  TC O(n)
-#include<iostream>
-#include<queue>
-using namespace std;
-
-priority_queue<int> left_max_heap;
-priority_queue<int, vector<int>, greater<int>> right_min_heap;
-    void insertHeap(int &x)
-    {
-        if(left_max_heap.empty() || x<left_max_heap.top()){
+//Optimal Aproach: TC O(nlogn)  SC O(n)
+class Solution{
+public:
+    // Max-heap for the left half
+    priority_queue<int> left_max_heap;
+    // Min-heap for the right half
+    priority_queue<int, vector<int>, greater<int>> right_min_heap;
+    // Insert new element into one of the heaps
+    void addNum(int x){
+        if (left_max_heap.empty() || x < left_max_heap.top()){
             left_max_heap.push(x);
         }
         else{
             right_min_heap.push(x);
         }
-    }
 
-    //Function to balance heaps.
-    void balanceHeaps()
-    {
-        if(((left_max_heap.size()) - (right_min_heap.size()))>1){
+        // Balance the two heaps so that their sizes differ by at most 1
+        if (left_max_heap.size() > right_min_heap.size() + 1){
             right_min_heap.push(left_max_heap.top());
             left_max_heap.pop();
         }
-        else if(left_max_heap.size()<right_min_heap.size()){
+        else if (left_max_heap.size() < right_min_heap.size()){
             left_max_heap.push(right_min_heap.top());
             right_min_heap.pop();
         }
     }
 
-    //Function to return Median.
-    double getMedian()
-    {
-        if(left_max_heap.size() == right_min_heap.size()){
-            return (double)(left_max_heap.top() + right_min_heap.top())/2;
+    // Get the current median
+    double getCurrentMedian(){
+        if (left_max_heap.size() == right_min_heap.size()){
+            return (left_max_heap.top() + right_min_heap.top()) / 2.0;
         }
         else{
             return left_max_heap.top();
         }
     }
 
-int main()
-{
-    return 0;
-}
-/**
-//Find sub-arrays with zero sum
-//Optimal aproach  SC O(n^2)  TC O(1)
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<pair<int, int> > findSubArrays(int arr[], int n)
-{
-
-    // Array to store all the start and end
-    // indices of subarrays with 0 sum
-    vector<pair<int, int> > output;
-    for (int i = 0; i < n; i++) {
-        int prefix = 0;
-        for (int j = i; j < n; j++) {
-            prefix += arr[j];
-            if (prefix == 0)
-                output.push_back({ i, j });
+    // Main function to get median after each insertion
+    vector<double> getMedian(vector<int> &arr){
+        int n=arr.size();
+        vector<double> res;
+        for (int i=0; i<n; i++){
+            addNum(arr[i]);
+            res.push_back(getCurrentMedian());
         }
-    }
-
-    return output;
-}
-
-// Function to print all subarrays with 0 sum
-void print(vector<pair<int, int> > output)
-{
-    for (auto it = output.begin(); it != output.end(); it++)
-        cout << "Subarray found from Index " << it->first
-            << " to " << it->second << endl;
-}
-
-int main()
-{
-
-    // Given array
-    int arr[] = { 6, 3, -1, -3, 4, -2, 2, 4, 6, -12, -7 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    // Function Call
-    vector<pair<int, int> > output = findSubArrays(arr, n);
-
-    // if we didn’t find any subarray with 0 sum,
-    // then subarray doesn’t exists
-    if (output.size() == 0) {
-        cout << "No subarray exists";
-    }
-    else {
-        print(output);
-    }
-    return 0;
-}
-/**
-//Find sub-arrays with zero sum
-//Optimal aproach  SC O(n)  TC O(n)
-#include<bits/stdc++.h>
-using namespace std;
-
-class Solution{
-public:
-    //Function to count subarrays with sum equal to 0.
-    long long int findSubarray(vector<long long int> &arr, int n ) {
-        //code here
-        unordered_map<long long int, int> um;
-        long long int sum=0;
-        long long int ans=0;
-        um[0]=1;
-
-        for(int i=0; i<n; i++){
-            sum+=arr[i];
-            if(um.find(sum)!=um.end()){
-                ans+=um[sum];
-            }
-            um[sum]++;
-        }
-        return ans;
+        return res;
     }
 };
+/**
+//Find sub-arrays with zero sum
+//BrutForce aproach  TC O(n^2)  SC O(1)
+class Solution {
+  public:
+    int findSubarray(vector<int> &arr) {
+        int n=arr.size(), cnt=0;
+        for(int i=0; i<n; i++){
+            int sum=0;
+            for(int j=i; j<n; j++){
+                sum += arr[j];
 
-//{ Driver Code Starts.
-int main()
- {
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        int n;
-        cin>>n; //input size of array
+                if(sum==0) cnt++;
+            }
+        }
 
-        vector<long long int> arr(n,0);
-
-        for(int i=0;i<n;i++)
-            cin>>arr[i]; //input array elements
-        Solution ob;
-        cout << ob.findSubarray(arr,n) << "\n";
+        return cnt;
     }
-    return 0;
-}
+};
+/**
+//Find sub-arrays with zero sum
+//Optimal aproach  TC O(n)   SC O(n)
+class Solution {
+  public:
+    int findSubarray(vector<int> &arr) {
+        unordered_map<int, int> mp;
+        int sum = 0, count = 0;
+        mp[0] = 1; // To count subarrays that sum to 0 from index 0
+
+        for (int i = 0; i < arr.size(); i++) {
+            sum += arr[i];
+            if (mp.find(sum) != mp.end()) {
+                count += mp[sum];
+            }
+            mp[sum]++;
+        }
+
+        return count;
+    }
+};
 /*
 //Agrssive Cows
-//TC O(nlogn)  SC O(1)
-#include <bits/stdc++.h>
-using namespace std;
-
-// User function Template for C++
+//BrutForce Aproach(without BinarySearch): TC O(n^2)  SC O(1)
+//Agrssive Cows
+//Optimal Aproach(BinarySearch): TC O(nlogn)  SC O(1)
 class Solution {
-public:
-
-    bool canWePlace(int n, int k, vector<int> &stalls, int dist){
-        int cntcows=1, last=stalls[0];
+  public:
+    bool canWePlace(vector<int> &stalls, int dist, int k, int n){
+        int cowCount=1, lastCow=stalls[0];
         for(int i=1; i<n; i++){
-            if((stalls[i] - last)>=dist){
-                cntcows+=1;
-                last=stalls[i];
+            if(stalls[i]-lastCow >= dist){
+                cowCount++;
+                lastCow=stalls[i];
             }
-            if(cntcows>=k)
-                return true;
+            if(cowCount >= k) return true;
         }
         return false;
     }
 
-    int solve(int n, int k, vector<int> &stalls) {
+    int aggressiveCows(vector<int> &stalls, int k) {
         // Write your code here
         sort(stalls.begin(), stalls.end());
-        int low=0, high=stalls[n-1]-stalls[0], mid;
-        //int ans=-1;
+        int n=stalls.size(), ans=-1;
+        int low=1, high=stalls[n-1]-stalls[0];
         while(low<=high){
-            mid=(low+high)/2;
-            if(canWePlace(n, k, stalls, mid)){
-                //ans=mid;
+            int mid=(low+high)/2;
+            if(canWePlace(stalls, mid, k, n)==true){
+                //ans=mid
                 low=mid+1;
             }
             else{
@@ -1188,35 +1100,4 @@ public:
         return high;
     }
 };
-
-//{ Driver Code Starts.
-
-int main() {
-    int t = 1;
-    cin >> t;
-
-    // freopen ("output_gfg.txt", "w", stdout);
-
-    while (t--) {
-        // Input
-
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> stalls(n);
-        for (int i = 0; i < n; i++) {
-            cin >> stalls[i];
-        }
-        // char ch;
-        // cin >> ch;
-
-        Solution obj;
-        cout << obj.solve(n, k, stalls) << endl;
-
-        // cout << "~\n";
-    }
-    // fclose(stdout);
-
-    return 0;
-}
 **/
