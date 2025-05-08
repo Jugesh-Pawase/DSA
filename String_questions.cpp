@@ -135,18 +135,6 @@ bool isPalindrome(string s)
 
     return true;
 }
-
-int main()
-{
-    string s1 = "A man, a plan, a canal: Panama";
-    string s2 = "race a car";
-    string s3 = " ";
-    cout << isPalindrome(s1);
-    cout << isPalindrome(s2);
-    cout << isPalindrome(s3);
-
-    return 0;
-}
 /*
 // Valid Anagram
 //Time Complexity: O(n + m)    Auxiliary Space: O(1)
@@ -182,7 +170,6 @@ class Solution {
     }
 
     bool isBalanced(string& s) {
-        // code here
         int n=s.size();
         stack<char>st;
 
@@ -217,16 +204,15 @@ class Solution {
 class Solution {
   public:
     string removeConsecutiveCharacter(string& s) {
-        // code here.
-        int n = s.size();
+        int n=s.size();
         string res;
+        res += s[0];
 
-        for(int i=0; i<n-1; i++){
-            if(s[i] != s[i+1]){
-                res.push_back(s[i]);
-            }
+        for(int i=1; i<n; i++){
+            if(s[i]==s[i-1]) continue;
+
+            res += s[i];
         }
-        res.push_back(s[n-1]);
 
         return res;
     }
@@ -244,15 +230,11 @@ class Solution {
         for(int i=1; i<n; i++){
             string str=arr[i];
             int j=0;
-            while(j<res.size() && j<str.size()){
-                if(res[j]==str[j]){
-                    j++;
-                }
-                else{
-                    res=res.substr(0, j);
-                    break;
-                }
+            while(res[j]==str[j] && j<res.size() && j<str.size()){
+                j++;
             }
+            res=res.substr(0, j);
+
             if(res.size()==0){
                 return "";
             }
@@ -284,17 +266,6 @@ string sentnum(string s){
     }
     return res;
 }
-
-int main()
-{
-    string s1 = "GEEKSFORGEEKS";
-    string s2 = "HELLO WORLD";
-
-    cout << sentnum(s1) << endl;
-    cout << sentnum(s2) << endl;
-
-    return 0;
-}
 /**
 //Duplicacte characters in string
 #include<iostream>
@@ -319,26 +290,24 @@ int main()
 }
 /**
 //Longest substring without repeating character
-//Optimal Aproach 1st: Sliding Window     (dont care about 2nd solution, use this always)
+//Optimal Aproach-1: Sliding Window     (dont care about 2nd solution, use this always)
 //TC = = O(n + n) = O(n)    SC = O(1)   because vector<int> freq(26, 0) is of fixed size
 class Solution {
   public:
     int longestUniqueSubstring(string &s) {
-        // code
         vector<int>freq(26, 0);
         int n=s.size();
-        int j=0, cnt=0,max_cnt=0;
+        int j=0, max_cnt=0;
 
         for(int i=0; i<n; i++){
             freq[s[i]-'a']++;
-            cnt++;
             if(freq[s[i]-'a']<=1){
-                max_cnt=max(cnt, max_cnt);
+                max_cnt=max(i-j+1, max_cnt);
             }
             else{
                 while(freq[s[i]-'a']>1){
                     freq[s[j]-'a']--;
-                    j++, cnt--;
+                    j++;
                 }
             }
         }
@@ -347,11 +316,10 @@ class Solution {
     }
 };
 //Longest substring without repeating character
-//Optimal Aproach 2nd: TC O(1)  SC O(1)      sloding window with advance logic
+//Optimal Aproach-2: TC O(n)  SC O(1)      sliding window with advance logic
 class Solution {
   public:
     int longestUniqueSubstring(string &s) {
-        // code
         vector<int>temp(26, -1);
         int n=s.size();
         int start=-1,max_len=0;
@@ -481,103 +449,61 @@ class Solution {
 };
 /*
 //Group Anagrams
-//Time Complexity: O(m*nlogn)     Space Complexity: O(m*n)
-#include<iostream>
-#include<vector>
-#include<unordered_map>
-#include<algorithm>
-using namespace std;
-
+//BrutForce: Time Complexity: O(m*nlogn)     Space Complexity: O(m*n)
 class Solution {
-  public:
-    vector<vector<string>> anagrams(vector<string>& arr) {
-        // code here
-        unordered_map<string, vector<string>>mp;
+    public:
+      vector<vector<string>> anagrams(vector<string>& arr) {
+          int n=arr.size();
+          unordered_map<string, vector<string>>mp;
+          vector<vector<string>>res;
 
-        for(auto s:arr){
-            string original=s;
-            sort(s.begin(), s.end());
-            mp[s].push_back(original);
-        }
+          for(int i=0; i<n; i++){
+              string original=arr[i];
+              sort(arr[i].begin(), arr[i].end());
+              mp[arr[i]].push_back(original);
+          }
 
-        vector<vector<string>> anagrams;
-        for(auto vec: mp){
-            anagrams.push_back(vec.second);
-        }
+          for(auto anagrams:mp){
+              res.push_back(anagrams.second);
+          }
 
-        return anagrams;
-    }
-};
-
-//Dont see in main function
-int main()
-{
-    vector<string> st = {"eat", "tea", "tan", "ate", "nat", "bat"};
-    vector<vector<string>> result = groupAnagrams(st);
-
-    // Outputting the result
-    for (const auto& vec : result) {
-        for (const auto& str : vec) {
-            cout << str << " ";
-        }
-        cout << endl;
-    }
-
-    return 0;
-}
+          return res;
+      }
+  };
 /**
 //Group Anagrams
-//Time Complexity: O(m*n)     Space Complexity: O(m*n)
-#include<iostream>
-#include<vector>
-#include<unordered_map>
-#include<algorithm>
-using namespace std;
-
+//OptimalAproach: Time Complexity: O(m*n)     Space Complexity: O(m*n)
 class Solution {
   public:
     vector<vector<string>> anagrams(vector<string>& arr) {
         // code here
+        int n=arr.size();
         unordered_map<string, vector<string>>mp;
+        vector<vector<string>>res;
 
-        for(auto s:arr){
-            vector<int> freq(26, 0);
-            string hashstring="";
+        for(int i=0; i<n; i++){
+            string s=arr[i];
+            vector<int> temp(256, 0);
             for(int i=0; i<s.size(); i++){
-                freq[s[i]-'a']++;
+                temp[s[i]]++;
             }
-            for(int i=0; i<26; i++){
-                hashstring.push_back(freq[i]);
-                hashstring.push_back('#');
+
+            string hash;
+            for(int i=0; i<256; i++){
+                hash.push_back(temp[i]);
+                hash.push_back('#');
             }
-            mp[hashstring].push_back(s);
+
+            mp[hash].push_back(s);
         }
 
-        vector<vector<string>> anagrams;
-        for(auto vec: mp){
-            anagrams.push_back(vec.second);
+        for(auto anagrams:mp){
+            res.push_back(anagrams.second);
         }
 
-        return anagrams;
+        return res;
     }
 };
-
-//Dont see in main function
-int main()
-{
-    vector<string> st = {"eat", "tea", "tan", "ate", "nat", "bat"};
-    vector<vector<string>> result = groupAnagrams(st);
-
-    // Outputting the result
-    for (const auto& vec : result) {
-        for (const auto& str : vec) {
-            cout << str << " ";
-        }
-        cout << endl;
-    }
-
-    return 0;
-}
 /*
 //Longest palindromic substring
 //BrutForce Aproach:TC O(n^3)    SC O(1)
@@ -812,37 +738,31 @@ class Solution{
 //Wildcard Matching
 //Memoizaton method: TC O(n*m)      SC O(n*m)
 // wild = ge*ks    pattern = geeks
-class Solution{
-    public:
-    bool func(int i, int j, string &wild, string &pattern, vector<vector<int>> &dp){
+class Solution {
+  public:
+    bool func(int i, int j, string wild, string pattern, vector<vector<int>> &dp){
         if(i<0 && j<0) return true;
         if(i<0 && j>=0) return false;
-
         if(j<0 && i>=0){
-            for (int ii = 0; ii<=i; ii++){
-                if(wild[ii] != '*'){
-                    return false;
-                }
+            for(int ii=0; ii<=i; ii++){
+                if(wild[ii] != '*') return false;
             }
             return true;
         }
-
-        if(dp[i][j] != -1){
-            return dp[i][j];
-        }
+        if(dp[i][j] != -1) return dp[i][j];
 
         if(wild[i]==pattern[j] || wild[i]=='?'){
             return dp[i][j] = func(i-1, j-1, wild, pattern, dp);
         }
-        if(wild[i]=='*'){
+        else if(wild[i]=='*'){
             return dp[i][j] = func(i-1, j, wild, pattern, dp) | func(i, j-1, wild, pattern, dp);
         }
-        return false;
+        else{
+            return dp[i][j] = false;
+        }
     }
 
-    bool match(string wild, string pattern)
-    {
-        // code here
+    bool match(string wild, string pattern) {
         int n=wild.size(), m=pattern.size();
         vector<vector<int>> dp(n, vector<int>(m, -1));
         return func(n-1, m-1, wild, pattern, dp);
@@ -854,14 +774,11 @@ class Solution{
 class Solution {
   public:
     int longestPrefixSuffix(string &s) {
-        // Your code goes here
-        int n=s.size();
-        int max_len=0;
+        int n=s.size(), max_len=0;
         for(int i=1; i<n; i++){
             int j=0, k=i;
-            while(k<n && s[j]==s[k]){
-                j++, k++;
-            }
+            while(k<n && s[j]==s[k]) j++, k++;
+
             if(k==n){
                 max_len=max(max_len, n-i);
             }
@@ -877,11 +794,10 @@ class Solution {
 class Solution {
   public:
     int longestPrefixSuffix(string &s) {
-        // Your code goes here
         int n=s.size();
         vector<int> res(n, 0);
         int i=0, j=1;
-        
+
         while(j<n){
             if(s[i]==s[j]){
                 res[j]=i+1;
@@ -889,6 +805,7 @@ class Solution {
             }
             else{
                 if(i==0){
+                   // res[j] = 0;
                     j++;
                 }
                 else{
@@ -896,7 +813,7 @@ class Solution {
                 }
             }
         }
-        
+
         return res[n-1];
     }
 };
@@ -944,23 +861,20 @@ class Solution
                     }
                 }
             }
-            
+
             return res;
         }
-     
+
 };
 /**
 //Transform one string to another string
 //TC O(n)     SC O(1)
-class Solution
-{
+class Solution{
     public:
-    int transform (string A, string B)
-    {
-        //code here.
+    int transform (string A, string B){
         int n=A.size(), m=B.size();
         if(n!=m) return -1;
-        
+
         vector<int>freq1(256, 0), freq2(256, 0);       dont be smart take size 256
         for(int i=0; i<n; i++){
             freq1[A[i]]++;
@@ -969,7 +883,7 @@ class Solution
         for(int i=0; i<256; i++){
             if(freq1[i] != freq2[i]) return -1;
         }
-        
+
         int i=n-1, j=n-1, cnt=0;
         while(i>=0 && j>=0){
             if(A[i]==B[j]){
@@ -980,7 +894,7 @@ class Solution
                 i--;
             }
         }
-        
+
         return cnt;
     }
 };
@@ -1024,7 +938,7 @@ class Solution {
 int rec(int i, int rem, vector<int> &arr, int k, vector<vector<int>> &dp){
     if(i==arr.size()) return 0;
     if(dp[i][rem] != -1) return dp[i][rem];
-    
+
     int ans;
     if(arr[i]>rem){
         ans=(rem+1)*(rem+1) + rec(i+1, k-arr[i]-1, arr, k, dp);
@@ -1034,15 +948,13 @@ int rec(int i, int rem, vector<int> &arr, int k, vector<vector<int>> &dp){
         int choice2=(rem+1)*(rem+1) + rec(i+1, k-arr[i]-1, arr, k, dp);
         ans=min(choice1, choice2);
     }
-    dp[i][rem]=ans;
-    return dp[i][rem];
+    return dp[i][rem]=ans;;
 }
 
 int solveWordWrap(vector<int> arr, int k) {
-    // Code here
     int n=arr.size();
     vector<vector<int>> dp(n, vector<int>(k+1, -1));
-    
+
     return rec(0, k, arr, k, dp);
 }
 };

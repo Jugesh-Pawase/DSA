@@ -129,6 +129,7 @@ int main()
 /**
 //Print all subarrays of array
 //-1 4 7 2
+//TC: O(n^3)
 #include<iostream>
 using namespace std;
 
@@ -154,7 +155,6 @@ int main()
     }
 /**
 //Find the circular subarray of maximum sum
-
 #include<iostream>
 #include<climits>
 using namespace std;
@@ -224,9 +224,7 @@ int main(){
 }
 /**
 //To find there exist sum of pair equal to given k or not
-//Anothr method to reduce time complexity
-//When array is sorted: O(n)
-
+//Optimal Aproach: TC O(n)
 #include<iostream>
 using namespace std;
 
@@ -388,10 +386,7 @@ int main(){
     }
 
     const int N = 1e6 + 2;
-    bool check[N];
-    for (int i = 0; i < N; i++){
-        check[i] = false;
-    }
+    bool check[N] = { false };
 
     for (int i = 0; i < n; i++){
         if(a[i]>=0){
@@ -569,6 +564,7 @@ int main()
 
     return 0;
 }
+--------------------------------------------------------------------------------------------
 /**
 //Minimum and Maximum element in array
 //TC O(n)  SC O(1)
@@ -703,7 +699,7 @@ int main()
     }
 /**
 //Find the subarray of maximum sum
-//Kadane method:O(n)
+//Optimal Aproach: Kadane method:O(n)
 #include<iostream>
 #include<climits>
 using namespace std;
@@ -779,8 +775,7 @@ class Solution {
 //Chocolate distribution
 //7 3
 //7 3 2 4 9 12 56
-//Time Complexity: O(n log n)
-//Auxiliary Space: O(1)
+//Optimal Aproach(Sliding Window):Time Complexity: O(n log n)   Auxiliary Space: O(1)
 
 class Solution {
   public:
@@ -803,51 +798,38 @@ class Solution {
 
 /**
 //SearchInrotatedArray
-//7 0
-//4 5 6 7 0 1 2
-//Brut Force: TC O(n), SC O(1)
-//Linear Search
-
+//Brut Force(LienarSearch): TC O(n), SC O(1)
+/**
 //SearchInrotatedArray
-//7 0
-//4 5 6 7 0 1 2
-//Optimal Aproach: TC O(logn),  SC O(1)
-//Binary Search
-
-#include<iostream>
-using namespace std;
-
+//Optimal Aproach(Binary Search): TC O(logn),  SC O(1)
 class Solution {
   public:
     int search(vector<int>& arr, int key) {
-        // Code Here
         int n=arr.size();
-        int i=0, j=n-1;
+        int low=0, high=n-1, mid;
+        while(low<=high){
+            mid=(low+high)/2;
 
-        while(i<=j){
-            int m=(i+j)/2;
+            if(arr[mid] == key) return mid;
 
-            if(arr[m]==key){
-                return m;
-            }
-
-            if(arr[i]<=arr[m]){
-                if(arr[i]<=key && key<=arr[m]){
-                    j=m-1;
+            else if(arr[low]<=arr[mid]){
+                if(arr[low]<=key && key<=arr[mid]){
+                    high=mid-1;
                 }
                 else{
-                    i=m+1;
+                    low=mid+1;
                 }
             }
-            else {
-                if(arr[m]<=key && key<=arr[j]){
-                    i=m+1;
+            else{
+                if(arr[mid]<=key && key<=arr[high]){
+                    low=mid+1;
                 }
-                else {
-                    j=m-1;
+                else{
+                    high=mid-1;
                 }
             }
         }
+
         return -1;
     }
 };
@@ -904,18 +886,6 @@ int profit(int a[], int n){
     }
     return maxdiff;
 }
-
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << profit(a, n);
-    return 0;
-}
 /**
 //Best day to buy and sell stock
 //7 1 5 3 6 4
@@ -933,20 +903,8 @@ int profit(int price[], int n){
     }
     return maxprofit;
 }
-
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << profit(a, n);
-    return 0;
-}
 /**
-//Best time to buy and sell stock||
+//Best time to buy and sell stock ||
 //TC O(n)  SC O(1)
  Solution {
   public:
@@ -1047,7 +1005,7 @@ class Solution {
 /**
 //To find kth smallest element
 //max heap
-//TC O(nlogk) SC O(1)
+//TC O(nlogk) SC O(k)
 class Solution {
   public:
     int kthSmallest(vector<int> &arr, int k) {
@@ -1131,12 +1089,6 @@ int maxWater(vector<int>& arr) {
 
     return res;
 }
-
-int main() {
-    vector<int> arr = { 2, 1, 5, 3, 1, 0, 4 };
-    cout << maxWater(arr);
-    return 0;
-}
 /**
 //To find trapped rain water
 //4 2 0 3 2 5
@@ -1175,13 +1127,6 @@ int maxWater(vector<int>& arr) {
 
     return res;
 }
-
-int main() {
-    vector<int> arr = { 2, 1, 5, 3, 1, 0, 4 };
-    cout << maxWater(arr);
-    return 0;
-}
-
 /**
 //To find trapped rain water
 //4 2 0 3 2 5
@@ -1214,31 +1159,13 @@ class Solution {
         return ans;
     }
 };
-
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << water(a, n);
-
-    return 0;
-}
 /**
 //1 3 4 2
 //Product of an array except self
-//Brut force aproach
-//TC O(n^2)   SC O(n)
-#include<iostream>
-using namespace std;
-
+//Brut force aproach: TC O(n^2)   SC O(n)
 class Solution {
     public:
       vector<int> productExceptSelf(vector<int>& arr) {
-          // code here
           int n=arr.size();
           vector<int>res(n, 1);
 
@@ -1257,28 +1184,25 @@ class Solution {
 /**
 //Product of an array except self
 //1 4 3 2
-//Better Aproach
-//TC O(n)   SC O(n)
-#include<iostream>
-using namespace std;
-
+//Better Aproach: TC O(n)   SC O(n)
 class Solution {
-public:
-    vector<int> productExceptSelf(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> prefix(n, 1);
-        vector<int> sufix(n, 1);
-        vector<int> res(n);
+  public:
+    vector<int> productExceptSelf(vector<int>& arr) {
+        int n=arr.size();
+        vector<int>prefix(n), suffix(n), res(n);
+        prefix[0]=1, suffix[n-1]=1;
 
-        for (int i = 1; i < n; i++) {
-            prefix[i] = prefix[i - 1] * nums[i - 1];
+        for(int i=1; i<n; i++){
+            prefix[i]=arr[i-1]*prefix[i-1];
         }
-        for (int i = n - 2; i >= 0; i--) {
-            sufix[i] = sufix[i + 1] * nums[i + 1];
+        for(int i=n-2; i>=0; i--){
+            suffix[i]=arr[i+1]*suffix[i+1];
         }
-        for (int i = 0; i < n; i++) {
-            res[i] = prefix[i] * sufix[i];
+
+        for(int i=0; i<n; i++){
+            res[i]=prefix[i]*suffix[i];
         }
+
         return res;
     }
 };
@@ -1311,16 +1235,8 @@ class Solution {
 };
 /**
 //Maximum product subarray
-//Brut force aproach
-//TC O(n^2)   SC O(1)
+//Brut force aproach: TC O(n^2)   SC O(1)
 //2 3 -2 4,  -2 0 -1,  1 -3 2 -5 -4 2
-// C++ program to find Maximum Product Subarray
-// using nested loops
-
-#include <bits/stdc++.h>
-using namespace std;
-
-// Function to return the product of max product subarray
 int maxProduct(vector<int> &arr) {
     int n = arr.size();
 
@@ -1341,37 +1257,28 @@ int maxProduct(vector<int> &arr) {
     }
     return result;
 }
-
-int main() {
-    vector<int> arr = { -2, 6, -3, -10, 0, 2 };
-    cout << maxProduct(arr);
-    return 0;
-}
-
 /**
-//Optimal aproach
-//TC O(n)  SC O(1)
+//Optimal aproach: TC O(n)  SC O(1)
 //2 3 -2 4,  -2 0 -1,  1 -3 2 -5 -4 2
 class Solution {
   public:
     // Function to find maximum product subarray
     int maxProduct(vector<int> &arr) {
-        // Your Code Here
         int n=arr.size();
-        int left=1, right=1;
-        int max_prdct=INT_MIN;
+        long long left=1, right=1;
+        long long ans=INT_MIN;
 
         for(int i=0; i<n; i++){
-            if(left==0) left=1;
-            if(right==0) right=1;
-
             left *= arr[i];
             right *= arr[n-1-i];
 
-            max_prdct=max(max_prdct, max(left, right));
+            ans= max(ans, max(left, right));
+
+            if(left==0) left=1;
+            if(right==0) right=1;
         }
 
-        return max_prdct;
+        return ans;
     }
 };
 /**
@@ -1392,27 +1299,15 @@ int findMin(vector<int>& arr) {
 
     return res;
 }
-
-int main() {
-    vector<int> arr = {5, 6, 1, 2, 3, 4};
-    int n = arr.size();
-
-    cout << findMin(arr) << endl;
-    return 0;
-}
-
 /**
 //Minimum in roted sorted array
-//Optimal aproach
-//TC O(logn)   SC O(1)
+//Optimal aproach: TC O(logn)   SC O(1)
 //3 4 5 1 2, 4 5 6 7 0 1 2
 class Solution
 {
     public:
-    //Function to find the minimum element in sorted and rotated array.
     int minNumber(int arr[], int low, int high)
     {
-        // Your code here
         int mn=INT_MAX;
 
         while(low<=high){
@@ -1454,36 +1349,16 @@ bool pairsum(int a[], int n, int key){
     }
     return false;
 }
-
-int main()
-{
-    int n, k;
-    cin >> n >> k;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << pairsum(a, n, k) << endl;
-
-    return 0;
-}
 /*
-//11 15 6 8 9 10 x=16,  11 15 26 38 9 10 x=35=45,
 //If there is pair with sum equal to given k in rotated sorted array
 //better aproach:TC O(nlogn)  SC O(1)
 //Sort the array and aply Two-Pointer aproach
 /*
-//11 15 6 8 9 10 x=16,  11 15 26 38 9 10 x=35=45,
 //If there is pair with sum equal to given k in rotated sorted array
-//Optimal aproach:TC O(n)  SC O(1)
-//Two-Pointer Aproach
-#include<iostream>
-using namespace std;
-
+//Optimal aproach(Two-Pointer):TC O(n)  SC O(1)
 class Solution {
   public:
     bool pairInSortedRotated(vector<int>& arr, int target) {
-        // code here
         int n=arr.size();
         int pivot=-1, low, high;
 
@@ -1572,14 +1447,9 @@ public:
                 int sum = nums[i] + nums[low] + nums[high];
                 if (sum == 0) {
                     result.push_back({nums[i], nums[low], nums[high]});
-                    while (low < high && nums[low] == nums[low + 1]) {
-                        low++;
-                    }
-                    while (low < high && nums[high] == nums[high - 1]) {
-                        high--;
-                    }
-                    low++;
-                    high--;
+                    low++, high--;
+                    while (low < high && nums[low] == nums[low - 1]) low++;
+                    while (low < high && nums[high] == nums[high + 1]) high--;
                 } else if (sum < 0) {
                     low++;
                 } else {
@@ -1615,11 +1485,6 @@ int maxWater(vector<int> &arr) {
         }
     }
     return res;
-}
-
-int main() {
-    vector<int> arr = {2, 1, 8, 6, 4, 6, 5, 5};
-    cout << maxWater(arr);
 }
 /**
 //Optimal aproach:Two-Pointer
@@ -1731,20 +1596,6 @@ int operations(int a[], int n){
     }
     return ans;
 }
-
-int main()
-{
-    int n;
-    cin >> n;
-    int a[n];
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-    cout << operations(a, n);
-
-    return 0;
-}
-
 /*
 //Arrange the numbers to form biggest number
 //Time Complexity: O(n log n)
@@ -1786,38 +1637,37 @@ class Solution {
         // Complete the function
         int n=arr.size();
         int max_len=0;
-        
+
         for(int i=0; i<n; i++){
             int sum=0;
             for(int j=i; j<n; j++){
                 sum = (sum + arr[j]) % k;
-                
+
                 if(sum==0){
                     max_len=max(j-i+1, max_len);
                 }
             }
         }
-        
+
         return max_len;
     }
 };
 /*
 // function to find the longest subarray with sum divisible by k
-//Optimal Aproach:PrefixSum Time Complexity: O(n)   Auxiliary Space: O(min(n, k))
+//Optimal Aproach:(PrefixSum) Time Complexity: O(n)   Auxiliary Space: O(min(n, k))
 //Note:every onen has some extra value and trying to subtract and become divisible by k
 //positive try to become 0 and negative try to become -k*n
 
 class Solution {
   public:
     int longestSubarrayDivK(vector<int>& arr, int k) {
-        // Complete the function
         int n=arr.size();
         unordered_map<int, int>prefix;
         int max_len=0, sum=0;
-        
+
         for(int i=0; i<n; i++){
             sum = (((sum + arr[i]) % k)+k)%k;
-            
+
             if(sum==0){
                 max_len=i+1;
             }
@@ -1828,7 +1678,7 @@ class Solution {
                 prefix[sum]=i;
             }
         }
-        
+
         return max_len;
     }
 };
