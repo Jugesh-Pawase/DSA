@@ -49,6 +49,7 @@ vector<int> commonElements(vector<int> &arr1, vector<int> &arr2, vector<int> &ar
         }
     }
 
+    if(res.empty()) res.push_back(-1);
     return res;
 }
 /**
@@ -56,46 +57,28 @@ vector<int> commonElements(vector<int> &arr1, vector<int> &arr2, vector<int> &ar
 //Optimal Aproach:TC O(l+m+n)   SC O(1)
 class Solution {
   public:
-    vector<int> commonElements(vector<int> &arr1, vector<int> &arr2,
-                               vector<int> &arr3) {
+    vector<int> commonElements(vector<int> &arr1, vector<int> &arr2, vector<int> &arr3) {
         // Code Here
+        int n1=arr1.size(), n2=arr2.size(), n3=arr3.size();
+        vector<int>res;
         int i=0, j=0, k=0;
-        int l=arr1.size(), m=arr2.size(), n=arr3.size();
-        vector<int> res;
-
-        while(i<l && j<m && k<n){
+        
+        while(i<n1 && j<n2 && k<n3){
             if(arr1[i]==arr2[j] && arr2[j]==arr3[k]){
                 res.push_back(arr1[i]);
-
-                while(arr1[i]==arr1[i+1] && i<l){
-                    i++;
-                }
-                while(arr2[j]==arr2[2+1] && j<m){
-                    j++;
-                }
-                while(arr3[k]==arr3[k+1] && k<n){
-                    k++;
-                }
-                i++,j++,k++;
+                i++, j++, k++;
+                
+                while(arr1[i] == arr1[i-1] && i<n1) i++;
+                while(arr2[j] == arr2[j-1] && j<n2) j++;
+                while(arr3[k] == arr3[k-1] && k<n3) k++;
             }
-            else if(arr1[i]<arr2[j]){
-                i++;
-            }
-            else if(arr2[j]<arr3[k]){
-                j++;
-            }
-            else{
-                k++;
-            }
+            else if(arr1[i] < arr2[j]) i++;
+            else if(arr2[j] < arr3[k]) j++;
+            else k++;
         }
-
-        if(res.empty()){
-            res.push_back(-1);
-            return res;
-        }
-        else{
-            return res;
-        }
+        
+        if(res.empty()) res.push_back(-1);
+        return res;
     }
 };
 /**
@@ -115,13 +98,9 @@ class Solution {
 /**
 //Search an element in an array where difference between adjacent elements is atmost k
 //Optimal Approach: TC O(n) SC O(1)
-#include<bits/stdc++.h>
-using namespace std;
-
 class Solution {
   public:
     int findStepKeyIndex(vector<int>& arr, int k, int x) {
-        // code here
         int n=arr.size(), i=0;
         while(i<n){
             if(arr[i]==x) return i;
@@ -136,7 +115,6 @@ class Solution {
 class Solution {
   public:
     int findCeil(vector<int>& arr, int x) {
-        // code here
         int n=arr.size();
         if(arr[n-1]<x) return -1;
         for(int i=0; i<n; i++){
@@ -173,11 +151,10 @@ class Solution {
 };
 /**
 //Pair with given difference
-//Brut force: TC O(n*m) SC O(1)
+//Brut force: TC O(n^2) SC O(1)
 class Solution {
   public:
     bool findPair(vector<int> &arr, int x) {
-        // code here
         int n=arr.size();
         for(int i=0; i<n-1; i++) {
             for(int j=i+1; j<n; j++) {
@@ -192,7 +169,7 @@ class Solution {
 };
 /**
 // Pair with given difference
-// Better aproach(binary search): TC O(n*logn) SC O(1)
+// Better aproach-1(binary search): TC O(n*logn) SC O(1)
  class Solution {
   public:
     bool findPair(vector<int> &arr, int x) {
@@ -211,7 +188,7 @@ class Solution {
 };
  /**
  // Pair with given difference
-// Better aproach(two pointer): TC O(n*logn) SC O(1)
+// Better aproach-2(two pointer): TC O(n*logn) SC O(1)
  class Solution {
   public:
    bool findPair(vector<int> &arr, int x) {
@@ -240,6 +217,7 @@ class Solution {
         for (int i = 0; i < n; i++){
             mp[arr[i]] += 1;
         }
+
         for (int i = 0; i < n; i++){
             int y = arr[i] + x;
             if(x==0){
@@ -310,31 +288,25 @@ class Solution {
     int majorityElement(vector<int>& arr) {
         // code here
         int n=arr.size();
-        int ele=arr[0], count=1;
+        int prev=arr[0], cnt=1;
+        
         for(int i=1; i<n; i++){
-            if(ele==arr[i]){
-                count++;
-            }
+            if(arr[i]==prev) cnt++;
             else{
-                count--;
-                if(count<0){
-                    ele=arr[i];
-                    count=1;
+                if(cnt == 0){
+                    prev=arr[i], cnt++;
                 }
+                else cnt--;
             }
         }
-
-        int cnt=0;
+        
+        int max_cnt=0;
         for(int i=0; i<n; i++){
-            if(arr[i]==ele) cnt++;
+            if(arr[i] == prev) max_cnt++;
         }
-
-        if(cnt > n/2){
-            return ele;
-        }
-        else{
-            return -1;
-        }
+        
+        if(max_cnt > n/2) return prev;
+        return -1;
     }
 };
 /*
@@ -361,26 +333,25 @@ int countTriplets(int arr[], int n, int sum)
 //Triplets with sum is less than k
 //Optimal Aproach (Three Pointer):   TC O(n^2)  SC O(1)
 class Solution {
+
   public:
     long long countTriplets(int n, long long sum, long long arr[]) {
         // Your code goes here
         sort(arr, arr+n);
-        int count = 0;
+        int ans=0;
         for(int i=0; i<n-2; i++){
             int left=i+1, right=n-1;
             while(left<right){
-                long long addition=arr[i]+arr[left]+arr[right];
-                if(addition<sum){
-                    count = count+(right-left);
+                long long add=arr[i]+arr[left]+arr[right];
+                if(add < sum){
+                    ans += right-left;
                     left++;
                 }
-                else{
-                    right--;
-                }
+                else right--;
             }
         }
-
-        return count;
+        
+        return ans;
     }
 };
 /**
@@ -394,11 +365,10 @@ class Solution {
 
         int ch1=arr[i] + rec(i+2, n, arr, dp);
         int ch2=rec(i+1, n, arr, dp);
-        return dp[i]  = max(ch1, ch2);
+        return dp[i] = max(ch1, ch2);
     }
 
     int findMaxSum(vector<int>& arr) {
-        // code here
         int n=arr.size();
         vector<int> dp(n, -1);
         return rec(0, n, arr, dp);
@@ -409,22 +379,19 @@ class Solution {
 //Using space optimization: TC (n)   SC O(1)
 /*
 //Merge two sorted arrays
-//Optimal Aproach-1O(nlogn + mlogm)   SC O(1)
-class Solution{
-public:
-    void mergeArrays(vector<int> &a, vector<int> &b){
-        // code here
+//BrutForce Aproach: TC O(nlogn + mlogm)   SC O(1)
+//use vector, put all elements int vector and sort
+
+//Optimal Aproach-1: TC O(nlogn + mlogm)   SC O(1)
+class Solution {
+  public:
+    void mergeArrays(vector<int>& a, vector<int>& b) {
         int n=a.size(), m=b.size();
-        int left = 0, right = n - 1;
-        while (left < m && right >= 0){
-            if (a[right] > b[left]){
-                swap(a[right], b[left]);
-                left++;
-                right--;
-            }
-            else{
-                break;
-            }
+        int i=n-1, j=0;
+        
+        while(a[i]>b[j] && i>=0 && j<n){
+            swap(a[i], b[j]);
+            i--, j++;
         }
         sort(a.begin(), a.end());
         sort(b.begin(), b.end());
@@ -450,25 +417,21 @@ public:
             if (a[left] > b[right - n])
                 swap(a[left], b[right - n]);
         }
-        else
-        {
+        else {
             // both in b
             if (b[left - n] > b[right - n])
                 swap(b[left - n], b[right - n]);
         }
     }
 
-    void mergeArrays(vector<int> &a, vector<int> &b)
-    {
+    void mergeArrays(vector<int> &a, vector<int> &b){
         int n = a.size(), m = b.size();
         int len = n + m;
         int gap = (len / 2) + (len % 2);
 
-        while (gap > 0)
-        {
+        while (gap > 0){
             int left = 0, right = gap;
-            while (right < len)
-            {
+            while (right < len){
                 swapFunc(left, right, a, b, n);
                 left++, right++;
             }
@@ -607,20 +570,6 @@ vector<int> duplicates(int arr[], int n){
 
     return res;
 }
-
-int main()
-{
-    int arr[] = {1, 2, 3, 6, 3, 6, 1};
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    vector<int> result = duplicates(arr, n);
-    for(auto it:result){
-        cout << it << " ";
-    }
-
-    return 0;
-}
-
 /*
 //Make all elements equal with minimum cost
 //BrutForce aproach: TC O(n^2)   SC O(1)
@@ -713,17 +662,6 @@ bool checkReverse(int arr[], int n)
     }
 
     return true;
-}
-
-// Driver Program
-int main()
-{
-    int arr[] = { 1, 2, 5, 4, 3};
-    int n = sizeof(arr)/sizeof(arr[0]);
-
-    checkReverse(arr, n)? (cout << "Yes" << endl):
-                          (cout << "No" << endl);
-    return 0;
 }
 /**
 //Check if reversing subsarray make array sorted or not
@@ -975,50 +913,48 @@ class Solution {
 /**
 //Median of stram data
 //Optimal Aproach: TC O(nlogn)  SC O(n)
-class Solution{
-public:
-    // Max-heap for the left half
-    priority_queue<int> left_max_heap;
-    // Min-heap for the right half
-    priority_queue<int, vector<int>, greater<int>> right_min_heap;
-    // Insert new element into one of the heaps
-    void addNum(int x){
-        if (left_max_heap.empty() || x < left_max_heap.top()){
-            left_max_heap.push(x);
+class Solution {
+  public:
+    priority_queue<int> left_maxheap;
+    priority_queue<int, vector<int>, greater<int>> right_minheap;
+    
+    double median(int num){
+        // Insert new element into one of the heaps
+        if(left_maxheap.empty() || left_maxheap.top()>num){
+            left_maxheap.push(num);
         }
         else{
-            right_min_heap.push(x);
+            right_minheap.push(num);
         }
-
+        
         // Balance the two heaps so that their sizes differ by at most 1
-        if (left_max_heap.size() > right_min_heap.size() + 1){
-            right_min_heap.push(left_max_heap.top());
-            left_max_heap.pop();
+        if(left_maxheap.size() > right_minheap.size()+1){
+            right_minheap.push(left_maxheap.top());
+            left_maxheap.pop();
         }
-        else if (left_max_heap.size() < right_min_heap.size()){
-            left_max_heap.push(right_min_heap.top());
-            right_min_heap.pop();
+        else if(left_maxheap.size() < right_minheap.size()){
+            left_maxheap.push(right_minheap.top());
+            right_minheap.pop();
         }
-    }
-
-    // Get the current median
-    double getCurrentMedian(){
-        if (left_max_heap.size() == right_min_heap.size()){
-            return (left_max_heap.top() + right_min_heap.top()) / 2.0;
+        
+        // Get the current median
+        if(left_maxheap.size() > right_minheap.size()){
+            return left_maxheap.top();
         }
         else{
-            return left_max_heap.top();
+            return (left_maxheap.top() + right_minheap.top())/2.0;
         }
     }
-
-    // Main function to get median after each insertion
-    vector<double> getMedian(vector<int> &arr){
+  
+    vector<double> getMedian(vector<int> &arr) {
+        // code here
         int n=arr.size();
         vector<double> res;
-        for (int i=0; i<n; i++){
-            addNum(arr[i]);
-            res.push_back(getCurrentMedian());
+        
+        for(int i=0; i<n; i++){
+            res.push_back(median(arr[i]));
         }
+        
         return res;
     }
 };
@@ -1065,7 +1001,6 @@ class Solution {
 /*
 //Agrssive Cows
 //BrutForce Aproach(without BinarySearch): TC O(n^2)  SC O(1)
-//Agrssive Cows
 //Optimal Aproach(BinarySearch): TC O(nlogn)  SC O(1)
 class Solution {
   public:
@@ -1082,7 +1017,6 @@ class Solution {
     }
 
     int aggressiveCows(vector<int> &stalls, int k) {
-        // Write your code here
         sort(stalls.begin(), stalls.end());
         int n=stalls.size(), ans=-1;
         int low=1, high=stalls[n-1]-stalls[0];
