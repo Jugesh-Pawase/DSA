@@ -1000,8 +1000,34 @@ class Solution {
 };
 /*
 //Agrssive Cows
-//BrutForce Aproach(without BinarySearch): TC O(n^2)  SC O(1)
-//Optimal Aproach(BinarySearch): TC O(nlogn)  SC O(1)
+//BrutForce Aproach(without BinarySearch): TC O(n*(max-min))=O(n^2)  SC O(1)
+class Solution {
+  public:
+    bool canWePlace(vector<int> &stalls, int dist, int k, int n){
+        int cowCount=1, lastCow=stalls[0];
+        for(int i=1; i<n; i++){
+            if(stalls[i]-lastCow >= dist){
+                cowCount++;
+                lastCow=stalls[i];
+            }
+            if(cowCount >= k) return true;
+        }
+        return false;
+    }
+
+    int aggressiveCows(vector<int> &stalls, int k) {
+        sort(stalls.begin(), stalls.end());
+        int n=stalls.size(), ans=-1;
+        int low=1, high=stalls[n-1]-stalls[0];
+
+        for(int dist=high; dist>=low; dist--){
+            if(maxmin(dist, k, n, stalls)==true){
+                return dist;
+            }
+        }
+    }
+};
+//Optimal Aproach(BinarySearch): TC O(nlog(max-min))=O(nlogn)  SC O(1)
 class Solution {
   public:
     bool canWePlace(vector<int> &stalls, int dist, int k, int n){
@@ -1032,6 +1058,116 @@ class Solution {
         }
         //return ans;
         return high;
+    }
+};
+/**
+//Book/Pages Allocation
+//BrutForce: TC O(n*(sum-max))=o(n^2)   SC O(1)
+class Solution {
+  public:
+    int countStudents(int pages, vector<int> &arr, int n){
+        int student=1;
+        long long pagesStudent=0;
+        
+        for(int i=0; i<n; i++){
+            if(pagesStudent+arr[i] <= pages){
+                pagesStudent += arr[i];
+            }
+            else{
+                student++;
+                pagesStudent=arr[i];
+            }
+        }
+        
+        return student;
+    }
+  
+    int findPages(vector<int> &arr, int k) {
+        // code here
+        int n=arr.size();
+        if(k > n) return -1;
+        
+        int low= *max_element(arr.begin(), arr.end());
+        int high= accumulate(arr.begin(), arr.end(), 0);
+        
+        for(int pages=low; pages<=high; pages++){
+            if(countStudents(pages, arr, n)==k){
+                return pages;  
+            } 
+        }
+    }
+};
+
+//Optimal Aproach: TC O(n*log(sum-max))=o(nlogn)   SC O(1)
+class Solution {
+  public:
+    int countStudents(int pages, vector<int> &arr, int n){
+        int student=1;
+        long long pagesStudent=0;
+        
+        for(int i=0; i<n; i++){
+            if(pagesStudent+arr[i] <= pages){
+                pagesStudent += arr[i];
+            }
+            else{
+                student++;
+                pagesStudent=arr[i];
+            }
+        }
+        
+        return student;
+    }
+  
+    int findPages(vector<int> &arr, int k) {
+        // code here
+        int n=arr.size();
+        if(k > n) return -1;
+        
+        int low= *max_element(arr.begin(), arr.end());
+        int high= accumulate(arr.begin(), arr.end(), 0);
+        
+        while(low<=high){
+            int mid=(low+high)/2;
+            
+            if(countStudents(mid, arr, n) > k){
+                low=mid+1;  
+            }
+            else{
+                high=mid-1;
+            }
+        }
+        
+        return low;
+    }
+};
+
+/*
+//Minimum swaps required to sort an array
+//TC O(nlogn)  SC O(n)
+class Solution {
+  public:
+    // Function to find the minimum number of swaps required to sort the array.
+    int minSwaps(vector<int>& arr) {
+        // Code here
+        int n=arr.size(), swaps=0;
+        vector<pair<int, int>> v;
+        
+        for(int i=0; i<n; i++){
+            v.push_back({arr[i], i});
+        }
+        
+        sort(v.begin(), v.end());
+        
+        for(int i=0; i<n; i++){
+            int value=v[i].first, idx=v[i].second;
+            
+            if(idx != i){
+                swap(v[i], v[idx]);
+                swaps++, i--;
+            }
+        }
+        
+        return swaps;
     }
 };
 **/
