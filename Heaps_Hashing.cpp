@@ -4,7 +4,6 @@
 class Solution {
   public:
     int minDiff(vector<int>& arr, int k, int m, int t) {
-        // write code here
         int n=arr.size();
         sort(arr.begin(), arr.end());
         int minDiff=INT_MAX;
@@ -26,7 +25,7 @@ class Solution {
 };
 /*
 //Top K frequent elements
-//Time Complexity: O(n + d*log d)=O(nlogn), where n is the size of the array and d is the count of distinct elements in the array.
+//BrutForce: Time Complexity: O(n + d*log d)=O(nlogn), where n is the size of the array and d is the count of distinct elements in the array.
 //Auxiliary Space: O(d)
 class Solution {
   public:
@@ -127,7 +126,7 @@ vector<int> kLargest(vector<int> &arr, int k) {
     return res;
 }
 
-//Optimal Aproach: TC O(klogk)   SC O(k)
+//Optimal Aproach: TC O(nlogk)   SC O(k)
 class Solution {
   public:
     vector<int> kLargest(vector<int>& arr, int k) {
@@ -143,10 +142,11 @@ class Solution {
         }
 
         vector<int> res(k);
-        for(int i=0; i<k; i++){
-            res[k-1-i]=q.top();
+        while(!q.empty()){
+            res.push_back(q.top());
             q.pop();
         }
+        reverse(res.begin(), res.end());
 
         return res;
     }
@@ -255,8 +255,66 @@ int findKthSmall(vector<int>& arr, int k) {
     }
     return num - 1;
 }
+//Optimal(MyAproach): TC O(n)   SC O(1)   if given array is sorted
+#include <bits/stdc++.h> 
+int kthSmallest(vector<int> &arr, int k){
+    // Write your code here.
+    int n=arr.size();
+
+    for(int i=0; i<n; i++){
+        if(arr[i]<=k){
+            k++;
+        }
+        else{
+            break;
+        }
+    }
+
+    return k;
+}
 /*
 //K closest elements
+//BrutForce: TC O(n)    SC O(1)
+class Solution {
+public:
+    vector<int> printKClosest(vector<int> arr, int n, int k, int x) {
+        int i = 0;
+        while (i < n && arr[i] < x) i++;
+
+        int left = i - 1;
+        int right = (i < n && arr[i] == x) ? i + 1 : i;
+
+        vector<int> res;
+
+        while (left >= 0 && right < n && k > 0) {
+            int leftVal = x - arr[left];
+            int rightVal = arr[right] - x;
+
+            if (rightVal < leftVal) {
+                res.push_back(arr[right]);
+                right++;
+            } else {
+                res.push_back(arr[left]);
+                left--;
+            }
+            k--;
+        }
+
+        while (left >= 0 && k > 0) {
+            res.push_back(arr[left]);
+            left--;
+            k--;
+        }
+
+        while (right < n && k > 0) {
+            res.push_back(arr[right]);
+            right++;
+            k--;
+        }
+
+        return res;
+    }
+};
 //Simple Aproach(binarySearch): TC O(logn + k)    SC O(1)
 class Solution {
   public:
@@ -312,7 +370,7 @@ class Solution {
         return res;
     }
 };
-//its not optimal than above but still interviewer might want this solution as you knowledge and this is most refer
+//its not optimal than above but still interviewer might want this solution as your knowledge and this is most prefer
 //Aproach(Heap): TC O(nlogk)  SC O(k)
 class Solution {
   public:
@@ -349,7 +407,7 @@ vector<int> kthSmallest(vector<int> arr, int k) {
         sort(topK.begin(), topK.end());
 
         if (topK.size() >= k) {
-            res.push_back(topK[i - k + 1]);
+            res.push_back(topK[i+1 - k]);
         }
         else {
             res.push_back(-1);
@@ -559,11 +617,10 @@ public:
 };
 /*
 //Maximum of all subarrays of size k
-//BrutForce:TC O(n*logn)   SC O(n)
+//BrutForce:TC O(n*k)   SC O(1)
 class Solution {
   public:
     vector<int> maxOfSubarrays(vector<int>& arr, int k) {
-        // code here
         int n=arr.size();
         vector<int>res;
         for(int i=0; i<=n-k; i++){
@@ -581,7 +638,6 @@ class Solution {
 class Solution {
   public:
     vector<int> maxOfSubarrays(vector<int>& arr, int k) {
-        // code here
         int n=arr.size();
         priority_queue<pair<int, int>> pq;
         vector<int>res;
@@ -705,7 +761,7 @@ class Solution {
         return res;
     }
 };
-//Optimal Aproach(MinHeap): TC O(nlogk)   SC O(k)
+//Optimal Aproach(MinHeap): TC O(nlogk)   SC O(k)    //n=elements k=lists
 class Solution {
   public:
     struct compare {
@@ -801,6 +857,140 @@ class Solution {
         
         // If all positions are correct, answer is n + 1
         return n+1;
+    }
+};
+/*
+//Count surparsser       //simillar to count inversions
+//BrutForce: TC O(n^2)   SC O(1)
+class Solution {
+  public:
+    vector<int> findSurpasser(vector<int>& arr) {
+        int n=arr.size();
+        vector<int>res;
+        for(int i=0; i<n; i++){
+            int count = 0;
+            for(int j=i+1; j<n; j++){
+                if(arr[j] > arr[i]){
+                    count++;
+                }
+            }
+            res.push_back(count);
+        }
+        
+        return res;
+    }
+};
+
+//Optimal Aproach: TC O(nlogn)    SC O(n)
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+// Merge function to sort the array and update surpasser counts
+int merge(vector<int> &arr, int lo, int mid, int hi, 
+                            unordered_map<int, int> &m) {
+  
+    int n1 = mid - lo + 1;
+    int n2 = hi - mid;
+    vector<int> left(n1), right(n2); 
+    
+    // Copy data into temporary arrays left[] and right[]
+    for (int i = 0; i < n1; i++)
+        left[i] = arr[lo + i]; 
+        
+    for (int j = 0; j < n2; j++)
+        right[j] = arr[mid + 1 + j]; 
+
+    int i = 0, j = 0, k = lo;
+    
+    // Merging two halves
+    while (i < n1 && j < n2) {
+      
+        // All elements in right[j..n2] are greater than left[i]
+        // So add n2 - j, in surpasser count of left[i]
+        if (left[i] < right[j]) {
+            m[left[i]] += n2 - j;  
+            arr[k++] = left[i++];
+        } 
+        else {
+            arr[k++] = right[j++];
+        }
+    }
+
+    // Copy remaining elements of left[] if any
+    while (i < n1)
+        arr[k++] = left[i++];
+
+    // Copy remaining elements of right[] if any
+    while (j < n2)
+        arr[k++] = right[j++];
+}
+
+void mergeSort(vector<int> &arr, int lo, int hi, 
+               unordered_map<int, int> &m) {
+    if (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        
+        // Sort left and right half
+        mergeSort(arr, lo, mid, m); 
+        mergeSort(arr, mid + 1, hi, m);
+        
+        // Merge them
+        merge(arr, lo, mid, hi, m);  
+    }
+}
+
+vector<int> findSurpasser(vector<int>& arr) {
+    int n = arr.size();
+    
+    // Map to store surpasser counts
+    unordered_map<int, int> m;
+    
+    // Duplicate array to perform merge Sort
+    // so that orginial array is not modified
+    vector<int> dup = arr;  
+
+    mergeSort(dup, 0, n - 1, m);  
+
+    // Store surpasser counts in result array
+    // in the same order as given array
+    vector<int> res(n);
+    for (int i = 0; i < n; i++)
+        res[i] = m[arr[i]]; 
+    
+    return res;
+}
+
+int main() {
+    vector<int> arr = {2, 7, 5, 3, 8, 1};
+    vector<int> res = findSurpasser(arr);  
+    for (int count : res)
+        cout << count << " ";
+    return 0;
+}
+/*
+//Sum of lengths of subarrays with distinct elements
+//TC O(n)   SC O(n)
+
+class Solution {
+  public:
+    int sumoflength(vector<int>& arr) {
+        int n=arr.size();
+        unordered_set<int>st;
+        long long ans=0;
+        int j=0;
+        for(int i=0; i<n; i++){
+            while(j<n && st.find(arr[j])==st.end()){
+                st.insert(arr[j]);
+                j++;
+            }
+            long long len = j-i;
+            ans += (len*(len+1))/2;
+            st.erase(arr[i]);
+        }
+        
+        return static_cast<int>(ans % 1000000007);
     }
 };
 */
