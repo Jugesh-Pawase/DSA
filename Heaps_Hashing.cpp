@@ -256,7 +256,7 @@ int findKthSmall(vector<int>& arr, int k) {
     return num - 1;
 }
 //Optimal(MyAproach): TC O(n)   SC O(1)   if given array is sorted
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 int kthSmallest(vector<int> &arr, int k){
     // Write your code here.
     int n=arr.size();
@@ -496,18 +496,18 @@ class Solution {
     int maxLen(vector<int>& arr) {
         int n=arr.size();
         int ans=0;
-        
+
         for(int i=0; i<n; i++){
             int sum=0;
             for(int j=i; j<n; j++){
                 sum += arr[j];
-                
+
                 if(sum == 0){
                     ans = max(ans, j-i+1);
                 }
             }
         }
-        
+
         return ans;
     }
 };
@@ -519,10 +519,10 @@ class Solution {
         int n=arr.size();
         unordered_map<int, int>mp;
         int sum=0, ans=0;
-        
+
         for(int i=0; i<n; i++){
             sum += arr[i];
-            
+
             if(sum == 0){
                 ans = i+1;
             }
@@ -533,7 +533,7 @@ class Solution {
                 mp[sum]=i;
             }
         }
-        
+
         return ans;
     }
 };
@@ -545,7 +545,7 @@ class Solution {
     vector<int> countDistinct(vector<int> &arr, int k) {
         int n=arr.size();
         vector<int>res;
-        
+
         for(int i=0; i<=n-k; i++){
             unordered_set<int>st;
             for(int j=i; j<i+k; j++){
@@ -553,7 +553,7 @@ class Solution {
             }
             res.push_back(st.size());
         }
-        
+
         return res;
     }
 };
@@ -565,23 +565,23 @@ class Solution {
         int n=arr.size();
         unordered_map<int, int>frec;
         vector<int>res;
-        
+
         for(int i=0; i<k; i++){
             frec[arr[i]]++;
         }
-        
+
         res.push_back(frec.size());
         for(int i=k; i<n; i++){
             frec[arr[i]]++;
             frec[arr[i-k]]--;
-            
+
             if(frec[arr[i-k]] == 0){
                 frec.erase(arr[i-k]);
             }
-            
+
             res.push_back(frec.size());
         }
-        
+
         return res;
     }
 };
@@ -630,7 +630,7 @@ class Solution {
             }
             res.push_back(maxK);
         }
-        
+
         return res;
     }
 };
@@ -641,20 +641,20 @@ class Solution {
         int n=arr.size();
         priority_queue<pair<int, int>> pq;
         vector<int>res;
-        
+
         for(int i=0; i<k; i++){
             pq.push({arr[i], i});
         }
         res.push_back(pq.top().first);
-        
+
         for(int i=k; i<n; i++){
             pq.push({arr[i], i});
-            
+
             while(pq.top().second <= i-k) pq.pop();
-            
+
             res.push_back(pq.top().first);
         }
-        
+
         return res;
     }
 };
@@ -668,7 +668,7 @@ class Solution {
     deque<int> dq(k);
     // Process first k (or first window) elements of array
     for (int i = 0; i < k; ++i) {
-        // For every element, the previous smaller elements 
+        // For every element, the previous smaller elements
         // are useless so remove them from dq
         while (!dq.empty() && arr[i] >= arr[dq.back()]) {
             // Remove from rear
@@ -679,8 +679,8 @@ class Solution {
     }
 
     // Process rest of the elements, i.e., from arr[k] to arr[n-1]
-    for (int i = k; i < arr.size(); ++i) {      
-        // The element at the front of the queue is the largest 
+    for (int i = k; i < arr.size(); ++i) {
+        // The element at the front of the queue is the largest
         // element of previous window, so store it
         res.push_back(arr[dq.front()]);
 
@@ -690,7 +690,7 @@ class Solution {
             dq.pop_front();
         }
 
-        // Remove all elements smaller than the currently being 
+        // Remove all elements smaller than the currently being
         // added element (remove useless elements)
         while (!dq.empty() && arr[i] >= arr[dq.back()]) {
             dq.pop_back();
@@ -728,7 +728,7 @@ class Solution {
     Node* mergeTwoLists(Node* head1, Node* head2){
         Node* dummy = new Node(-1);
         Node* curr=dummy;
-        
+
         while(head1!=nullptr && head2!=nullptr){
             if(head1->data <= head2->data){
                 curr->next = head1;
@@ -740,24 +740,24 @@ class Solution {
             }
             curr=curr->next;
         }
-        
+
         if(head1 != nullptr){
             curr->next=head1;
         }
         else{
             curr->next=head2;
         }
-        
+
         return dummy->next;
     }
-  
+
     Node* mergeKLists(vector<Node*>& arr) {
         // Your code here
         Node* res;
         for(Node* node:arr){
             res=mergeTwoLists(res, node);
         }
-        
+
         return res;
     }
 };
@@ -769,30 +769,30 @@ class Solution {
             return a->data > b->data; // Min-heap based on node data
         }
     };
-  
+
     Node* mergeKLists(vector<Node*>& arr) {
         // Your code here
         priority_queue<Node*, vector<Node*>, compare>pq;
-        
+
         Node* dummy = new Node(-1);
         Node* tail=dummy;
-        
+
         for(Node* head:arr){
             if(head != nullptr) pq.push(head);
         }
-        
+
         while(!pq.empty()){
             Node* top=pq.top();
             pq.pop();
-            
+
             tail->next=top;
             tail=top;
-            
+
             if(top->next != nullptr){
                 pq.push(top->next);
             }
         }
-        
+
         return dummy->next;
     }
 };
@@ -804,7 +804,7 @@ class Solution {
     int missingNumber(vector<int> &arr) {
         int n=arr.size(), res=1;
         sort(arr.begin(), arr.end());
-        
+
         for(int i=0; i<n; i++){
             if(arr[i] == res){
                 res++;
@@ -813,28 +813,30 @@ class Solution {
                 break;
             }
         }
-        
+
         return res;
     }
 };
-//BrutForce Aproach(Hashmap):TC O(n)    SC O(1e6)=O(n)
+//BrutForce Aproach(Hashmap):TC O(n)    SC O(n)
 class Solution {
   public:
     int missingNumber(vector<int> &arr) {
         int n=arr.size();
         unordered_map<int, int>mp;
-        
+
         for(int i=0; i<n; i++){
             if(arr[i] > 0){
                 mp[arr[i]]++;
             }
         }
-        
-        for(int i=1; i<=1e6; i++){
+
+        for(int i=1; i<=n; i++){
             if(mp.find(i) == mp.end()){
                 return i;
             }
         }
+
+        return n+1;
     }
 };
 //Expected Aproach(index mapping): TC O(n)    SC O(1)
@@ -849,12 +851,12 @@ class Solution {
                 swap(arr[arr[i]-1], arr[i]);
             }
         }
-        
+
         // Find the first location where index+1 != value
         for(int i=0; i<n; i++){
             if(arr[i] != i+1) return i+1;
         }
-        
+
         // If all positions are correct, answer is n + 1
         return n+1;
     }
@@ -876,7 +878,7 @@ class Solution {
             }
             res.push_back(count);
         }
-        
+
         return res;
     }
 };
@@ -888,31 +890,31 @@ class Solution {
 using namespace std;
 
 // Merge function to sort the array and update surpasser counts
-int merge(vector<int> &arr, int lo, int mid, int hi, 
+int merge(vector<int> &arr, int lo, int mid, int hi,
                             unordered_map<int, int> &m) {
-  
+
     int n1 = mid - lo + 1;
     int n2 = hi - mid;
-    vector<int> left(n1), right(n2); 
-    
+    vector<int> left(n1), right(n2);
+
     // Copy data into temporary arrays left[] and right[]
     for (int i = 0; i < n1; i++)
-        left[i] = arr[lo + i]; 
-        
+        left[i] = arr[lo + i];
+
     for (int j = 0; j < n2; j++)
-        right[j] = arr[mid + 1 + j]; 
+        right[j] = arr[mid + 1 + j];
 
     int i = 0, j = 0, k = lo;
-    
+
     // Merging two halves
     while (i < n1 && j < n2) {
-      
+
         // All elements in right[j..n2] are greater than left[i]
         // So add n2 - j, in surpasser count of left[i]
         if (left[i] < right[j]) {
-            m[left[i]] += n2 - j;  
+            m[left[i]] += n2 - j;
             arr[k++] = left[i++];
-        } 
+        }
         else {
             arr[k++] = right[j++];
         }
@@ -927,44 +929,44 @@ int merge(vector<int> &arr, int lo, int mid, int hi,
         arr[k++] = right[j++];
 }
 
-void mergeSort(vector<int> &arr, int lo, int hi, 
+void mergeSort(vector<int> &arr, int lo, int hi,
                unordered_map<int, int> &m) {
     if (lo < hi) {
         int mid = lo + (hi - lo) / 2;
-        
+
         // Sort left and right half
-        mergeSort(arr, lo, mid, m); 
+        mergeSort(arr, lo, mid, m);
         mergeSort(arr, mid + 1, hi, m);
-        
+
         // Merge them
-        merge(arr, lo, mid, hi, m);  
+        merge(arr, lo, mid, hi, m);
     }
 }
 
 vector<int> findSurpasser(vector<int>& arr) {
     int n = arr.size();
-    
+
     // Map to store surpasser counts
     unordered_map<int, int> m;
-    
+
     // Duplicate array to perform merge Sort
     // so that orginial array is not modified
-    vector<int> dup = arr;  
+    vector<int> dup = arr;
 
-    mergeSort(dup, 0, n - 1, m);  
+    mergeSort(dup, 0, n - 1, m);
 
     // Store surpasser counts in result array
     // in the same order as given array
     vector<int> res(n);
     for (int i = 0; i < n; i++)
-        res[i] = m[arr[i]]; 
-    
+        res[i] = m[arr[i]];
+
     return res;
 }
 
 int main() {
     vector<int> arr = {2, 7, 5, 3, 8, 1};
-    vector<int> res = findSurpasser(arr);  
+    vector<int> res = findSurpasser(arr);
     for (int count : res)
         cout << count << " ";
     return 0;
@@ -989,7 +991,7 @@ class Solution {
             ans += (len*(len+1))/2;
             st.erase(arr[i]);
         }
-        
+
         return static_cast<int>(ans % 1000000007);
     }
 };
