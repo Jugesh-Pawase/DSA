@@ -1,6 +1,182 @@
 /*
-//Stack using queue
+//two stacks using single array    
+//dont see this because this dont work for all test cases its just for knowledge
+//TC O(1)     SC O(1)
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
+class twoStacks {
+    int* arr;
+    int size;
+    int top1, top2;
+
+public:
+    twoStacks(int n) 
+    { 
+        size = n;
+        arr = new int[n]; 
+        top1 = n / 2 + 1;  // top1 starts from the middle of the array + 1
+        top2 = n / 2;      // top2 starts from the middle of the array
+    }
+
+    void push1(int x)
+    {
+        if (top1 < size) {  // Ensure there is space for stack1
+            arr[top1++] = x;  // Increment top1 and then insert the element
+        }
+        else {
+            cout << "Stack Overflow for stack1" << endl;
+        }
+    }
+
+    void push2(int x)
+    {
+        if (top2 >= 0) {  // Ensure there is space for stack2
+            arr[top2--] = x;  // Decrement top2 and then insert the element
+        }
+        else {
+            cout << "Stack Overflow for stack2" << endl;
+        }
+    }
+
+    int pop1()
+    {
+        if (top1 > size / 2) {  // Ensure stack1 is not empty
+            return arr[--top1];  // Decrement top1 and return the element
+        }
+        else {
+            return -1;  // Stack Underflow for stack1
+        }
+    }
+
+    int pop2()
+    {
+        if (top2 < size / 2) {  // Ensure stack2 is not empty
+            return arr[++top2];  // Increment top2 and return the element
+        }
+        else {
+            return -1;  // Stack Underflow for stack2
+        }
+    }
+};
+
+//Efficient i.e work for all test cases: TC O(1)    SC O(1)
+class twoStacks {
+    int size;
+    int *arr;
+    int top1, top2;
+  public:
+    twoStacks(int n=100) {
+        size=n;
+        arr = new int[size];
+        top1=-1, top2=size;
+    }
+
+    void push1(int x) {
+        top1++;
+        arr[top1]=x;
+    }
+
+    void push2(int x) {
+        top2--;
+        arr[top2]=x;
+    }
+
+    int pop1() {
+        if(top1==-1) return -1;
+        
+        int val=arr[top1];
+        top1--;
+        return val;
+    }
+
+    int pop2() {
+        if(top2==size) return -1;
+        
+        int val=arr[top2];
+        top2++;
+        return val;
+    }
+};
+/*
+//Evaluation of postfix expression
 //TC O(n)  SC O(n)
+class Solution {
+  public:
+    int evaluate(vector<string>& arr) {
+        // code here
+        stack<int>st;
+        for(string s:arr){
+            if(isdigit(s[0]) || s.size()>1&&s[0]=='-'){
+                st.push(stoi(s));
+            }
+            else{
+                int op2=st.top();
+                st.pop();
+                int op1=st.top();
+                st.pop();
+                
+                if(s=="+"){
+                    st.push(op1+op2);
+                }
+                else if(s=="-"){
+                    st.push(op1-op2);
+                }
+                else if(s=="*"){
+                    st.push(op1*op2);
+                }
+                else if(s=="/"){
+                    st.push(op1/op2);
+                }
+            }
+        }
+        
+        return st.top();
+    }
+};
+//Evaluation of postfix expression
+//TC O(n)  SC O(n)
+class Solution
+{
+    public:
+    //Function to evaluate a postfix expression.
+    int evaluatePostfix(string S)
+    {
+        // Your code here
+        stack<int> st;
+        int n=S.length();
+        for(int i=0; i<n; i++){
+            if(S[i]>='0' && S[i]<='9'){
+                st.push(S[i]-'0');
+            }
+            else{
+                int opp2=st.top();
+                st.pop();
+                int opp1=st.top();
+                st.pop();
+                
+                switch(S[i]){
+                    case '+':st.push(opp1+opp2);
+                    break;
+                    case '-':st.push(opp1-opp2);
+                    break;
+                    case '*':st.push(opp1*opp2);
+                    break;
+                    case '/':st.push(opp1/opp2);
+                    break;
+                }
+            }
+        }
+        
+        return st.top();
+    }
+};
+*/
+/*
+//Stack using two queues
+//TC O(n) for push operation, TC O(1)  for all other operations,  SC O(n)
 class MyStack {
     queue<int> q1;
     queue<int> q2;
@@ -42,96 +218,45 @@ public:
             return false;
     }
 };
-*/
-/*
-//Evaluation of postfix expression
-//TC O(n)  SC O(n)
-class twoStacks
-{
-    public:
-    int size,top1,top2;
-    int *array;
-    
-    twoStacks(int n=100)
-    {
-        size=n;
-        array=new int[n];
-        top1=-1;
-        top2=size;
+//Stack using single queue
+//TC O(n) for push operation, TC O(1)  for all other operations,  SC O(n)
+class MyStack {
+    queue<int> q;
+public:
+    MyStack() {}
+
+    void push(int x) {
+        q.push(x);
+        int n=q.size();
+        for(int i=0; i<n-1; i++){
+            q.push(q.front());
+            q.pop();
+        }
     }
- 
-    //Function to push an integer into the stack1.
-    void push1(int x)
-    {
-        top1++;
-        array[top1]=x;
+
+    int pop() {
+        int ans;
+        if (q.empty()) {
+            ans = -1;
+        } else {
+            ans = q.front();
+            q.pop();
+        }
+        return ans;
     }
-    
-    //Function to push an integer into the stack2.
-    void push2(int x)
-    {
-       top2--;
-       array[top2]=x;
+
+    int top() {
+        if (q.empty())
+            return -1;
+        else
+            return q.front();
     }
-    
-    //Function to remove an element from top of the stack1.
-    int pop1()
-    {
-        if(top1==-1) return -1;
-        else return array[top1--];
-    }
-    
-    //Function to remove an element from top of the stack2.
-    int pop2()
-    {
-       if(top2==size) return -1;
-       else return array[top2++];
-    }
-};
-*/
-/*
-//Two stacks using one array
-//TC O(1)  SC O(1)
-class twoStacks
-{
-    public:
-    int size,top1,top2;
-    int *array;
-    
-    twoStacks(int n=100)
-    {
-        size=n;
-        array=new int[n];
-        top1=-1;
-        top2=size;
-    }
- 
-    //Function to push an integer into the stack1.
-    void push1(int x)
-    {
-        top1++;
-        array[top1]=x;
-    }
-    
-    //Function to push an integer into the stack2.
-    void push2(int x)
-    {
-       top2--;
-       array[top2]=x;
-    }
-    
-    //Function to remove an element from top of the stack1.
-    int pop1()
-    {
-        if(top1==-1) return -1;
-        else return array[top1--];
-    }
-    
-    //Function to remove an element from top of the stack2.
-    int pop2()
-    {
-       if(top2==size) return -1;
-       else return array[top2++];
+
+    bool empty() {
+        if (q.empty())
+            return true;
+        else
+            return false;
     }
 };
 */
@@ -153,8 +278,96 @@ class Solution
             q.push(st.top());
             st.pop();
         }
+
+        return q;
+    }
+};
+*/
+/*
+//implement stack and queue using deque
+class Stack {
+    deque<int> dq;
+  public:
+    void push(int x) {
+        dq.push_back(x);
+    }
+    void pop() {
+        if (!dq.empty()) dq.pop_back();
+    }
+    int top() {
+        return dq.back();
+    }
+    bool empty() {
+        return dq.empty();
+    }
+};
+class Queue {
+    deque<int> dq;
+  public:
+    void enqueue(int x) {
+        dq.push_back(x);
+    }
+    void dequeue() {
+        if (!dq.empty()) dq.pop_front();
+    }
+    int front() {
+        return dq.front();
+    }
+    bool empty() {
+        return dq.empty();
+    }
+};
+*/
+/*
+//reverse first k elements of queue
+//TC O(n)     SC O(n)
+class Solution {
+  public:
+    queue<int> reverseFirstK(queue<int> q, int k) {
+        if (q.size() < k) return q;  // Edge case
+        
+        stack<int>st;
+        for(int i=0; i<k; i++){
+            st.push(q.front());
+            q.pop();
+        }
+        
+        while(!st.empty()){
+            q.push(st.top());
+            st.pop();
+        }
+        
+        int remaining=q.size()-k;
+        for(int i=0; i<remaining; i++){
+            q.push(q.front());
+            q.pop();
+        }
         
         return q;
+    }
+};
+*/
+/*
+//Remove middle element without using extra data structure
+//TC O(n)     SC O(n)
+class Solution {
+  public:
+    void solve(stack<int>& s, int curr, int size){
+        if(s.empty() || curr==size/2){
+            s.pop();
+            return;
+        }
+        
+        int top=s.top();
+        s.pop();
+        solve(s, curr+1, size);
+        s.push(top);
+    }
+    // Function to delete middle element of a stack.
+    void deleteMid(stack<int>& s) {
+        // code here..
+        int n=s.size();
+        solve(s, 0, n);
     }
 };
 */
@@ -164,188 +377,179 @@ class Solution
 using namespace std;
 
 class myStack {
-	struct Node {
-		int num;
-		Node* next;
-		Node* prev;
+    struct Node {
+        int num;
+        Node* next;
+        Node* prev;
 
-		Node(int num) { this->num = num; }
-	};
+        Node(int num) { this->num = num; }
+    };
 
-	// Members of stack
-	Node* head = NULL;
-	Node* mid = NULL;
-	int size = 0;
+    // Members of stack
+    Node* head = NULL;
+    Node* mid = NULL;
+    int size = 0;
 
 public:
-	void push(int data)
-	{
-		Node* temp = new Node(data);
-		if (size == 0) {
-			head = temp;
-			mid = temp;
-			size++;
-			return;
-		}
+    void push(int data)
+    {
+        Node* temp = new Node(data);
+        if (size == 0) {
+            head = temp;
+            mid = temp;
+            size++;
+            return;
+        }
 
-		head->next = temp;
-		temp->prev = head;
+        head->next = temp;
+        temp->prev = head;
 
-		// update the pointers
-		head = head->next;
-		if (size % 2 == 1) {
-			mid = mid->next;
-		}
-		size++;
-	}
+        // update the pointers
+        head = head->next;
+        if (size % 2 == 1) {
+            mid = mid->next;
+        }
+        size++;
+    }
 
-	int pop()
-	{
-	int data=-1;
-		if (size != 0) {
-		Node* toPop = head;
-		data = toPop->num;
-			if (size == 1) {
-				head = NULL;
-				mid = NULL;
-			}
-			else {
-				head = head->prev;
-				head->next = NULL;
-				if (size % 2 == 0) {
-					mid = mid->prev;
-				}
-			}
-			delete toPop;
-			size--;
-		}
-	return data;
-	}
+    int pop()
+    {
+    int data=-1;
+        if (size != 0) {
+        Node* toPop = head;
+        data = toPop->num;
+            if (size == 1) {
+                head = NULL;
+                mid = NULL;
+            }
+            else {
+                head = head->prev;
+                head->next = NULL;
+                if (size % 2 == 0) {
+                    mid = mid->prev;
+                }
+            }
+            delete toPop;
+            size--;
+        }
+    return data;
+    }
 
-	int findMiddle()
-	{
-		if (size == 0) {
-			return -1;
-		}
-		return mid->num;
-	}
+    int findMiddle()
+    {
+        if (size == 0) {
+            return -1;
+        }
+        return mid->num;
+    }
 
-	void deleteMiddle()
-	{
-		if (size != 0) {
-			Node* toDelete = mid;
-			if (size == 1) {
-				head = NULL;
-				mid = NULL;
-			}
-			else if (size == 2) {
-				head = head->prev;
-				mid = mid->prev;
-				head->next = NULL;
-			}
-			else {
-				mid->next->prev = mid->prev;
-				mid->prev->next = mid->next;
-				if (size % 2 == 0) {
-					mid = mid->prev;
-				}
-				else {
-					mid = mid->next;
-				}
-			}
-			delete toDelete;
-			size--;
-		}
-	}
+    void deleteMiddle()
+    {
+        if (size != 0) {
+            Node* toDelete = mid;
+            if (size == 1) {
+                head = NULL;
+                mid = NULL;
+            }
+            else if (size == 2) {
+                head = head->prev;
+                mid = mid->prev;
+                head->next = NULL;
+            }
+            else {
+                mid->next->prev = mid->prev;
+                mid->prev->next = mid->next;
+                if (size % 2 == 0) {
+                    mid = mid->prev;
+                }
+                else {
+                    mid = mid->next;
+                }
+            }
+            delete toDelete;
+            size--;
+        }
+    }
 };
 
 int main()
 {
-	myStack st;
-	st.push(11);
-	st.push(22);
-	st.push(33);
-	st.push(44);
-	st.push(55);
-	st.push(66);
-	st.push(77);
-	st.push(88);
-	st.push(99);
-	cout <<"Popped : "<< st.pop() << endl;
-	cout <<"Popped : "<< st.pop() << endl;
-	cout <<"Middle Element : "<< st.findMiddle() << endl;
-	st.deleteMiddle();
-	cout <<"New Middle Element : "<< st.findMiddle() << endl;
-	return 0;
+    myStack st;
+    st.push(11);
+    st.push(22);
+    st.push(33);
+    st.push(44);
+    st.push(55);
+    st.push(66);
+    st.push(77);
+    st.push(88);
+    st.push(99);
+    cout <<"Popped : "<< st.pop() << endl;
+    cout <<"Popped : "<< st.pop() << endl;
+    cout <<"Middle Element : "<< st.findMiddle() << endl;
+    st.deleteMiddle();
+    cout <<"New Middle Element : "<< st.findMiddle() << endl;
+    return 0;
 }
 */
 /*
 //Convert infix expressoin to postfix expression
-#include<iostream>
-#include<stack>
-using namespace std;
-
-int prec(char c){
-    if(c=='^'){
-        return 3;
-    }
-    else if(c=='*' || c=='/'){
-        return 2;
-    }
-    else if(c=='+' || c=='-'){
-        return 1;
-    }
-    else{
-        return -1;
-    }
-}
-
-string infixToPostfix(string s){
-    stack<char> st;
-    string res;
-
-    for (int i = 0; i <= s.length(); i++){
-        if((s[i]>='a' && s[i]<='z') || (s[i]>='A' && s[i]<='Z')){
-            res += s[i];
+//TC O(n)     SC O(n)
+class Solution {
+  public:
+    int prec(char c){
+        if(c=='^'){
+            return 3;
         }
-        else if(s[i]=='('){
-            st.push(s[i]);
+        else if(c=='*' || c=='/'){
+            return 2;
         }
-        else if(s[i]==')'){
-            while(!st.empty() && st.top()!='('){
-                res += st.top();
-                st.pop();
-            }
-            if(!st.empty()){
-                st.pop();
-            }
+        else if(c=='+' || c=='-'){
+            return 1;
         }
         else{
-            while(!st.empty() && prec(st.top())>=prec(s[i])){
-                res += st.top();
-                st.pop();
-            }
-            st.push(s[i]);
+            return -1;
         }
     }
-    while(!st.empty()){
-        res += st.top();
-        st.pop();
+
+    string infixToPostfix(string& s) {
+        // code here
+        int n=s.size();
+        stack<char>st;
+        string postfix;
+
+        for(int i=0; i<n; i++){
+            if((s[i]>='A' && s[i]<='Z') || (s[i]>='a' && s[i]<='z')
+            || (s[i]>='0' && s[i]<='9')){
+                postfix += s[i];
+            }
+            else if(s[i] == '('){
+                st.push(s[i]);
+            }
+            else if(s[i] == ')'){
+                while(!st.empty() && st.top()!='('){
+                    postfix += st.top();
+                    st.pop();
+                }
+                st.pop();
+            }
+            else{
+                while(!st.empty() && prec(st.top())>=prec(s[i])){
+                    postfix += st.top();
+                    st.pop();
+                }
+                st.push(s[i]);
+            }
+        }
+
+        while(!st.empty()){
+            postfix += st.top();
+            st.pop();
+        }
+
+        return postfix;
     }
-    return res;
-}
-
-int main()
-{
-    string infix;
-    
-    cout << "Enter the infix expression: ";
-    cin >> infix;
-    cout << "Infix expression: " << infix << endl;
-    cout << "Postfix expression: " << infixToPostfix(infix) << endl;
-
-    return 0;
-}
+};
 */
 /*
 //Special Stack with getMin() funcction
@@ -354,49 +558,47 @@ int main()
 // TC O(1) SC O(1) for all functions
 int mi=99999;
 void push(stack<int>& s, int a){
-	// Your code goes here
-	if(s.empty()){
-	    mi=a;
-	    s.push(a);
-	}
-	else{
-    	int x=a;
-	    if(a<mi){
-	        x=2*a-mi;
-	        mi=a;
-	    }
-	    s.push(x);
-	}
+    // Your code goes here
+    if(s.empty()){
+        mi=a;
+        s.push(a);
+    }
+    else{
+        int x=a;
+        if(a<mi){
+            x=2*a-mi;
+            mi=a;
+        }
+        s.push(x);
+    }
 }
 
 bool isFull(stack<int>& s,int n){
-	// Your code goes here
-	if(s.size()==n) return true;
-	else return false;
+    // Your code goes here
+    if(s.size()==n) return true;
+    else return false;
 }
 
 bool isEmpty(stack<int>& s){
-	// Your code goes here
-	if(s.empty()) return true;
-	else return false;
+    // Your code goes here
+    if(s.empty()) return true;
+    else return false;
 }
 
-int pop(stack<int>& s){
-	// Your code goes here
-	int v=s.top();
-	if(v>=mi){
-	    s.pop();
-	}
-	else{
-	    int y=2*mi-v;
-	    mi=y;
-	    s.pop();
-	}
+int pop(stack<int>& s) {
+    // Your code goes here
+    if(!s.empty()){
+        int v=s.top();
+        s.pop();
+        if(v<minI){
+            mi=2*mi-v;
+        }
+    }
 }
 
 int getMin(stack<int>& s){
-	// Your code goes here
-	return mi;
+    // Your code goes here
+    return mi;
 }
 */
 /*
@@ -408,7 +610,7 @@ public:
         // code here
         int n=S.length();
         stack<int> st;
-        st.push(-1);
+        st.push(-1);           //base index
         int result=0;
         for (int i = 0; i < n; i++){
             if(S[i]=='('){
@@ -420,11 +622,11 @@ public:
                     result=max(result, i-st.top());
                 }
                 else{
-                    st.push(i);
+                    st.push(i);          //new base index
                 }
             }
         }
-        
+
         return result;
     }
 };
@@ -432,7 +634,7 @@ public:
 /*
 //Redundant/Duplicate parentheses
 //TC O(n)   SC O(n)
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 bool duplicateParanthesis(string &expr)
 {
     // Write your code here
@@ -457,13 +659,13 @@ bool duplicateParanthesis(string &expr)
             st.push(expr[i]);
         }
     }
-    
+
     return ans;
 }
 */
 /*
 //Permutation Stack
-//TC O(n)    SC O(n)
+//Brut force: TC O(n)    SC O(n)       //usless aproach dont see nothing to learn
 class Solution{
 public:
     int isStackPermutation(int N,vector<int> &A,vector<int> &B){
@@ -473,7 +675,7 @@ public:
             ip.push(A[i]);
             op.push(B[i]);
         }
-        
+
         stack<int> st;
         while(ip.size()){
             int temp=ip.front();
@@ -493,54 +695,77 @@ public:
                 st.push(temp);
             }
         }
-        
+
         return (st.empty() && op.empty());
+    }
+};
+//Optimal Aproach:TC O(n)    SC O(1)
+class Solution {
+  public:
+    bool checkPerm(vector<int>& a, vector<int>& b) {
+        // code here
+        stack<int>st;
+        int n=a.size(), j=0;
+        
+        for(int i=0; i<n; i++){
+            st.push(a[i]);
+            
+            if(st.top() == b[j]){
+                while(!st.empty() && st.top()==b[j]){
+                    st.pop();
+                    j++;
+                }
+            }
+        }
+        
+        if(st.empty()) return true;
+        else return false;
     }
 };
 */
 /*
-// C++ program to count the number less than N,  whose all permutation is greater than or equal to the number. 
+// C++ program to count the number less than N,  whose all permutation is greater than or equal to the number.
 //TC O(n)    SC O(n)
 #include<iostream>
 #include<stack>
 using namespace std;
 
 int count(int n){
-	int result = 0;
-	stack<int> st;
-	for (int i = 1; i <= 9; i++){
-		if(i<=n){
-			result++;
-			st.push(i);
-		}
-	}
-	while(!st.empty()){
-		int temp = st.top();
-		st.pop();
-		for (int j = temp % 10; j <= 9; j++){
-			int x = temp * 10 + j;
-			if(x<=n){
-				st.push(x);
-				result++;
-			}
-		}
-	}
-	return result;
+    int result = 0;
+    stack<int> st;
+    for (int i = 1; i <= 9; i++){
+        if(i<=n){
+            result++;
+            st.push(i);
+        }
+    }
+    while(!st.empty()){
+        int temp = st.top();
+        st.pop();
+        for (int j = temp % 10; j <= 9; j++){
+            int x = temp * 10 + j;
+            if(x<=n){
+                st.push(x);
+                result++;
+            }
+        }
+    }
+    return result;
 }
 
 int main()
 {
-	int n = 15;
-	cout << count(n) << endl;
+    int n = 15;
+    cout << count(n) << endl;
 
-	return 0;
+    return 0;
 }
 */
 /*
 //Sort a staxk using recursion
 //TC O(n^2)    SC O(n)
 void insert_at_correct_position(stack<int> &s, int x){
-    if(s.size()==0 || s.top()<=x){
+    if(s.empty() || s.top()<=x){
         s.push(x);
     }
     else{
@@ -577,7 +802,7 @@ class solution{
         int frec[26]={0};
         queue<char> q;
         string ans="";
-        
+
         for(int i=0; i<n; i++){
             q.push(A[i]);
             frec[A[i]-'a']++;
@@ -594,58 +819,51 @@ class solution{
                 ans+='#';
             }
         }
-        
+
         return ans;
     }
 }
 */
 /*
 //find if there is a celebrity in the party or not.
-//Brut force aproach
-//TC O(n^2)   SC O(n)
-class Solution 
-{
-    public:
-    int celebrity(vector<vector<int> >& M, int n) 
-    {
-        // code here 
+//Brut force aproach: TC O(n^2)   SC O(n)
+class Solution {
+  public:
+    int celebrity(vector<vector<int> >& mat) {
+        int n=mat.size();
         vector<int> in(n, 0);
         vector<int> out(n, 0);
-        
+
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
-                if(M[i][j] == 1){
+                if(mat[i][j] == 1){
                     in[j]++;
                     out[i]++;
                 }
             }
         }
-        
+
         for(int i=0; i<n; i++){
-            if(in[i]==n-1 && out[i]==0){
+            if(in[i]==n && out[i]==1){
                 return i;
             }
         }
-        
+
         return -1;
     }
 };
-*/
-/*
-//find if there is a celebrity in the party or not.
-//Optimal aproach
-//TC O(n)   SC O(1)
-class Solution 
+//Optimal aproach: TC O(n)   SC O(1)
+class Solution
 {
     public:
-    int celebrity(vector<vector<int> >& M, int n) 
+    int celebrity(vector<vector<int> >& M, int n)
     {
-        // code here 
+        // code here
         int c=0;
         for(int i=1; i<n; i++){
             if(M[c][i]==1)c=i;
         }
-        
+
         for(int i=0; i<n; i++){
             if(i!=c && (M[i][c]==0 || M[c][i]==1)) return -1;
         }
@@ -655,15 +873,10 @@ class Solution
 */
 /*
 //Next Greater Element
-//Brut force aproach
-//TC O(n^2)   SC O(1)
-
+//Brut force aproach: TC O(n^2)   SC O(1)
 class Solution
 {
     public:
-    //Function to find the next greater element for each element of the array.
-    vector<long long> nextLargerElement(vector<long long> arr, int n){
-        // Your code here
         for(int i=0; i<n; i++){
             int j=i+1;
             while(j<n){
@@ -671,7 +884,7 @@ class Solution
                     arr[i]=arr[j];
                     break;
                 }
-                    j++;
+                j++;
             }
             if(j>=n){
                 arr[i]=-1;
@@ -680,16 +893,12 @@ class Solution
         return arr;
     }
 };
-*/
-/*
-//Next Greater Element
-//Optimal aproach
-//TC O(n)   SC O(n)
+//Optimal aproach: TC O(n)   SC O(n)
 vector<long long> nextLargerElement(vector<long long> arr, int n){
     // Your code here
     vector<long long> ans(n, -1);
     stack<long long> st;
-    
+
     for(int i=0; i<n; i++){
         if(st.empty() || arr[st.top()]>arr[i]){
             st.push(i);
@@ -706,111 +915,51 @@ vector<long long> nextLargerElement(vector<long long> arr, int n){
 }
 */
 /*
-//Smallest distance of next cell
-//TC(m*n)   SC(m*n)
-vector<vector<int>> nearest(vector<vector<int>>& grid) {
-    // Code here
-    int n=grid.size();
-    int m=grid[0].size();
-    
-    vector<vector<int>> vis(n, vector<int>(m, 0));
-    vector<vector<int>> dist(n, vector<int>(m, 0));
-    queue<pair<pair<int, int>, int>> q;
-    
+//Next smallest Element
+//Brut force aproach: TC O(n^2)   SC O(1)
+class Solution
+{
+    public:
+        for(int i=0; i<n; i++){
+            int j=i+1;
+            while(j<n){
+                if(arr[i]>arr[j]){
+                    arr[i]=arr[j];
+                    break;
+                }
+                j++;
+            }
+            if(j>=n){
+                arr[i]=-1;
+            }
+        }
+        return arr;
+    }
+};
+//Optimal aproach: TC O(n)   SC O(n)
+vector<long long> nextLargerElement(vector<long long> arr, int n){
+    // Your code here
+    vector<long long> ans(n, -1);
+    stack<long long> st;
+
     for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(grid[i][j]==1){
-                q.push({{i, j}, 0});
-                vis[i][j]=1;
+        if(st.empty() || arr[st.top()]<arr[i]){
+            st.push(i);
+        }
+        else{
+            while(!st.empty() && arr[st.top()]>arr[i]){
+                ans[st.top()]=arr[i];
+                st.pop();
             }
+            st.push(i);
         }
     }
-    
-    int delrow[4]={-1,0,1,0};
-    int delcol[4]={0,1,0,-1};
-    
-    while(!q.empty()){
-        int row=q.front().first.first;
-        int col=q.front().first.second;
-        int steps=q.front().second;
-        
-        q.pop();
-        dist[row][col]=steps;
-        
-        for(int i=0; i<4; i++){
-            int nrow=row+delrow[i];
-            int ncol=col+delcol[i];
-            
-            if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && vis[nrow][ncol]==0){
-                q.push({{nrow, ncol}, steps+1});
-                vis[nrow][ncol]=1;
-            }
-        }
-    }
-    
-    return dist;
+    return ans;
 }
 */
 /*
-//Rotten orange
-//TC(m*n)   SC(m*n)
-
-int orangesRotting(vector<vector<int>>& grid) {
-        // Code here
-    int n=grid.size();
-    int m=grid[0].size();
-    int ans=0;
-    
-    vector<vector<int>> vis(n, vector<int>(m, 0));
-    vector<vector<int>> dist(n, vector<int>(m, 0));
-    queue<pair<pair<int, int>, int>> q;
-    
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(grid[i][j]==2){
-                q.push({{i, j}, 0});
-                vis[i][j]=1;
-            }
-        }
-    }
-    
-    int delrow[4]={-1,0,1,0};
-    int delcol[4]={0,1,0,-1};
-    
-    while(!q.empty()){
-        int row=q.front().first.first;
-        int col=q.front().first.second;
-        int steps=q.front().second;
-        
-        q.pop();
-        dist[row][col]=2;
-        ans=steps;
-        
-        for(int i=0; i<4; i++){
-            int nrow=row+delrow[i];
-            int ncol=col+delcol[i];
-            
-            if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && vis[nrow][ncol]==0 && grid[nrow][ncol]==1){
-                q.push({{nrow, ncol}, steps+1});
-                vis[nrow][ncol]=1;
-            }
-        }
-    }
-    
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(grid[i][j]==1 && dist[i][j]==0){
-                return -1;
-            }
-        }
-    }
-    
-    return ans;
-    }
-*/
-/*
 //Reverse stack using recursion
-//TC O(n)   SC O(1)
+//TC O(n)   SC O(n)
 void insert_at_bottom(stack<int> &St, int x){
     if(St.size()==0){
         St.push(x);
@@ -822,7 +971,6 @@ void insert_at_bottom(stack<int> &St, int x){
         St.push(a);
     }
 }
-
 void reverse(stack<int> &St){
     if(St.size()>0){
         int x=St.top();
@@ -837,17 +985,17 @@ void Reverse(stack<int> &St){
 }
 */
 /*
-//program to find circular tour for a truck 
-//TC O(n)   SC O(n)
-#include <bits/stdc++.h> 
-using namespace std; 
+//program to find circular tour for a truck
+//TC O(n)   SC O(1)
+#include <bits/stdc++.h>
+using namespace std;
 
-class petrolPump 
-{ 
-	public: 
-	int petrol; 
-	int distance; 
-}; 
+class petrolPump
+{
+    public:
+    int petrol;
+    int distance;
+};
 
 int tour(petrolPump p[],int n)
     {
@@ -855,7 +1003,7 @@ int tour(petrolPump p[],int n)
        int start=0;
        int extrafuel=0;
        int requirefuel=0;
-       
+
        for(int i=0; i<n; i++){
            extrafuel += (p[i].petrol-p[i].distance);
            if(extrafuel<0){
@@ -868,17 +1016,37 @@ int tour(petrolPump p[],int n)
        else return -1;
     }
 
-int main() 
-{ 
-	petrolPump arr[] = {{6, 4}, {3, 6}, {7, 3}}; 
+int main()
+{
+    petrolPump arr[] = {{6, 4}, {3, 6}, {7, 3}};
 
-	int n = sizeof(arr)/sizeof(arr[0]); 
-	int start = tour(arr, n); 
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int start = tour(arr, n);
 
-	(start == -1)? cout<<"No solution": cout<<"Start = "<<start; 
+    (start == -1)? cout<<"No solution": cout<<"Start = "<<start;
 
-	return 0; 
-} 
+    return 0;
+}
+
+//For new syntax
+class Solution {
+  public:
+    int startStation(vector<int> &gas, vector<int> &cost) {
+        int n=gas.size();
+        int extraFuel=0, requireFuel=0, start=0;
+        
+        for(int i=0; i<n; i++){
+            extraFuel += gas[i]-cost[i];
+            if(extraFuel<0){
+                requireFuel += extraFuel;
+                extraFuel=0;
+                start=i+1;
+            }
+        }
+        
+        return ((extraFuel+requireFuel) >=0)?start:-1;
+    }
+};
 */
 /*
 // A C++ program to demonstrate implementation of k stacks in a single array in time and space efficient way
@@ -889,144 +1057,122 @@ using namespace std;
 // A C++ class to represent k stacks in a single array of size n
 class kStacks
 {
-	int *arr; // Array of size n to store actual content to be stored in stacks
-	int *top; // Array of size k to store indexes of top elements of stacks
-	int *next; // Array of size n to store next entry in all stacks
-				// and free list
-	int n, k;
-	int free; // To store beginning index of free list
+    int *arr; // Array of size n to store actual content to be stored in stacks
+    int *top; // Array of size k to store indexes of top elements of stacks
+    int *next; // Array of size n to store next entry in all stacks
+                // and free list
+    int n, k;
+    int free; // To store beginning index of free list
 public:
-	//constructor to create k stacks in an array of size n
-	kStacks(int k, int n);
+    //constructor to create k stacks in an array of size n
+    kStacks(int k, int n);
 
-	// A utility function to check if there is space available
-	bool isFull() { return (free == -1); }
+    // A utility function to check if there is space available
+    bool isFull() { return (free == -1); }
 
-	// To push an item in stack number 'sn' where sn is from 0 to k-1
-	void push(int item, int sn);
+    // To push an item in stack number 'sn' where sn is from 0 to k-1
+    void push(int item, int sn);
 
-	// To pop an from stack number 'sn' where sn is from 0 to k-1
-	int pop(int sn);
+    // To pop an from stack number 'sn' where sn is from 0 to k-1
+    int pop(int sn);
 
-	// To check whether stack number 'sn' is empty or not
-	bool isEmpty(int sn) { return (top[sn] == -1); }
+    // To check whether stack number 'sn' is empty or not
+    bool isEmpty(int sn) { return (top[sn] == -1); }
 };
 
 //constructor to create k stacks in an array of size n
 kStacks::kStacks(int k1, int n1)
 {
-	// Initialize n and k, and allocate memory for all arrays
-	k = k1, n = n1;
-	arr = new int[n];
-	top = new int[k];
-	next = new int[n];
+    // Initialize n and k, and allocate memory for all arrays
+    k = k1, n = n1;
+    arr = new int[n];
+    top = new int[k];
+    next = new int[n];
 
-	// Initialize all stacks as empty
-	for (int i = 0; i < k; i++)
-		top[i] = -1;
+    // Initialize all stacks as empty
+    for (int i = 0; i < k; i++)
+        top[i] = -1;
 
-	// Initialize all spaces as free
-	free = 0;
-	for (int i=0; i<n-1; i++)
-		next[i] = i+1;
-	next[n-1] = -1; // -1 is used to indicate end of free list
+    // Initialize all spaces as free
+    free = 0;
+    for (int i=0; i<n-1; i++)
+        next[i] = i+1;
+    next[n-1] = -1; // -1 is used to indicate end of free list
 }
 
 // To push an item in stack number 'sn' where sn is from 0 to k-1
 void kStacks::push(int item, int sn)
 {
-	// Overflow check
-	if (isFull())
-	{
-		cout << "\nStack Overflow\n";
-		return;
-	}
+    // Overflow check
+    if (isFull())
+    {
+        cout << "\nStack Overflow\n";
+        return;
+    }
 
-	int i = free;	 // Store index of first free slot
+    int i = free;	 // Store index of first free slot
 
-	// Update index of free slot to index of next slot in free list
-	free = next[i];
+    // Update index of free slot to index of next slot in free list
+    free = next[i];
 
-	// Update next of top and then top for stack number 'sn'
-	next[i] = top[sn];
-	top[sn] = i;
+    // Update next of top and then top for stack number 'sn'
+    next[i] = top[sn];
+    top[sn] = i;
 
-	// Put the item in array
-	arr[i] = item;
+    // Put the item in array
+    arr[i] = item;
 }
 
 // To pop an element from stack number 'sn' where sn is from 0 to k-1
 int kStacks::pop(int sn)
 {
-	// Underflow check
-	if (isEmpty(sn))
-	{
-		cout << "\nStack Underflow\n";
-		return INT_MAX;
-	}
+    // Underflow check
+    if (isEmpty(sn))
+    {
+        cout << "\nStack Underflow\n";
+        return INT_MAX;
+    }
 
 
-	// Find index of top item in stack number 'sn'
-	int i = top[sn];
+    // Find index of top item in stack number 'sn'
+    int i = top[sn];
 
-	top[sn] = next[i]; // Change top to store next of previous top
+    top[sn] = next[i]; // Change top to store next of previous top
 
-	// Attach the previous top to the beginning of free list
-	next[i] = free;
-	free = i;
+    // Attach the previous top to the beginning of free list
+    next[i] = free;
+    free = i;
 
-	// Return the previous top item
-	return arr[i];
+    // Return the previous top item
+    return arr[i];
 }
 
 int main()
 {
-	// Let us create 3 stacks in an array of size 10
-	int k = 3, n = 10;
-	kStacks ks(k, n);
+    // Let us create 3 stacks in an array of size 10
+    int k = 3, n = 10;
+    kStacks ks(k, n);
 
-	// Let us put some items in stack number 2
-	ks.push(15, 2);
-	ks.push(45, 2);
+    // Let us put some items in stack number 2
+    ks.push(15, 2);
+    ks.push(45, 2);
 
-	// Let us put some items in stack number 1
-	ks.push(17, 1);
-	ks.push(49, 1);
-	ks.push(39, 1);
+    // Let us put some items in stack number 1
+    ks.push(17, 1);
+    ks.push(49, 1);
+    ks.push(39, 1);
 
-	// Let us put some items in stack number 0
-	ks.push(11, 0);
-	ks.push(9, 0);
-	ks.push(7, 0);
+    // Let us put some items in stack number 0
+    ks.push(11, 0);
+    ks.push(9, 0);
+    ks.push(7, 0);
 
-	cout << "Popped element from stack 2 is " << ks.pop(2) << endl;
-	cout << "Popped element from stack 1 is " << ks.pop(1) << endl;
-	cout << "Popped element from stack 0 is " << ks.pop(0) << endl;
+    cout << "Popped element from stack 2 is " << ks.pop(2) << endl;
+    cout << "Popped element from stack 1 is " << ks.pop(1) << endl;
+    cout << "Popped element from stack 0 is " << ks.pop(0) << endl;
 
-	return 0;
+    return 0;
 }
-*/
-/*
-//Tower of Honoi
-//TC O(2^n - 1)~O(2^n)   SC O(n)
-    void tohcol(int n, int from, int to, int aux){
-        if(n==1){
-            cout<<"move disk "<<n<<" from rod "<<from<<" to rod "<<to<<endl;
-            return;
-        }
-        
-        tohcol(n-1, from, aux, to);
-        cout<<"move disk "<<n<<" from rod "<<from<<" to rod "<<to<<endl;
-        
-        tohcol(n-1, aux, to, from);
-    }
-
-    long long toh(int n, int from, int to, int aux) {
-        // Your code here
-        tohcol(n, from, to, aux);
-        
-        return pow(2, n)-1;
-    }
 */
 /*
 //Maximum of minimum for N windows
@@ -1037,7 +1183,7 @@ vector <int> maxOfMin(int arr[], int n)
     stack<int> st;
     vector<int> left(n, -1);
     vector<int> right(n, n);
-    
+
     //access vextor:left  i.e lenght of current element in left side.
     for(int i=0; i<n; i++){
         while(!st.empty() && arr[st.top()]>=arr[i]) st.pop();
@@ -1045,16 +1191,16 @@ vector <int> maxOfMin(int arr[], int n)
         st.push(i);
     }
     while(!st.empty()) st.pop();
-    
+
     //access vextor:right  i.e lenght of current element in right side.
     for(int i=n-1; i>=0; i--){
         while(!st.empty() && arr[st.top()]>=arr[i]) st.pop();
         if(!st.empty()) right[i]=st.top();
         st.push(i);
     }
-    
+
     vector<int> ans(n+1);
-    
+
     for(int i=0; i<n; i++){
         int len=right[i]-left[i]-1;
         ans[len]=max(ans[len], arr[i]);
@@ -1063,7 +1209,7 @@ vector <int> maxOfMin(int arr[], int n)
         ans[i]=max(ans[i], ans[i+1]);
     }
     ans.erase(ans.begin());
-    
+
     return ans;
 }
 */
@@ -1078,24 +1224,24 @@ class LRUCache
     //Constructor for initializing the cache capacity with the given value.
     class node{
         public:
-        
+
         int key;
         int val;
         node* prev;
         node* next;
-        
+
         node(int _key, int _val){
             key=_key;
             val=_val;
         }
     };
-    
+
     node* head = new node(-1, -1);
     node* tail = new node(-1, -1);
-    
+
     int capacity;
     unordered_map<int, node*>m;
-    
+
     LRUCache(int cap)
     {
         // code here
@@ -1103,7 +1249,7 @@ class LRUCache
         head->next=tail;
         tail->prev=head;
     }
-    
+
     void addnode(node* resnode){
         node* temp=head->next;
         resnode->next=temp;
@@ -1111,14 +1257,14 @@ class LRUCache
         head->next=resnode;
         temp->prev=resnode;
     }
-    
+
     void delnode(node* dltnode){
         node* dltprev=dltnode->prev;
         node* dltnext=dltnode->next;
         dltprev->next=dltnode->next;
         dltnext->prev=dltnode->prev;
     }
-    
+
     //Function to return value corresponding to the key.
     int GET(int key)
     {
@@ -1130,17 +1276,17 @@ class LRUCache
             delnode(resnode);
             addnode(resnode);
             m[key]=head->next;
-            
+
             return value;
         }
-        
+
         return -1;
     }
-    
+
     //Function for storing key-value pair.
     void SET(int key, int value)
     {
-        // your code here   
+        // your code here
         if(m.find(key) != m.end()){
             node* existingnode=m[key];
             m.erase(key);
@@ -1150,7 +1296,7 @@ class LRUCache
             m.erase(tail->prev->key);
             delnode(tail->prev);
         }
-        
+
         addnode(new node(key, value));
         m[key]=head->next;
     }

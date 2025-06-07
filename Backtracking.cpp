@@ -973,3 +973,25 @@ string findMaximumNum(string str, int k)
     return max;
 }
 */
+/*
+//Tower of Honoi
+//TC O(2^n - 1)~O(2^n)   SC O(n)
+    void tohcol(int n, int from, int to, int aux){
+        if(n==1){
+            cout<<"move disk "<<n<<" from rod "<<from<<" to rod "<<to<<endl;
+            return;
+        }
+
+        tohcol(n-1, from, aux, to);
+        cout<<"move disk "<<n<<" from rod "<<from<<" to rod "<<to<<endl;
+
+        tohcol(n-1, aux, to, from);
+    }
+
+    long long toh(int n, int from, int to, int aux) {
+        // Your code here
+        tohcol(n, from, to, aux);
+
+        return pow(2, n)-1;
+    }
+*/
