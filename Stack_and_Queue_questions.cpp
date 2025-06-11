@@ -17,8 +17,8 @@ public:
     { 
         size = n;
         arr = new int[n]; 
-        top1 = n / 2 + 1;  // top1 starts from the middle of the array + 1
-        top2 = n / 2;      // top2 starts from the middle of the array
+        top1 = size / 2 + 1;  // top1 starts from the middle of the array + 1
+        top2 = size / 2;      // top2 starts from the middle of the array
     }
 
     void push1(int x)
@@ -175,6 +175,65 @@ class Solution
 };
 */
 /*
+//Convert infix expressoin to postfix expression
+//TC O(n)     SC O(n)
+class Solution {
+  public:
+    int prec(char c){
+        if(c=='^'){
+            return 3;
+        }
+        else if(c=='*' || c=='/'){
+            return 2;
+        }
+        else if(c=='+' || c=='-'){
+            return 1;
+        }
+        else{
+            return -1;
+        }
+    }
+
+    string infixToPostfix(string& s) {
+        // code here
+        int n=s.size();
+        stack<char>st;
+        string postfix;
+
+        for(int i=0; i<n; i++){
+            if((s[i]>='A' && s[i]<='Z') || (s[i]>='a' && s[i]<='z')
+            || (s[i]>='0' && s[i]<='9')){
+                postfix += s[i];
+            }
+            else if(s[i] == '('){
+                st.push(s[i]);
+            }
+            else if(s[i] == ')'){
+                while(!st.empty() && st.top()!='('){
+                    postfix += st.top();
+                    st.pop();
+                }
+                st.pop();
+            }
+            else{
+                while(!st.empty() && prec(st.top())>=prec(s[i])){
+                    postfix += st.top();
+                    st.pop();
+                }
+                st.push(s[i]);
+            }
+        }
+
+        while(!st.empty()){
+            postfix += st.top();
+            st.pop();
+        }
+
+        return postfix;
+    }
+};
+*/
+/*
 //Stack using two queues
 //TC O(n) for push operation, TC O(1)  for all other operations,  SC O(n)
 class MyStack {
@@ -262,13 +321,12 @@ public:
 */
 /*
 //reverse queue
-//TC O(n)  SC O(n)
+//Using stack: TC O(n)  SC O(n)
 class Solution
 {
     public:
     queue<int> rev(queue<int> q)
     {
-        // add code here.
         stack<int> st;
         while(!q.empty()){
             st.push(q.front());
@@ -279,6 +337,24 @@ class Solution
             st.pop();
         }
 
+        return q;
+    }
+};
+//Using recursion:TC O(n)  SC O(n)
+class Solution {
+  public:
+    void reverse(queue<int> &q){
+        if(!q.empty()){
+            int val=q.front();
+            q.pop();
+            reverse(q);
+            q.push(val);
+        }
+    }
+  
+    queue<int> reverseQueue(queue<int> &q) {
+        // code here.
+        reverse(q);
         return q;
     }
 };
@@ -493,70 +569,11 @@ int main()
 }
 */
 /*
-//Convert infix expressoin to postfix expression
-//TC O(n)     SC O(n)
-class Solution {
-  public:
-    int prec(char c){
-        if(c=='^'){
-            return 3;
-        }
-        else if(c=='*' || c=='/'){
-            return 2;
-        }
-        else if(c=='+' || c=='-'){
-            return 1;
-        }
-        else{
-            return -1;
-        }
-    }
-
-    string infixToPostfix(string& s) {
-        // code here
-        int n=s.size();
-        stack<char>st;
-        string postfix;
-
-        for(int i=0; i<n; i++){
-            if((s[i]>='A' && s[i]<='Z') || (s[i]>='a' && s[i]<='z')
-            || (s[i]>='0' && s[i]<='9')){
-                postfix += s[i];
-            }
-            else if(s[i] == '('){
-                st.push(s[i]);
-            }
-            else if(s[i] == ')'){
-                while(!st.empty() && st.top()!='('){
-                    postfix += st.top();
-                    st.pop();
-                }
-                st.pop();
-            }
-            else{
-                while(!st.empty() && prec(st.top())>=prec(s[i])){
-                    postfix += st.top();
-                    st.pop();
-                }
-                st.push(s[i]);
-            }
-        }
-
-        while(!st.empty()){
-            postfix += st.top();
-            st.pop();
-        }
-
-        return postfix;
-    }
-};
-*/
-/*
 //Special Stack with getMin() funcction
 //It has two brut force aproaches
 //Optimal aproach
 // TC O(1) SC O(1) for all functions
-int mi=99999;
+int mi;
 void push(stack<int>& s, int a){
     // Your code goes here
     if(s.empty()){
@@ -564,12 +581,13 @@ void push(stack<int>& s, int a){
         s.push(a);
     }
     else{
-        int x=a;
         if(a<mi){
-            x=2*a-mi;
+            s.push(2*a-mi);
             mi=a;
         }
-        s.push(x);
+        else{
+            s.push(a);
+        }
     }
 }
 
@@ -588,11 +606,10 @@ bool isEmpty(stack<int>& s){
 int pop(stack<int>& s) {
     // Your code goes here
     if(!s.empty()){
-        int v=s.top();
-        s.pop();
-        if(v<minI){
-            mi=2*mi-v;
+        if(s.top()<mi){
+            mi=2*mi-s.top();
         }
+        s.pop();
     }
 }
 
@@ -634,33 +651,26 @@ public:
 /*
 //Redundant/Duplicate parentheses
 //TC O(n)   SC O(n)
-#include <bits/stdc++.h>
-bool duplicateParanthesis(string &expr)
-{
+#include <bits/stdc++.h> 
+bool duplicateParanthesis(string &expr){
     // Write your code here
-    int n=expr.length();
-    stack<char> st;
-    bool ans=false;
+    int n=expr.size();
+    stack<char>st;
 
     for(int i=0; i<n; i++){
-        if(expr[i]==')'){
-            if(st.top()=='('){
-                ans=true;
-                break;
-            }
-            else{
-                while (st.top() != '(') {
-                  st.pop();
-                }
+        if(expr[i] == ')'){
+            if(st.top() == '(') return true;
+            while(!st.empty() && st.top()!='('){
                 st.pop();
             }
+            st.pop();
         }
         else{
             st.push(expr[i]);
         }
     }
 
-    return ans;
+    return false;
 }
 */
 /*
@@ -752,47 +762,66 @@ int count(int n){
     }
     return result;
 }
-
-int main()
-{
-    int n = 15;
-    cout << count(n) << endl;
-
-    return 0;
-}
 */
 /*
 //Sort a staxk using recursion
 //TC O(n^2)    SC O(n)
-void insert_at_correct_position(stack<int> &s, int x){
-    if(s.empty() || s.top()<=x){
-        s.push(x);
+void insert_at_correct_position(stack<int> &s, int val){
+    if(s.empty() || s.top()<=val){
+        s.push(val);
     }
     else{
-        int a=s.top();
+        int x=s.top();
         s.pop();
-        insert_at_correct_position(s, x);
-        s.push(a);
+        insert_at_correct_position(s, val);
+        s.push(x);
     }
 }
 
 void reverse(stack<int> &s){
-    if(s.size()>0){
-       int x=s.top();
-       s.pop();
-       reverse(s);
-       insert_at_correct_position(s, x);
-   }
+    if(!s.empty()){
+        int val=s.top();
+        s.pop();
+        reverse(s);
+        insert_at_correct_position(s, val);
+    }
 }
 
-void SortedStack :: sort()
-{
-   //Your code here
-   reverse(s);
+void SortedStack ::sort() {
+    // Your code here
+    reverse(s);
+}
+*/
+/*
+//Reverse stack using recursion
+//TC O(n)   SC O(n)
+void insert_at_bottom(stack<int> &St, int val){
+    if(St.empty()){
+        St.push(val);
+    }
+    else{
+        int x=St.top();
+        St.pop();
+        insert_at_bottom(St, val);
+        St.push(x);
+    }
+}
+void reverse(stack<int> &St){
+    if(!St.empty()){
+        int val=St.top();
+        St.pop();
+        reverse(St);
+        insert_at_bottom(St, val);
+    }
+}
+
+void Reverse(stack<int> &St){
+    reverse(St);
 }
 */
 /*
 //First non-repeating character in a stream
+//abcbbac -> aaaaac#
 //TC O(n)   SC O(n)
 class solution{
     public:
@@ -826,32 +855,23 @@ class solution{
 */
 /*
 //find if there is a celebrity in the party or not.
-//Brut force aproach: TC O(n^2)   SC O(n)
-class Solution {
-  public:
-    int celebrity(vector<vector<int> >& mat) {
-        int n=mat.size();
-        vector<int> in(n, 0);
-        vector<int> out(n, 0);
-
-        for(int i=0; i<n; i++){
-            for(int j=0; j<n; j++){
-                if(mat[i][j] == 1){
-                    in[j]++;
-                    out[i]++;
-                }
+//Brut force aproach: TC O(n^2)   SC O(1)
+int celebrity(vector<vector<int>>& M, int n) {
+    for(int i = 0; i < n; i++) {
+        bool isCelebrity = true;
+        
+        for(int j = 0; j < n; j++) {
+            if(i == j) continue;
+            if(M[i][j] == 1 || M[j][i] == 0) {
+                isCelebrity = false;
+                break;
             }
         }
-
-        for(int i=0; i<n; i++){
-            if(in[i]==n && out[i]==1){
-                return i;
-            }
-        }
-
-        return -1;
+        
+        if(isCelebrity) return i;
     }
-};
+    return -1;
+}
 //Optimal aproach: TC O(n)   SC O(1)
 class Solution
 {
@@ -900,7 +920,7 @@ vector<long long> nextLargerElement(vector<long long> arr, int n){
     stack<long long> st;
 
     for(int i=0; i<n; i++){
-        if(st.empty() || arr[st.top()]>arr[i]){
+        if(st.empty() || arr[st.top()]>=arr[i]){
             st.push(i);
         }
         else{
@@ -943,7 +963,7 @@ vector<long long> nextLargerElement(vector<long long> arr, int n){
     stack<long long> st;
 
     for(int i=0; i<n; i++){
-        if(st.empty() || arr[st.top()]<arr[i]){
+        if(st.empty() || arr[st.top()]<=arr[i]){
             st.push(i);
         }
         else{
@@ -955,33 +975,6 @@ vector<long long> nextLargerElement(vector<long long> arr, int n){
         }
     }
     return ans;
-}
-*/
-/*
-//Reverse stack using recursion
-//TC O(n)   SC O(n)
-void insert_at_bottom(stack<int> &St, int x){
-    if(St.size()==0){
-        St.push(x);
-    }
-    else{
-        int a=St.top();
-        St.pop();
-        insert_at_bottom(St, x);
-        St.push(a);
-    }
-}
-void reverse(stack<int> &St){
-    if(St.size()>0){
-        int x=St.top();
-        St.pop();
-        reverse(St);
-        insert_at_bottom(St, x);
-    }
-}
-
-void Reverse(stack<int> &St){
-    reverse(St);
 }
 */
 /*
@@ -1049,130 +1042,97 @@ class Solution {
 };
 */
 /*
-// A C++ program to demonstrate implementation of k stacks in a single array in time and space efficient way
-//TC O(1)   SC O(n)
-#include<bits/stdc++.h>
+//K stacks in a single array
+//Naive Approach (Partition the array into K parts)
+TC O(1)   SC O(n)
+#include <bits/stdc++.h>
 using namespace std;
 
-// A C++ class to represent k stacks in a single array of size n
-class kStacks
-{
-    int *arr; // Array of size n to store actual content to be stored in stacks
-    int *top; // Array of size k to store indexes of top elements of stacks
-    int *next; // Array of size n to store next entry in all stacks
-                // and free list
-    int n, k;
-    int free; // To store beginning index of free list
+class NStack {
+    int *arr;
+    int *top;
+    int *base;
+    int n, s;
+
 public:
-    //constructor to create k stacks in an array of size n
-    kStacks(int k, int n);
+    NStack(int N, int S) {
+        n = N;
+        s = S;
+        arr = new int[S];
+        top = new int[N];
+        base = new int[N];
 
-    // A utility function to check if there is space available
-    bool isFull() { return (free == -1); }
+        int partitionSize = S / N;
+        for (int i = 0; i < N; i++) {
+            top[i] = i * partitionSize - 1;
+            base[i] = i * partitionSize;
+        }
+    }
 
-    // To push an item in stack number 'sn' where sn is from 0 to k-1
-    void push(int item, int sn);
+    bool push(int x, int m) {
+        int partitionSize = s / n;
+        int limit = base[m - 1] + partitionSize - 1;
+        if (top[m - 1] >= limit) return false;
+        top[m - 1]++;
+        arr[top[m - 1]] = x;
+        return true;
+    }
 
-    // To pop an from stack number 'sn' where sn is from 0 to k-1
-    int pop(int sn);
-
-    // To check whether stack number 'sn' is empty or not
-    bool isEmpty(int sn) { return (top[sn] == -1); }
+    int pop(int m) {
+        if (top[m - 1] < base[m - 1]) return -1;
+        return arr[top[m - 1]--];
+    }
 };
+//Optimal:Using single array and extra arrays
+TC O(1)   SC O(n)
+#include <bits/stdc++.h>
+using namespace std;
 
-//constructor to create k stacks in an array of size n
-kStacks::kStacks(int k1, int n1)
-{
-    // Initialize n and k, and allocate memory for all arrays
-    k = k1, n = n1;
-    arr = new int[n];
-    top = new int[k];
-    next = new int[n];
+class NStack {
+    int *arr;
+    int *top;
+    int *next;
+    int n, s;
+    int freeSpot;
 
-    // Initialize all stacks as empty
-    for (int i = 0; i < k; i++)
-        top[i] = -1;
+public:
+    // Initialize your data structure.
+    NStack(int N, int S) {
+        n = N;
+        s = S;
+        arr = new int[s];
+        top = new int[n];
+        next = new int[s];
 
-    // Initialize all spaces as free
-    free = 0;
-    for (int i=0; i<n-1; i++)
-        next[i] = i+1;
-    next[n-1] = -1; // -1 is used to indicate end of free list
-}
-
-// To push an item in stack number 'sn' where sn is from 0 to k-1
-void kStacks::push(int item, int sn)
-{
-    // Overflow check
-    if (isFull())
-    {
-        cout << "\nStack Overflow\n";
-        return;
+        for (int i = 0; i < n; i++) top[i] = -1;
+        for (int i = 0; i < s - 1; i++) next[i] = i + 1;
+        next[s - 1] = -1;
+        freeSpot = 0;
     }
+    // Pushes 'X' into the Mth stack. Returns true if it gets pushed into the stack, and false otherwise.
+    bool push(int x, int m) {
+        if (freeSpot == -1) return false;
 
-    int i = free;	 // Store index of first free slot
+        int index = freeSpot;
+        freeSpot = next[index];
+        arr[index] = x;
+        next[index] = top[m - 1];
+        top[m - 1] = index;
 
-    // Update index of free slot to index of next slot in free list
-    free = next[i];
-
-    // Update next of top and then top for stack number 'sn'
-    next[i] = top[sn];
-    top[sn] = i;
-
-    // Put the item in array
-    arr[i] = item;
-}
-
-// To pop an element from stack number 'sn' where sn is from 0 to k-1
-int kStacks::pop(int sn)
-{
-    // Underflow check
-    if (isEmpty(sn))
-    {
-        cout << "\nStack Underflow\n";
-        return INT_MAX;
+        return true;
     }
+    // Pops top element from Mth Stack. Returns -1 if the stack is empty, otherwise returns the popped element.
+    int pop(int m) {
+        if (top[m - 1] == -1) return -1;
 
+        int index = top[m - 1];
+        top[m - 1] = next[index];
+        next[index] = freeSpot;
+        freeSpot = index;
 
-    // Find index of top item in stack number 'sn'
-    int i = top[sn];
-
-    top[sn] = next[i]; // Change top to store next of previous top
-
-    // Attach the previous top to the beginning of free list
-    next[i] = free;
-    free = i;
-
-    // Return the previous top item
-    return arr[i];
-}
-
-int main()
-{
-    // Let us create 3 stacks in an array of size 10
-    int k = 3, n = 10;
-    kStacks ks(k, n);
-
-    // Let us put some items in stack number 2
-    ks.push(15, 2);
-    ks.push(45, 2);
-
-    // Let us put some items in stack number 1
-    ks.push(17, 1);
-    ks.push(49, 1);
-    ks.push(39, 1);
-
-    // Let us put some items in stack number 0
-    ks.push(11, 0);
-    ks.push(9, 0);
-    ks.push(7, 0);
-
-    cout << "Popped element from stack 2 is " << ks.pop(2) << endl;
-    cout << "Popped element from stack 1 is " << ks.pop(1) << endl;
-    cout << "Popped element from stack 0 is " << ks.pop(0) << endl;
-
-    return 0;
-}
+        return arr[index];
+    }
+};
 */
 /*
 //Maximum of minimum for N windows
@@ -1184,7 +1144,7 @@ vector <int> maxOfMin(int arr[], int n)
     vector<int> left(n, -1);
     vector<int> right(n, n);
 
-    //access vextor:left  i.e lenght of current element in left side.
+    //access vector:left  i.e lenght of current element in left side.
     for(int i=0; i<n; i++){
         while(!st.empty() && arr[st.top()]>=arr[i]) st.pop();
         if(!st.empty()) left[i]=st.top();
@@ -1192,7 +1152,7 @@ vector <int> maxOfMin(int arr[], int n)
     }
     while(!st.empty()) st.pop();
 
-    //access vextor:right  i.e lenght of current element in right side.
+    //access vector:right  i.e lenght of current element in right side.
     for(int i=n-1; i>=0; i--){
         while(!st.empty() && arr[st.top()]>=arr[i]) st.pop();
         if(!st.empty()) right[i]=st.top();
@@ -1261,8 +1221,8 @@ class LRUCache
     void delnode(node* dltnode){
         node* dltprev=dltnode->prev;
         node* dltnext=dltnode->next;
-        dltprev->next=dltnode->next;
-        dltnext->prev=dltnode->prev;
+        dltprev->next=dltnext;
+        dltnext->prev=dltprev;
     }
 
     //Function to return value corresponding to the key.
