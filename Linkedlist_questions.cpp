@@ -1,5 +1,6 @@
 /*
 //Reverse linkedlist
+//TC O(n)   SC O(1)
 struct ListNode {
     int val;
     ListNode *next;
@@ -24,6 +25,7 @@ public:
 
 /*
 //Linkedlist cycle
+//BrutForce(hashMap): TC O(n)    SC O(n)
 struct ListNode {
     int val;
     ListNode *next;
@@ -31,132 +33,106 @@ struct ListNode {
 };
 
 class Solution {
-public:
-    bool hasCycle(ListNode* head) {
+  public:
+    // Function to check if the linked list has a loop.
+    bool detectLoop(Node* head) {
+        // your code here
         if (head == nullptr || head->next == nullptr) {
             return false;
         }
-
-        ListNode* slow = head;
-        ListNode* fast = head;
-        while (slow != fast) {
-            if (fast == nullptr || fast->next == nullptr) {
-                return false;
+        
+        unordered_map<Node*, int>mp;
+        while(head){
+            if(!mp[head]){
+                mp[head]=1;
+                head=head->next;
             }
-            slow = slow->next;
-            fast = fast->next->next;
+            else{
+                return true;
+            }
         }
+        
+        return false;
+    }
+};
 
-        return true;
+//Optimal: TC O(n)   SC O(1)
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+class Solution {
+  public:
+    // Function to check if the linked list has a loop.
+    bool detectLoop(Node* head) {
+        // your code here
+        if (head == nullptr || head->next == nullptr) {
+            return false;
+        }
+        
+        Node* slow=head;
+        Node* fast=head;
+        
+        while(fast!=nullptr && fast->next!=nullptr){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow == fast){
+                return true;
+            }
+        }
+        
+        return false;
     }
 };
 
 /*
 //Merge two sorted lists
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
+struct Node {
+  int data;
+  struct Node *next;
+
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
 };
 
 class Solution {
-public:
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        if(list1==nullptr){
-            return list2;
+  public:
+    Node* sortedMerge(Node* head1, Node* head2) {
+        // code here
+        Node* dummy = new Node(-1);
+        Node* temp=dummy;
+        
+        while(head1!=nullptr && head2!=nullptr){
+            if(head1->data < head2->data){
+                temp->next=head1;
+                temp=head1;
+                head1=head1->next;
+            }
+            else{
+                temp->next=head2;
+                temp=head2;
+                head2=head2->next;
+            }
         }
-        if(list2==nullptr){
-            return list1;
-        }
-
-        ListNode* result;
-        if(list1->val<list2->val){
-            result=list1;
-            result->next=mergeTwoLists(list1->next, list2);
+        
+        if(head1!=nullptr){
+            temp->next=head1;
         }
         else{
-            result=list2;
-            result->next=mergeTwoLists(list1, list2->next);
+            temp->next=head2;
         }
-
-        return result;
+        
+        return dummy->next;
     }
 };
 
 /*
 //Remove node without head referemce
-#include <bits/stdc++.h>
-using namespace std;
-
-class Node {
-public:
-	int data;
-	Node* next;
-};
-
-void push(Node** head_ref, int new_data)
-{
-	Node* new_node = new Node();
-
-	new_node->data = new_data;
-
-	new_node->next = (*head_ref);
-
-	(*head_ref) = new_node;
-}
-
-void printList(Node* head)
-{
-	Node* temp = head;
-	while (temp != nullptr) {
-		cout << temp->data << " ";
-		temp = temp->next;
-	}
-}
-
-void deleteNode(Node* node)
-{
-	//Node* prev;
-	if (node == nullptr)
-		return;
-	else {
-		Node* temp = node->next;
-		node->data = temp->data;
-		node->next = temp->next;
-		temp = nullptr;
-	}
-}
-
-int main()
-{
-	Node* head = nullptr;
-
-	push(&head, 1);
-	push(&head, 4);
-	push(&head, 1);
-	push(&head, 12);
-	push(&head, 1);
-
-	cout << "Before deleting \n";
-	printList(head);
-
-	// I m deleting the head itself. 
-	// 	You can check for more cases
-	deleteNode(head);
-
-	cout << "\nAfter deleting \n";
-	printList(head);
-	return 0;
-}
-
-/*
-//Remove duplicates from unsorted list
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
+//TC O(1)   SC O(1)
 struct Node {
   int data;
   struct Node *next;
@@ -165,223 +141,177 @@ struct Node {
     next = NULL;
   }
 };
-
-void print(Node *root)
-{
-Node *temp = root;
-while(temp!=NULL)
-{
-cout<<temp->data<<" ";
-temp=temp->next;
-}
-}
-
-
-// } Driver Code Ends
-/*
-The structure of linked list is the following
-
-struct Node {
-  int data;
-  struct Node *next;
-  Node(int x) {
-    data = x;
-    next = NULL;
-  }
-};
-*/
-/*
-//remove duplicates from unsorted linked list.
-class Solution
-{
-    public:
-    Node * removeDuplicates( Node *head)
-    {
-     // your code goes here
-     map<int, int>mp;
-     Node* cur=head;
-     mp[cur->data]=1;
-     Node* prev=cur;
-     cur=cur->next;
-     while(cur->next != nullptr){
-         if (head==nullptr || head->next==nullptr) {
-            return head;
-         }
-         if(mp[cur->data]){
-             prev->next=cur->next;
-             delete cur;
-         }
-         else{
-             mp[cur->data]=1;
-             prev=cur;
-         }
-         cur=prev->next;
-     }
-     return head;
-    }
-};
-
-int main() {
-    // your code goes here
-    int T;
-    cin>>T;
-
-    while(T--)
-    {
-        int K;
-        cin>>K;
-        struct Node *head = NULL;
-        struct Node *temp = head;
-
-        for(int i=0;i<K;i++){
-        int data;
-        cin>>data;
-            if(head==NULL)
-            head=temp=new Node(data);
-            else
-            {
-                temp->next = new Node(data);
-                temp=temp->next;
-            }
-        }
-
-        Solution ob;
-        Node *result  = ob.removeDuplicates(head);
-        print(result);
-        cout<<endl;
-
-    }
-    return 0;
-}
-/*
-//sort a linked list 0s, 1s or 2s
-//Brut force aproach
-// Time Complexity: O(n) where n is the number of nodes in the linked list.
-// Auxiliary Space: O(1)
-#include <bits/stdc++.h>
-using namespace std;
-
-class Node
-{
-    public:
-    int data;
-    Node* next;
-};
-
-// Function to sort a linked list of 0s, 1s and 2s
-void sortList(Node *head)
-{
-    int count[3] = {0, 0, 0}; // Initialize count of '0', '1' and '2' as 0
-    Node *ptr = head;
-
-    while (ptr nullptr)
-    {
-        count[ptr->data] += 1;
-        ptr = ptr->next;
-    }
-
-    int i = 0;
-    ptr = head;
-
-    while (ptr nullptr)
-    {
-        if (count[i] == 0)
-            ++i;
-        else
-        {
-            ptr->data = i;
-            --count[i];
-            ptr = ptr->next;
-        }
-    }
-}
-
-void push (Node** head_ref, int new_data)
-{
-    Node* new_node = new Node();
-
-    new_node->data = new_data;
-
-    new_node->next = (*head_ref);
-
-    (*head_ref) = new_node;
-}
-
-void printList(Node *node)
-{
-    while (node != NULL)
-    {
-        cout << node->data << " ";
-        node = node->next;
-    }
-    cout << endl;
-}
-
-int main(void)
-{
-    Node *head = NULL;
-    push(&head, 0);
-    push(&head, 1);
-    push(&head, 0);
-    push(&head, 2);
-    push(&head, 1);
-    push(&head, 1);
-    push(&head, 2);
-    push(&head, 1);
-    push(&head, 2);
-
-    cout << "Linked List before Sorting\n";
-    printList(head);
-
-    sortList(head);
-
-    cout << "Linked List after Sorting\n";
-    printList(head);
-
-    return 0;
-}
-/*
-//Remove nth node from end
-//Brut force aproach
-struct ListNode {
-     int val;
-     ListNode *next;
-     ListNode() : val(0), next(nullptr) {}
-     ListNode(int x) : val(x), next(nullptr) {}
-     ListNode(int x, ListNode *next) : val(x), next(next) {}
- };
 
 class Solution {
-public:
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
-        ListNode *temp=head;
-        int size=0;
-        while(temp!=nullptr){
-            size+=1;
-            temp=temp->next;
+  public:
+    void deleteNode(Node* del_node) {
+        // Your code here
+        del_node->data = del_node->next->data;
+        del_node->next = del_node->next->next;
+    }
+};
+
+/*
+//remove duplicates from unsorted linked list.
+//TC O(n)   SC O(n)
+struct Node {
+  int data;
+  struct Node *next;
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
+};
+
+class Solution {
+  public:
+    Node *removeDuplicates(Node *head) {
+        // your code goes here
+        unordered_map<int, int>mp;
+        Node* curr=head;
+        mp[curr->data]=1;
+        Node* prev=curr;
+        curr=curr->next;
+        
+        while(curr != nullptr){
+            if(mp[curr->data]){
+                prev->next = curr->next;
+                free(curr);
+            }
+            else{
+                mp[curr->data]=1;
+                prev=curr;
+            }
+            curr=prev->next;
         }
-        if(size==n){
-            ListNode *todelete=head;
-            ListNode *temp=head->next;
-            delete head;
-            return temp;
-        }
-        int cnt = 1;
-        temp=head;
-        while(cnt < (size-n)){
-            cnt+=1;
-            temp=temp->next;
-        }
-        ListNode *todelete=temp->next;
-        temp->next=temp->next->next;
-        delete todelete;
+        
         return head;
     }
 };
+/*
+//sort a linked list 0s, 1s or 2s
+//Expected Aproach-1:  Time Complexity: O(n)    Auxiliary Space: O(1)      not you decide to refer this due to less code and same tc & sc
+  struct Node {
+    int data;
+    struct Node *next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+class Solution {
+  public:
+    Node* segregate(Node* head) {
+        // code here
+        int count[3]={0};
+        
+        Node* temp=head;
+        
+        while(temp != nullptr){
+            count[temp->data]++;
+            temp=temp->next;
+        }
+        
+        temp=head;
+        int i=0;
+        while(temp != nullptr){
+            if(count[i] == 0){
+                i++;
+            }
+            else{
+                temp->data=i;
+                count[i]--;
+                temp = temp->next;
+            }
+        }
+        
+        return head;
+    }
+};
+
+//Expected Aproach-2:  Time Complexity: O(n)    Auxiliary Space: O(1)
+  struct Node {
+    int data;
+    struct Node *next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+class Solution {
+  public:
+    Node* segregate(Node* head) {
+        if (!head || !head->next) return head;
+
+        // Create dummy heads and tails for 0s, 1s, 2s lists
+        Node* zeroD = new Node(0);
+        Node* oneD = new Node(0);
+        Node* twoD = new Node(0);
+
+        Node* zero = zeroD, *one = oneD, *two = twoD;
+
+        Node* curr = head;
+
+        // Distribute nodes into three lists
+        while (curr) {
+            if (curr->data == 0) {
+                zero->next = curr;
+                zero = zero->next;
+            } else if (curr->data == 1) {
+                one->next = curr;
+                one = one->next;
+            } else {
+                two->next = curr;
+                two = two->next;
+            }
+            curr = curr->next;
+        }
+
+        // Connect the three lists
+        zero->next = oneD->next ? oneD->next : twoD->next;
+        one->next = twoD->next;
+        two->next = nullptr;
+
+        // New head is the start of 0s list
+        Node* newHead = zeroD->next;
+
+        // Clean up dummy nodes
+        delete zeroD;
+        delete oneD;
+        delete twoD;
+
+        return newHead;
+    }
+};
+*/
+/*
+//Multiply two linkedlists
+//TC O(n)    SC O(1)
+class solution {
+  public:
+    long long multiplyTwoLists(Node *first, Node *second) {
+        const long long MOD = 1000000007;
+        long long num1 = 0, num2 = 0;
+
+        // Convert first list to number
+        while (first != nullptr) {
+            num1 = (num1 * 10 + first->data) % MOD;
+            first = first->next;
+        }
+
+        // Convert second list to number
+        while (second != nullptr) {
+            num2 = (num2 * 10 + second->data) % MOD;
+            second = second->next;
+        }
+
+        return (num1 * num2) % MOD;
+    }
+};
 */
 /*
 //Remove nth node from end
-//Optimal aproach
+//Optimal aproach: TC O(n)    SC O(1)
 struct ListNode {
     int val;
     ListNode *next;
@@ -411,175 +341,227 @@ public:
         return head;
     }
 };
+
+//BrutForce: TC O(2n)   SC O(1)       note its brutforce due to 2n
+Node* deleteNthFromEnd(Node* head, int n) {
+    int len = 0;
+    Node* temp = head;
+
+    // Count length
+    while (temp != nullptr) {
+        len++;
+        temp = temp->next;
+    }
+
+    // If deleting the first node
+    if (n == len) {
+        Node* newHead = head->next;
+        delete head;
+        return newHead;
+    }
+
+    int pos = len - n;
+    temp = head;
+    for (int i = 1; i < pos; ++i) {
+        temp = temp->next;
+    }
+
+    Node* toDelete = temp->next;
+    temp->next = temp->next->next;
+    delete toDelete;
+
+    return head;
+}
 */
 /**
 //Reorder lists
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
+//TC O(n)     SC O(1)
+struct Node
+{
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
 };
 
 class Solution {
-public:
-    ListNode* reverse(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
+  public:
+    Node* reverse(Node* head){
+        if(head==nullptr || head->next==nullptr){
             return head;
         }
-
-        ListNode* last = reverse(head->next);
-        head->next->next = head;
-        head->next = nullptr;
+        
+        Node* last=reverse(head->next);
+        head->next->next=head;
+        head->next=nullptr;
+        
         return last;
     }
-
-    void reorderList(ListNode* head) {
-        ListNode* slow = head;
-        ListNode* fast = head->next;
-
-        while (fast != nullptr && fast->next != nullptr) {
-            slow = slow->next;
-            fast = fast->next->next;
+  
+    void reorderList(Node* head) {
+        // Your code here
+        Node* slow=head;
+        Node* fast=head->next;
+        //To find middle element/node
+        while(fast!=nullptr && fast->next!=nullptr){
+            slow=slow->next;
+            fast=fast->next->next;
         }
-
-        ListNode* first = head;
-        ListNode* second = reverse(slow->next);
-        slow->next = nullptr;
-
-        while (second) {
-            ListNode* temp1 = first->next;
-            ListNode* temp2 = second->next;
-            first->next = second;
-            first = temp1;
-            second->next = first;
-            second = temp2;
+        //split into two lists
+        Node* first=head;
+        Node* second=reverse(slow->next);
+        slow->next=nullptr;
+        
+        //merge two lists
+        while(second){
+            Node* temp1=first->next;
+            Node* temp2=second->next;
+            first->next=second;
+            first=temp1;
+            second->next=first;
+            second=temp2;
         }
     }
 };
 */
 /*
 //Remove loop in linkedlist
-#include <bits/stdc++.h>
-using namespace std;
+//BrutForce: TC O(n)   SC O(n)
+void removeLoop(Node *head) {
+    unordered_set<Node *> st;
 
-struct Node {
-    int data;
-    Node* next;
-      
-      Node(int x) {
-        data = x;
-          next = NULL;
-    }
-};
-
-void printList(Node* head)
-{
-    while (head != NULL) {
-        cout << head->data << " ";
-        head = head->next;
-    }
-    cout << endl;
-}
-
-void detectAndRemoveLoop(Node* head)
-{
-    // If list is empty or has only one node without loop
-    if (head == NULL || head->next == NULL)
-        return;
-
-    Node *slow = head, *fast = head;
-
-    // Move slow and fast 1 and 2 steps ahead respectively.
-    slow = slow->next;
-    fast = fast->next->next;
-
-    // Search for loop using slow and fast pointers
-    while (fast && fast->next) {
-        if (slow == fast)
-            break;
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-
-    if (slow == fast) {
-        slow = head;
-
-        // this check is needed when slow and fast both meet
-        // at the head of the LL eg: 1->2->3->4->5 and then
-        // 5->next = 1 i.e the head of the LL
-        if (slow == fast)
-            while (fast->next != slow)
-                fast = fast->next;
+    Node *prev = nullptr;
+    while (head != nullptr) {
+        if (st.find(head) == st.end()) {
+            st.insert(head);
+            prev = head;
+            head = head->next;
+        }
         else {
-            while (slow->next != fast->next) {
-                slow = slow->next;
-                fast = fast->next;
+            prev->next = nullptr;
+            break;
+        }
+    }
+}
+//Optimal Aproach: TC O(n)    SC O(1)
+class Solution {
+  public:
+    // Function to remove a loop in the linked list.
+    void removeLoop(Node* head) {
+        // code here
+        if(head==nullptr || head->next==nullptr) return;
+        
+        Node* slow=head;
+        Node* fast=head;
+        
+        while(fast!=nullptr && fast->next!=nullptr){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow == fast){
+                break;
             }
         }
-
-        fast->next = NULL; 
+        
+        if(slow == head){
+            while(fast->next != slow){
+                fast = fast->next;
+            }
+            fast->next = nullptr;
+        }
+        else if(slow == fast){
+            slow=head;
+            
+            while(fast->next != slow->next){
+                slow=slow->next;
+                fast=fast->next;
+            }
+            fast->next=nullptr;
+        }
     }
-}
-
-int main()
-{
-    Node* head = new Node(50);
-    head->next = new Node(20);
-    head->next->next = new Node(15);
-    head->next->next->next = new Node(4);
-    head->next->next->next->next = new Node(10);
-
-    head->next->next->next->next->next = head;
-
-    detectAndRemoveLoop(head);
-
-    printf("Linked List after removing loop \n");
-    printList(head);
-
-    return 0;
-}
+};
 */
 /*
 //Intersection point in two Y shaped linkedlists
-//there are two brut force aproaches
-//Optimal aproach
-//TC O(N+M)   SC O(1)
-struct Node {
-  int data;
-  struct Node *next;
-  Node(int x) {
-    data = x;
-    next = nullptr;
-  }
+//BrutForce: TC O(m*n)    SC O(1)
+class Node {
+  public:
+    int data;
+    Node *next;
+    Node(int x) {
+        data = x;
+        next = nullptr;
+    }
 };
-int intersectPoint(Node* head1, Node* head2)
-{
-    // Your Code Here
-    Node* temp1=head1;
-    Node* temp2=head2;
-    while(temp1!=temp2){
-        temp1=temp1->next;
-        temp2=temp2->next;
-        if(temp1==nullptr && temp2==nullptr){
-            return -1;
+
+Node *intersectPoint(Node *head1, Node *head2) {
+    while (head2 != nullptr) {
+        Node *temp = head1;
+        while (temp != nullptr) {
+            if (temp == head2){
+                return head2;
+            }
+            temp = temp->next;
         }
-        if(temp1==temp2){
-            return temp1->data;
+        head2 = head2->next;
+    }
+  	
+    // intersection is not present between the lists
+    return nullptr;
+}
+//Better: TC O(n)    SC O(n)
+Node *intersectPoint(Node *head1, Node *head2) {
+    unordered_set<Node *> visitedNodes;
+
+    Node *curr1 = head1;
+    while (curr1 != nullptr) {
+        visitedNodes.insert(curr1);
+        curr1 = curr1->next;
+    }
+
+    Node *curr2 = head2;
+    while (curr2 != nullptr) {
+        if (visitedNodes.find(curr2) != visitedNodes.end()) {
+            return curr2;
         }
-        if(temp1==nullptr){
-            temp1=head2;
-        }
-        if(temp2==nullptr){
-            temp2=head1;
+        curr2 = curr2->next;
+    }
+
+    return nullptr;
+}
+
+//Optimal aproach: TC O(N+M)   SC O(1)
+class Solution {
+  public:
+    Node* intersectPoint(Node* head1, Node* head2) {
+        //  Code Here
+        Node* temp1=head1;
+        Node* temp2=head2;
+        
+        while(1){
+            if(temp1 == temp2){
+                return temp1;
+            }
+            if(temp1==nullptr){
+                temp1=head2;
+            }
+            if(temp2==nullptr){
+                temp2=head1;
+            }
+            
+            temp1=temp1->next;
+            temp2=temp2->next;
         }
     }
-    return temp1->data;
-}
+};
 */
-//Flatten linkedlist
 /*
+//Flatten linkedlist
+//BrutForce: TC O(n*m)   SC O(2n*m) 
+//traverese through all childs of all first level nodes and store in array then sort and convert into linklist
+//Optimal: TC O(n*2m)    SC O(1)
 class Node {
  public:
 	int data;
@@ -620,9 +602,7 @@ class Node {
 	 return dummyNode->child;
  }
 
-Node* flattenLinkedList(Node* head) 
-{
-	// Write your code here
+Node* flattenLinkedList(Node* head){
 	if(head==nullptr || head->next==nullptr){
 		return head;
 	}
@@ -635,80 +615,62 @@ Node* flattenLinkedList(Node* head)
 */
 /*
 //arrange linked list in zigzag fashion
-//Optimal aproach
 //TC O(n)   SC O(1)
-#include <bits/stdc++.h>
-using namespace std;
-
 struct Node {
 	int data;
 	struct Node* next;
 };
 
-void zigZagList(Node* head)
-{
-	bool flag = true;
-
-	Node* current = head;
-	while (current->next != NULL) {
-		if (flag) 
-		{
-			if (current->data > current->next->data)
-				swap(current->data, current->next->data);
-		}
-		else
-		{
-			if (current->data < current->next->data)
-				swap(current->data, current->next->data);
-		}
-
-		current = current->next;
-		flag = !flag;
-	}
-}
-
-void push(Node** head_ref, int new_data)
-{
-	struct Node* new_Node = new Node;
-
-	new_Node->data = new_data;
-
-	new_Node->next = (*head_ref);
-
-	(*head_ref) = new_Node;
-}
-
-void printList(struct Node* Node)
-{
-	while (Node != NULL) {
-		printf("%d->", Node->data);
-		Node = Node->next;
-	}
-	printf("NULL");
-}
-
-int main(void)
-{
-	struct Node* head = NULL;
-
-	push(&head, 1);
-	push(&head, 2);
-	push(&head, 6);
-	push(&head, 8);
-	push(&head, 7);
-	push(&head, 3);
-	push(&head, 4);
-
-	printf("Given linked list \n");
-	printList(head);
-
-	zigZagList(head);
-
-	printf("\nZig Zag Linked list \n");
-	printList(head);
-
-	return (0);
-}
+class Solution {
+  public:
+    Node* zigZag(Node* head) {
+        bool flag=true;
+        Node* curr=head;
+        
+        while(curr->next != nullptr){
+            if(flag){
+                if(curr->data > curr->next->data){
+                    swap(curr->data, curr->next->data);
+                }
+            }
+            else{
+                if(curr->data < curr->next->data){
+                    swap(curr->data, curr->next->data);
+                }
+            }
+            
+            flag = !flag;
+            curr=curr->next;
+        }
+        
+        return head;
+    }
+};
+*/
+/*
+//Reverse DLL
+//TC O(n)   SC O(1)
+class Solution {
+  public:
+    // Function to reverse a doubly linked list
+    DLLNode* reverseDLL(DLLNode* head) {
+        // Your code here
+        if(!head || !head->next) return head;
+        
+        DLLNode* curr=head;
+        DLLNode* temp=nullptr;
+        while(curr){
+            temp=curr->prev;
+            curr->prev=curr->next;
+            curr->next=temp;
+            
+            curr=curr->prev;
+        }
+        
+        head = temp->prev;
+        return head;
+    }
+};
 */
 /*
 //Remove all nodes which has greater element on right sidel
@@ -723,9 +685,8 @@ struct Node
     }
 };
 
-class Solution
-{
-    public:
+class Solution {
+  public:
     Node* reverseList(Node* head) {
         if (head == nullptr || head->next == nullptr) {
             return head;
@@ -737,37 +698,47 @@ class Solution
         return last;
     }
 
-    Node *compute(Node *head)
-    {
+    Node* reverseList(Node* headref) {
+        Node* curr = headref;
+        Node* prev = nullptr;
+        Node* next;
+        while (curr != nullptr) {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+  
+    Node *compute(Node *head) {
         // your code goes here
-        head=reverseList(head);
-
-        Node* cur=head;
-        int max=head->data;
+        head = reverseList(head);
+        
         Node* prev=head;
-        head=head->next;
-
-        while(head){
-            if(head->data>=max){
-                max=head->data;
-                prev=head;
-                head=head->next;
+        int max=head->data;
+        Node* curr=head->next;
+        
+        while(curr){
+            if(curr->data >= max){
+                max=curr->data;
+                prev=curr;
             }
             else{
-                prev->next=head->next;
-                head=prev->next;
+                prev->next = curr->next;
             }
+            
+            curr = prev->next;
         }
-
-        head=reverseList(cur);
-
+        
+        head = reverseList(head);
         return head;
     }
-
 };
 */
 /*
 //Sagrigate even odd elements in linkedlist
+//TC O(n)   SC O(1)
 struct Node
 {
     int data;
@@ -779,49 +750,32 @@ struct Node
     }
 };
 
-class Solution{
-public:
-    Node* divide(int N, Node *head){
+class Solution {
+  public:
+    Node* divide(Node* head) {
         // code here
-        Node* even=nullptr;
-        Node* odd=nullptr;
-        Node* e=nullptr;
-        Node* o=nullptr;
+        Node* oddD= new Node(-1);
+        Node* evenD= new Node(-1);
+        Node* odd=oddD, *even=evenD;
         
-        while(head){
-            if(head->data%2==0){
-                if(even==nullptr){
-                    even=head;
-                    e=head;
-                }
-                else{
-                    e->next=head;
-                    e=e->next;
-                }
+        Node* curr=head;
+        while(curr){
+            if(curr->data%2 == 0){
+                even->next=curr;
+                even=curr;
             }
             else{
-                if(odd==nullptr){
-                    odd=head;
-                    o=head;
-                }
-                else{
-                    o->next=head;
-                    o=o->next;
-                }
+                odd->next=curr;
+                odd=curr;
             }
-            head=head->next;
+            curr=curr->next;
         }
         
-        if(even){
-            e->next=odd;
-        }
-        if(odd){
-            o->next=nullptr;
-        }
-        if(even){
-            return even;
-        }
-        return odd;
+        even->next = (oddD->next)?oddD->next:nullptr;
+        odd->next=nullptr;
+        head=evenD->next;
+        
+        return head;
     }
 };
 */
@@ -1324,6 +1278,7 @@ public:
     }
 };
 */
+/*
 //Substract two numbers represented by two linkedlists
 //TC O(max(N, M))  SC O(max(N, M))
 #include<bits/stdc++.h>
@@ -1421,3 +1376,4 @@ public:
         return res;
     }
 };
+*/
