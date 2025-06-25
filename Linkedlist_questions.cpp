@@ -1154,7 +1154,7 @@ public:
         Node* prev = NULL;
         Node* current = head;
         Node* next = NULL;
-        
+
         while (current != NULL) {
             next = current->next;
             current->next = prev;
@@ -1176,7 +1176,7 @@ public:
         num2 = reverseList(num2);
 
         Node* res = NULL;
-        Node* cur = NULL;
+        Node* temp;
         int carry = 0;
 
         while (num1 != NULL || num2 != NULL || carry > 0) {
@@ -1193,17 +1193,12 @@ public:
             carry = sum / 10;
             sum = sum % 10;
 
-            Node* temp = new Node(sum);
-            if (res == NULL) {
-                res = temp;
-                cur = temp;
-            } else {
-                cur->next = temp;
-                cur = temp;
-            }
+            temp = new Node(sum);
+            temp->next=res;
+            res=temp;
         }
 
-        return reverseList(res);
+        return res;
     }
 };
 */
@@ -1233,7 +1228,7 @@ public:
         }
         return size;
     }
-    
+
     Node* reverseList(Node* head) {
         Node* prev = nullptr;
         Node* current = head;
@@ -1246,7 +1241,7 @@ public:
         }
         return prev;
     }
-    
+
     Node* subLinkedList(Node* head1, Node* head2) {
         while(head1!=nullptr && head1->data==0 && head1->next!=nullptr){
             head1=head1->next;
@@ -1254,13 +1249,13 @@ public:
         while(head2!=nullptr && head2->data==0 && head2->next!=nullptr){
             head2=head2->next;
         }
-        
+
         int n1=getLength(head1);
         int n2=getLength(head2);
-        
+
         Node* t1;
         Node* t2;
-        
+
         if(n2>n1) swap(head1, head2);
         else if(n1==n2){
             t1=head1;
@@ -1272,36 +1267,36 @@ public:
             if(!t1) return new Node(0);
             if(t2 && t2->data>t1->data) swap(head1, head2);
         }
-        
+
         head1=reverseList(head1);
         head2=reverseList(head2);
-        
+
         Node* res=nullptr;
         Node* temp;
         t1=head1;
         t2=head2;
-        
+
         while(t1){
             int small=0;
             if(t2) small=t2->data;
-            
+
             if(small>t1->data){
                 t1->next->data=t1->next->data-1;
                 t1->data=t1->data+10;
             }
-            
+
             temp=new Node(t1->data - small);
             temp->next=res;
             res=temp;
-            
+
             t1=t1->next;
             if(t2) t2=t2->next;
         }
-        
+
         while(res->next && res->data==0){
             res=res->next;
         }
-        
+
         return res;
     }
 };
