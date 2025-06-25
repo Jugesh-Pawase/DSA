@@ -559,9 +559,9 @@ class Solution {
 */
 /*
 //Flatten linkedlist
-//BrutForce: TC O(n*m)   SC O(2n*m) 
+//BrutForce: TC O(n*m)   SC O(n*m) 
 //traverese through all childs of all first level nodes and store in array then sort and convert into linklist
-//Optimal: TC O(n*2m)    SC O(1)
+//Optimal: TC O(n*m)    SC O(1)
 class Node {
  public:
 	int data;
@@ -674,7 +674,7 @@ class Solution {
 */
 /*
 //Remove all nodes which has greater element on right sidel
-struct Node
+Node
 {
     int data;
     Node* next;
@@ -781,21 +781,17 @@ class Solution {
 */
 /*
 // sort the biotonic doubly linked list
-#include <bits/stdc++.h>
-using namespace std;
-
-// a node of the doubly linked list
-struct Node {
+//TC O(n)    SC O(1)
+Node {
 	int data;
-	struct Node* next;
-	struct Node* prev;
+	Node* next;
+	Node* prev;
 };
 
-// Function to reverse a Doubly Linked List
 void reverse(struct Node* head_ref)
 {
-	struct Node* temp = NULL;
-	struct Node* current = head_ref;
+	Node* temp = NULL;
+	Node* current = head_ref;
 
 	while (current != NULL) {
 		temp = current->prev;
@@ -808,33 +804,36 @@ void reverse(struct Node* head_ref)
 		head_ref = temp->prev;
 }
 
-struct Node* merge(struct Node* first, struct Node* second)
-{
-	// If first linked list is empty
-	if (!first)
-		return second;
-
-	// If second linked list is empty
-	if (!second)
-		return first;
-
-	// Pick the smaller value
-	if (first->data < second->data) {
-		first->next = merge(first->next, second);
-		first->next->prev = first;
-		first->prev = NULL;
-		return first;
-	}
-	else {
-		second->next = merge(first, second->next);
-		second->next->prev = second;
-		second->prev = NULL;
-		return second;
-	}
-}
+Node* Merge(Node* head1, Node* head2) {
+        // code here
+        Node* dummy = new Node(-1);
+        Node* temp=dummy;
+        
+        while(head1!=nullptr && head2!=nullptr){
+            if(head1->data < head2->data){
+                temp->next=head1;
+                temp=head1;
+                head1=head1->next;
+            }
+            else{
+                temp->next=head2;
+                temp=head2;
+                head2=head2->next;
+            }
+        }
+        
+        if(head1!=nullptr){
+            temp->next=head1;
+        }
+        else{
+            temp->next=head2;
+        }
+        
+        return dummy->next;
+    }
 
 // function to sort a biotonic doubly linked list
-struct Node* sort(struct Node* head)
+Node* sort(struct Node* head)
 {
 	if (head == NULL || head->next == NULL)
 		return head;
@@ -859,236 +858,95 @@ struct Node* sort(struct Node* head)
 
 	return merge(head, current);
 }
-
-// Function to insert a node at the beginning
-// of the Doubly Linked List
-void push(struct Node** head_ref, int new_data)
-{
-	// allocate node
-	struct Node* new_node
-		= (struct Node*)malloc(sizeof(struct Node));
-
-	// put in the data
-	new_node->data = new_data;
-
-	// since we are adding at the beginning,
-	// prev is always NULL
-	new_node->prev = NULL;
-
-	// link the old list of the new node
-	new_node->next = (*head_ref);
-
-	// change prev of head node to new node
-	if ((*head_ref) != NULL)
-		(*head_ref)->prev = new_node;
-
-	// move the head to point to the new node
-	(*head_ref) = new_node;
-}
-
-// Function to print nodes in a given doubly
-// linked list
-void printList(struct Node* head)
-{
-	// if list is empty
-	if (head == NULL)
-		cout << "Doubly Linked list empty";
-
-	while (head != NULL) {
-		cout << head->data << " ";
-		head = head->next;
-	}
-}
-
-// Driver program to test above
-int main()
-{
-	struct Node* head = NULL;
-
-	// Create the doubly linked list:
-	// 2<->5<->7<->12<->10<->6<->4<->1
-	push(&head, 1);
-	push(&head, 4);
-	push(&head, 6);
-	push(&head, 10);
-	push(&head, 12);
-	push(&head, 7);
-	push(&head, 5);
-	push(&head, 2);
-
-	cout << "Original Doubly linked list:\n";
-	printList(head);
-
-	// sort the biotonic DLL
-	head = sort(head);
-
-	cout << "\nDoubly linked list after sorting:\n";
-	printList(head);
-
-	return 0;
-}
 */
 /*
 //Merge K sorted lists
-//Simple aproach
-TC O(n*k*k)  SC(1)
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
- 
-class Solution {
-public:
-    ListNode* merge(ListNode* list1, ListNode* list2) {
-        ListNode* dummyNode = new ListNode(-1);
-        ListNode* res = dummyNode;
+//BrutForce(Merge one by one):TC (n*k*k)   SC O(1)
+Linked list Node structure
+struct Node
+{
+    int data;
+    Node* next;
 
-        while (list1 != nullptr && list2 != nullptr) {
-            if (list1->val < list2->val) {
-                res->next = list1;
-                res = list1;
-                list1 = list1->next;
-            } else {
-                res->next = list2;
-                res = list2;
-                list2 = list2->next;
-            }
-        }
-
-        if (list1) {
-            res->next = list1;
-        } else {
-            res->next = list2;
-        }
-        return dummyNode->next;
+    Node(int x){
+        data = x;
+        next = NULL;
     }
 
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        int n = lists.size();
-        ListNode* res=nullptr;
-        if (n == 0) {
-            return res;
+};
+
+class Solution {
+  public:
+    Node* mergeTwoLists(Node* head1, Node* head2){
+        Node* dummy = new Node(-1);
+        Node* curr=dummy;
+
+        while(head1!=nullptr && head2!=nullptr){
+            if(head1->data <= head2->data){
+                curr->next = head1;
+                head1=head1->next;
+            }
+            else{
+                curr->next=head2;
+                head2=head2->next;
+            }
+            curr=curr->next;
         }
-        res=lists[0];
-        if(n==1){
-            return res;
+
+        if(head1 != nullptr){
+            curr->next=head1;
         }
-        
-        for(int i=1; i<n; i++){
-            res=merge(res, lists[i]);
+        else{
+            curr->next=head2;
+        }
+
+        return dummy->next;
+    }
+
+    Node* mergeKLists(vector<Node*>& arr) {
+        Node* res;
+        for(Node* node:arr){
+            res=mergeTwoLists(res, node);
         }
 
         return res;
     }
 };
-*/
-/*
-//Merge k sorted lists
-//Optimal aproach
-//TC O(n*k*logk)  SC(1)
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node {
-    int data;
-    Node* next;
-};
-
-void printList(Node* node)
-{
-    while (node != NULL) {
-        printf("%d ", node->data);
-        node = node->next;
-    }
-}
-
-Node* SortedMerge(Node* a, Node* b)
-{
-    Node* result = NULL;
-
-    if (a == NULL)
-        return (b);
-    else if (b == NULL)
-        return (a);
-
-    if (a->data <= b->data) {
-        result = a;
-        result->next = SortedMerge(a->next, b);
-    }
-    else {
-        result = b;
-        result->next = SortedMerge(a, b->next);
-    }
-
-    return result;
-}
-
-Node* mergeKLists(Node* arr[], int last)
-{
-    // repeat until only one list is left
-    while (last != 0) {
-        int i = 0, j = last;
-
-        // (i, j) forms a pair
-        while (i < j) {
-            // merge List i with List j and store
-            // merged list in List i
-            arr[i] = SortedMerge(arr[i], arr[j]);
-
-            // consider next pair
-            i++, j--;
-
-            // If all pairs are merged, update last
-            if (i >= j)
-                last = j;
+//Optimal Aproach(MinHeap): TC O(nlogk)   SC O(k)    //n=elements k=lists
+class Solution {
+  public:
+    struct compare {
+        bool operator()(Node* a, Node* b) {
+            return a->data > b->data; // Min-heap based on node data
         }
+    };
+
+    Node* mergeKLists(vector<Node*>& arr) {
+        // Your code here
+        priority_queue<Node*, vector<Node*>, compare>pq;
+
+        Node* dummy = new Node(-1);
+        Node* tail=dummy;
+
+        for(Node* head:arr){
+            if(head != nullptr) pq.push(head);
+        }
+
+        while(!pq.empty()){
+            Node* top=pq.top();
+            pq.pop();
+
+            tail->next=top;
+            tail=top;
+
+            if(top->next != nullptr){
+                pq.push(top->next);
+            }
+        }
+
+        return dummy->next;
     }
-
-    return arr[0];
-}
-
-Node* newNode(int data)
-{
-    struct Node* temp = new Node;
-    temp->data = data;
-    temp->next = NULL;
-    return temp;
-}
-
-int main()
-{
-    int k = 3; // Number of linked lists
-    int n = 4; // Number of elements in each list
-
-    // an array of pointers storing the head nodes
-    // of the linked lists
-    Node* arr[k];
-
-    arr[0] = newNode(1);
-    arr[0]->next = newNode(3);
-    arr[0]->next->next = newNode(5);
-    arr[0]->next->next->next = newNode(7);
-
-    arr[1] = newNode(2);
-    arr[1]->next = newNode(4);
-    arr[1]->next->next = newNode(6);
-    arr[1]->next->next->next = newNode(8);
-
-    arr[2] = newNode(0);
-    arr[2]->next = newNode(9);
-    arr[2]->next->next = newNode(10);
-    arr[2]->next->next->next = newNode(11);
-
-    // Merge all lists
-    Node* head = mergeKLists(arr, k - 1);
-
-    printList(head);
-
-    return 0;
-}
+};
 */
 /*
 //mergeSort for linkedlist
@@ -1224,57 +1082,128 @@ void quickSort(struct node **headRef) {
 }
 */
 /*
+//Flatten linkedlist
+//BrutForce: TC O(n*m)   SC O(n*m) 
+//traverese through all childs of all first level nodes and store in array then sort and convert into linklist
+//Optimal: TC O(n*m)    SC O(1)
+class Node {
+ public:
+	int data;
+	Node *next;
+		Node *child;
+	Node() : data(0), next(nullptr), child(nullptr){};
+	Node(int x) : data(x), next(nullptr), child(nullptr) {}
+	Node(int x, Node *next, Node *child) : data(x), next(next), child(child) {}
+};
+ 
+
+ Node* merge(Node* list1, Node* list2){
+	 Node* dummyNode=new Node(-1);
+	 Node* res=dummyNode;
+
+	 while(list1!=nullptr && list2!=nullptr){
+		 if(list1->data < list2->data){
+			 res->child=list1;
+			 res=list1;
+			 list1=list1->child;
+		 }
+		 else{
+			 res->child=list2;
+			 res=list2;
+			 list2=list2->child;
+		 }
+		 res->next=nullptr;
+	 }
+	 if(list1){
+		 res->child=list1;
+	 }
+	 else{
+		 res->child=list2;
+	 }
+	 if(dummyNode->child){
+		 dummyNode->child->next=nullptr;
+	 }
+	 return dummyNode->child;
+ }
+
+Node* flattenLinkedList(Node* head){
+	if(head==nullptr || head->next==nullptr){
+		return head;
+	}
+
+	Node* mergedHead = flattenLinkedList(head->next);
+	head=merge(head, mergedHead);
+
+	return head;
+}
+*/
+/*
 //Add numbers represent by linkedlists
 //TC O(max(N, M))  SC O(max(N, M))
- struct ListNode {
-     int val;
-     ListNode *next;
-     ListNode() : val(0), next(nullptr) {}
-     ListNode(int x) : val(x), next(nullptr) {}
-     ListNode(int x, ListNode *next) : val(x), next(next) {}
- };
- 
+struct Node {
+    int data;
+    struct Node* next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
 class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            return head;
+    Node* reverseList(Node* head) {
+        Node* prev = NULL;
+        Node* current = head;
+        Node* next = NULL;
+        
+        while (current != NULL) {
+            next = current->next;
+            current->next = prev;
+            prev = current;
+            current = next;
         }
-
-        ListNode* last = reverseList(head->next);
-        head->next->next = head;
-        head->next = nullptr;
-        return last;
+        return prev;
     }
 
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        l1=reverseList(l1);
-        l2=reverseList(l2);
-
-        ListNode* res=nullptr;
-        ListNode* cur=nullptr;
-        ListNode* temp;
-        int s=0, c=0;
-
-        while(l1!=nullptr || l2!=nullptr){
-            s=(l1?l1->val:0)+(l2?l2->val:0)+c;
-            c=(s>=10)?1:0;
-            s=s%10;
-            temp=new ListNode(s);
-            if(res==nullptr)res=temp;
-            else cur->next=temp;
-            cur=temp;
-
-            if(l1)l1=l1->next;
-            if(l2)l2=l2->next;
+    Node* addTwoLists(Node* num1, Node* num2) {
+        while(num1!=nullptr && num1->data==0 && num1->next!=nullptr){
+            num1=num1->next;
         }
-        if(c>0){
-            temp=new ListNode(c);
-            cur->next=temp;
-            cur=temp;
+        while(num2!=nullptr && num2->data==0 && num2->next!=nullptr){
+            num2=num2->next;
         }
-        //res=reverseList(res);
-        return res;
+
+        num1 = reverseList(num1);
+        num2 = reverseList(num2);
+
+        Node* res = NULL;
+        Node* cur = NULL;
+        int carry = 0;
+
+        while (num1 != NULL || num2 != NULL || carry > 0) {
+            int sum = carry;
+            if (num1 != NULL) {
+                sum += num1->data;
+                num1 = num1->next;
+            }
+            if (num2 != NULL) {
+                sum += num2->data;
+                num2 = num2->next;
+            }
+
+            carry = sum / 10;
+            sum = sum % 10;
+
+            Node* temp = new Node(sum);
+            if (res == NULL) {
+                res = temp;
+                cur = temp;
+            } else {
+                cur->next = temp;
+                cur = temp;
+            }
+        }
+
+        return reverseList(res);
     }
 };
 */
@@ -1319,10 +1248,10 @@ public:
     }
     
     Node* subLinkedList(Node* head1, Node* head2) {
-        while(head1 && head1->data==0){
+        while(head1!=nullptr && head1->data==0 && head1->next!=nullptr){
             head1=head1->next;
         }
-        while(head2 && head2->data==0){
+        while(head2!=nullptr && head2->data==0 && head2->next!=nullptr){
             head2=head2->next;
         }
         
@@ -1333,7 +1262,7 @@ public:
         Node* t2;
         
         if(n2>n1) swap(head1, head2);
-        if(n1==n2){
+        else if(n1==n2){
             t1=head1;
             t2=head2;
             while(t1 && t2 && t1->data == t2->data){
@@ -1348,7 +1277,7 @@ public:
         head2=reverseList(head2);
         
         Node* res=nullptr;
-        Node* n;
+        Node* temp;
         t1=head1;
         t2=head2;
         
@@ -1361,9 +1290,9 @@ public:
                 t1->data=t1->data+10;
             }
             
-            n=new Node(t1->data - small);
-            n->next=res;
-            res=n;
+            temp=new Node(t1->data - small);
+            temp->next=res;
+            res=temp;
             
             t1=t1->next;
             if(t2) t2=t2->next;
