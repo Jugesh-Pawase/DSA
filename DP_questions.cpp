@@ -1,5 +1,5 @@
 /*
-//Knapsack with duplicte items
+//Knapsack with duplicte items       0/1 Knapsack
 //memoiation
 //tc o(n*w)   sc o(n*w)+o(n)
 class Solution{
@@ -105,70 +105,6 @@ public:
 };
 */
 /*
-//Maximum number of balance binary trees possible with given height h
-//tc o(h)   sc o(h)
-class Solution {
-  public:
-    long long int countBT(int h) { 
-        // code here
-        long long int mod=1000000007;
-        int dp[h+1];
-        dp[0]=1;
-        dp[1]=1;
-        for(int i=2; i<=h; i++){
-            dp[i]=(dp[i-1]*(2*dp[i-2]%mod+dp[i-1]%mod))%mod;
-        }
-        return dp[h];
-    }
-};
-*/
-/*
-//Reach a given with player can score 3, 5 or 10 points
-//tc o(n)   sc o(n)
-class Solution
-{
-    public:
-    // Complete this function
-    long long int count(long long int n)
-    {
-    	// Your code here
-    	vector<int> table(n+1, 0);
-    	table[0]=1;
-    	for(int i=3; i<=n; i++){
-    	    table[i] += table[i-3];
-    	}
-    	for(int i=5; i<=n; i++){
-    	    table[i] += table[i-5];
-    	}	
-    	for(int i=10; i<=n; i++){
-    	    table[i] += table[i-10];
-    	}
-    	
-    	return table[n];
-    }
-};
-*/
-/*
-class Solution{
-public:	
-//Maximum diference 0's and 1's of binary string
-//tc o(s)   sc o(1)
-	int maxSubstring(string S)
-	{
-	    // Your code goes here
-	    int mxtil_i=0;
-	    int mx=-1;//INTMIN
-	    for(int i=0; i<S.length(); i++){
-	        int x = (S[i]=='0')?1:-1;
-	        mxtil_i += x;
-	        if(mxtil_i>mx) mx=mxtil_i;
-	        if(mxtil_i<0) mxtil_i=0;
-	    }
-	    return mx;
-	}
-};
-*/
-/*
 //number of ways to reach nth stair
 //tc o(2^n)  sc o(2^n)
 class Solution
@@ -244,8 +180,8 @@ class Solution
     int countWays(int n)
     {
         // your code here
-        int prev=1;
         int prev2=1;
+        int prev=1;
         for(int ind=2; ind<=n; ind++){
             int curr=prev+prev2;
             prev2=prev;
@@ -254,115 +190,6 @@ class Solution
         return prev;
     }
 };
-*/
-/*
-//Permutation coificient
-//Tc (k) sc o(1)
-class Solution{
-    public:
-    int permutationCoeff(int n, int k){
-      int p=1;
-      for(int i=0; i<k; i++){
-          p *= (n-i);
-      }
-      return p;
-    }
-};
-*/
-/*
-//LongestRepeatingSubsequence
-//tc o(n^2)    sc o(n^2)
-class Solution {
-	public:
-		int LongestRepeatingSubsequence(string str){                            
-		    // Code here
-		    int n=str.length();
-		    int dp[n+1][n+1];
-		    
-		    for(int i=0; i<=n; i++){
-		        for(int j=0; j<=n; j++){
-		            if(i==0 || j==0){
-		                dp[i][j]=0;
-		            }
-		            else if(str[i-1]==str[j-1] && i!=j){
-		                dp[i][j]=dp[i-1][j-1]+1;
-		            }
-		            else{
-		                dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
-		            }
-		        }
-		    }
-		    return dp[n][n];
-		}
-
-};
-*/
-/*
-//maxSum PairWith Difference LessThan K
-tc o(n*logn)    sc o(n) or o(1)
-class Solution{
-    public:
-    int maxSumPairWithDifferenceLessThanK(int arr[], int N, int K)
-    {
-        // Your code goes here  
-        sort(arr, arr+N, greater<int>());
-        int s=0;
-        int i=0;
-        while(i<N-1){
-            int x=abs(arr[i]-arr[i+1]);
-            if(x<K){
-                s = s+arr[i]+arr[i+1];
-                i=i+2;
-            }
-            else{
-                i++;
-            }
-        }
-        return s;
-    }
-};
-*/
-/*
-//Longest subsequence with difference between adjacent elements is 1
-tc o(n^2)    sc o(n)
-class Solution {
-  public:
-    int longestSubseq(int n, vector<int> &a) {
-        // code here                                 
-        int dp[n];
-        for(int i=0; i<n; i++){
-            dp[i]=1;
-        }
-        for(int i=1; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(abs(a[i]-a[j])==1){
-                   dp[i] = max(dp[i], dp[j]+1);
-                }
-            }
-        }
-        int mx=0;
-        for(int i=0; i<n; i++){
-            mx = max(mx, dp[i]);
-        }
-        return mx;
-    }
-};
-*/
-/*
-//Longest subsequence with difference between adjacent elements is 1
-tc o(n)    sc o(n)
-int longestSubseq(int n, vector<int> &a){
-        unordered_map<int, int> mp;
-        int mx=0;
-        for(int i=0; i<n; i++){
-            int l=0;
-            if(mp[a[i]-1]) l=mp[a[i]-1];
-            if(mp[a[i]+1] && mp[a[i]+1]>l) l=mp[a[i]+1];
-            mp[a[i]]=l+1;
-            mx=max(mx, mp[a[i]]);
-        }
-        return mx;
-    }
 */
 /*
 //Minimum coins to reach a target
@@ -443,6 +270,601 @@ int minCoins(vector<int> &coins, int M, int V)
 	        }
 	    }
 	    for(int i=1; i<M; i++){
+	        for(int v=0; v<=V; v++){
+	           int notTake=dp[i-1][v];
+	           int take=1e9;
+	           if(v-coins[i]>=0){
+	               take=1+dp[i][v-coins[i]];
+	           }
+	           dp[i][v] = min(take, notTake);
+	        }
+	    }
+	    int ans = dp[M-1][V];
+	    if(ans>=1e9) return -1;
+	    return ans;
+	}
+*/
+//We can optimize this also
+/*
+//Prtition of array iinto two parts with equal sum
+//Expected Time Complexity: O(N*sum of elements)
+//Expected Auxiliary Space: O(sum of elements)
+class Solution{
+public:
+    int equalPartition(int N, int arr[])
+    {
+        // code here
+        int sum=0;
+        for(int i=0; i<N; i++){
+            sum+=arr[i];
+        }
+        if(sum % 2) return 0;
+        int target=sum/2;
+        vector<int>prev(target+1, 0), cur(target+1, 0);
+        
+            prev[0]=cur[0]=1;
+            prev[arr[0]]=1;
+        
+        for(int ind=1; ind<N; ind++){
+            for(int k=1; k<=target; k++){
+                bool notTake=prev[k];
+                bool take=false;
+                if(arr[ind]<=k) {
+                    take=prev[k-arr[ind]];
+                }
+                cur[k]=take | notTake;
+            }
+            prev=cur;
+        }
+        
+        return prev[target];
+    }
+};
+*/
+/*
+//House robber
+//Better Aproach: TC O(n)    SC O(n)
+class Solution {
+  public:
+    int rec(int i, vector<int>& arr, vector<int>& dp){
+        if(i<0) return 0;
+        if(dp[i] != -1) return dp[i];
+        
+        int notTake = rec(i-1, arr, dp);
+        int take = arr[i] + rec(i-2, arr, dp);
+        return dp[i]  = max(take, notTake);
+    }
+  
+    int findMaxSum(vector<int>& arr) {
+        // code here
+        int n=arr.size();
+        vector<int> dp(n, -1);
+        return rec(n-1, arr, dp);
+    }
+};
+//Oprimal soluiom tc o(n)  sc o(1)
+#include<iostream>
+using namespace std;
+
+long long int solve(vector<int>& arr){
+    int n = arr.size();
+    long long int prev2 = 0;
+    long long int prev = arr[0];
+
+    for(int i=1; i<n; i++){
+        int long long notTake = 0 + prev;
+        long long int take = arr[i] + prev2;
+        long long int cur_i = max(take, notTake);
+        prev2 = prev;
+        prev= cur_i;
+
+    }
+    return prev;
+}
+*/
+/*
+//House robber 2
+//Optimal soluiom tc o(n)  sc o(1)
+#include<iostream>
+using namespace std;
+
+long long int solve(vector<int>& arr){
+    int n = arr.size();
+    long long int prev = arr[0];
+    long long int prev2 = 0;
+    
+    for(int i=1; i<n; i++){
+        int long long notTake = 0 + prev;
+        long long int take = arr[i] + prev2;
+        long long int cur_i = max(pick, nonPick);
+        prev2 = prev;
+        prev= cur_i;
+    }
+    return prev;
+}
+
+long long int robStreet(int n, vector<int> &arr){
+    vector<int> arr1;
+    vector<int> arr2;
+    
+    if(n==1) return arr[0];
+    
+    for(int i=0; i<n; i++){
+        if(i!=n-1) arr1.push_back(arr[i]);
+        if(i!=0) arr2.push_back(arr[i]);
+    }
+    
+    long long int ans1 = solve(arr1);
+    long long int ans2 = solve(arr2);
+    
+    return max(ans1,ans2);
+}
+
+
+int main() {
+
+  vector<int> arr{1,5,1,2,6};
+  int n=arr.size();
+  cout<<robStreet(n,arr);
+}
+*/
+/*
+//Knapsack With distinct items
+//Brutforce
+//tc o(2^ N*W)   sc o(2^ N*W) 
+class Solution{
+public:
+    int solve(int i, int j, int val[], int wt[], vector<vector<int>> &dp){
+        if(i<0) return 0;
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        int notTake =solve(i-1, j, val, wt, dp);
+        int take=0;
+        if(wt[i]<=j){
+            take =val[i] + solve(i-1, j-wt[i], val, wt, dp);
+        }
+        return dp[i][j] = max(take, notTake);
+    }
+    
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        // code here
+        vector<vector<int>>dp(N, vector<int>(W+1, -1));
+        return solve(N-1, W, val, wt, dp);
+    }
+};
+*/
+/*
+//Knapsack with distinct items
+tc o(N*W)   sc o(N*W)+o(N)
+class Solution{
+public:
+    int solve(int i, int j, int val[], int wt[], vector<vector<int>> &dp){
+        if(i==0) {
+            if(wt[0]<=j){
+                return val[0];
+            }
+            return 0;
+        }
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        int notTake =solve(i-1, j, val, wt, dp);
+        int take=0;
+        if(wt[i]<=j){
+            take =val[i] + solve(i-1, j-wt[i], val, wt, dp);
+        }
+        return dp[i][j] = max(take, notTake);
+    }
+    
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        // code here
+        vector<vector<int>>dp(N, vector<int>(W+1, -1));
+        return solve(N-1, W, val, wt, dp);
+    }
+};
+*/
+/*
+//Knapsack with distinct items
+//Expected Time Complexity: O(N*W).
+//Expected Auxiliary Space: O(N*W)
+class Solution{
+public:
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        // code here
+        vector<vector<int>>dp(N, vector<int>(W+1, 0));    
+        for(int w=wt[0]; w<=W; w++){
+            dp[0][w]=val[0];
+        }
+        for(int i=1; i<N; i++){
+            for(int j=0; j<=W; j++){
+                int notTake =dp[i-1][j];
+                int take=0;
+                if(wt[i]<=j){
+                take =val[i] + dp[i-1][j-wt[i]];
+                }
+                dp[i][j] = max(take, notTake);
+            }
+        }
+        return dp[N-1][W];
+    }
+};
+*/
+/*
+//LongestRepeatingSubsequence
+//tc o(n^2)    sc o(n^2)
+class Solution {
+	public:
+		int LongestRepeatingSubsequence(string str){                            
+		    // Code here
+		    int n=str.length();
+		    int dp[n+1][n+1];
+		    
+		    for(int i=0; i<=n; i++){
+		        for(int j=0; j<=n; j++){
+		            if(i==0 || j==0){
+		                dp[i][j]=0;
+		            }
+		            else if(str[i-1]==str[j-1] && i!=j){
+		                dp[i][j]=dp[i-1][j-1]+1;
+		            }
+		            else{
+		                dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+		            }
+		        }
+		    }
+		    return dp[n][n];
+		}
+
+};
+*/
+/*
+//length of longest common subsequence in two strings.
+//tc o(n*m)    sc o(n*m)
+class Solution {
+  public:
+    // Function to find the length of longest common subsequence in two strings.
+    int lcs(int n, int m, string str1, string str2) {
+        // your code here
+		    int dp[n+1][m+1];
+		    
+		    for(int i=0; i<=n; i++){
+		        for(int j=0; j<=m; j++){
+		            if(i==0 || j==0){
+		                dp[i][j]=0;
+		            }
+		            else if(str1[i-1]==str2[j-1]){
+		                dp[i][j]=dp[i-1][j-1]+1;
+		            }
+		            else{
+		                dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+		            }
+		        }
+		    }
+            return dp[n][m];
+	}
+};
+*/
+/*
+//Longest palindromic subsequence
+//Expected Time Complexity: O(n*m).
+//Expected Auxiliary Space: O(n*m)
+class Solution{
+  public:
+    int longestPalinSubseq(string A) {
+        //code here
+        int n=A.size();
+        string B=A;
+        reverse(B.begin(), B.end());
+        int dp[n+1][n+1];
+		    
+		    for(int i=0; i<=n; i++){
+		        for(int j=0; j<=n; j++){
+		            if(i==0 || j==0){
+		                dp[i][j]=0;
+		            }
+		            else if(A[i-1]==B[j-1]){
+		                dp[i][j]=dp[i-1][j-1]+1;
+		            }
+		            else{
+		                dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+		            }
+		        }
+		    }
+            return dp[n][n];
+    }
+};
+*/
+/*
+//Longest common substring
+//Expected Time Complexity: O(n*m).
+//Expected Auxiliary Space: O(n*m)
+class Solution {
+  public:
+    int longestCommonSubstr(string s1, string s2) {
+        // your code here
+        int n=s1.size();
+        int m=s2.size();
+        int dp[n+1][m+1];
+		int ans=0;   
+		    for(int i=0; i<=n; i++){
+		        for(int j=0; j<=m; j++){
+		            if(i==0 || j==0){
+		                dp[i][j]=0;
+		            }
+		            else if(s1[i-1]==s2[j-1]){
+		                dp[i][j]=dp[i-1][j-1]+1;
+		                ans=max(ans, dp[i][j]);
+		            }
+		            else{
+		                dp[i][j]=0;
+		            }
+		        }
+		    }
+            return ans;
+    }
+};
+*/
+/*
+//length of longest increasing subsequence.
+//tc o(n^2)    sc o(n)
+class Solution
+{
+    public:
+    //Function to find length of longest increasing subsequence.
+    int longestSubsequence(int n, int a[])
+    {
+       // your code here
+       vector<int>dp(n, 1);
+       for(int i=1; i<n; i++){
+           for(int j=0; j<i; j++){
+               if(a[j]<a[i]){
+                   dp[i]=max(dp[i], dp[j]+1);
+               }
+           }
+       }
+       int mx=0;
+       for(int i=0; i<n; i++){
+           mx=max(mx, dp[i]);
+       }
+       return mx;
+    }
+};
+*/
+/*
+//length of longest increasing subsequence.
+//tc o(n*logn)    sc o(n)
+class Solution
+{
+    public:
+    //Function to find length of longest increasing subsequence.
+    int longestSubsequence(int n, int a[])
+    {
+       // your code here
+       int dp[n+1];
+       for(int i=1; i<=n; i++){
+           dp[i]=1e9;
+       }
+       dp[0]=-1;
+       for(int i=0; i<n; i++){
+           int idx=upper_bound(dp, dp+n+2, a[i])-dp;
+           if(dp[idx-1]<a[i] && dp[idx]>=a[i]){
+               dp[idx]=a[i];
+           }
+       }
+       int mx=0;
+       for(int i=n; i>=0; i--){
+           if(dp[i] != 1e9){
+               mx=i;
+               break;
+           }
+       }
+       return mx;
+    }
+};
+*/
+/*
+//Maximum sum of strictly increasing subsequence
+//Expected Time Complexity: O(N2)
+//Expected Auxiliary Space: O(N)
+class Solution{
+	public:
+	int maxSumIS(int arr[], int n)                                      
+	{  
+	    // Your code goes here
+	    vector<int>dp(n, 0);
+	    for(int i=0; i<n; i++){
+	        dp[i]=arr[i];
+	    }
+	    for(int i=1; i<n; i++){
+	        for(int j=0; j<i; j++){
+	            if(arr[j]<arr[i]){
+	                dp[i]=max(dp[i], dp[j]+arr[i]);
+	            }
+	        }
+	    }
+	    int mx=dp[0];
+	    for(int i=1; i<n; i++){
+	        mx=max(mx, dp[i]);
+	    }
+	    return mx;
+	}  
+};
+*/
+/*
+//Longest alternating(inceasing decreasing) subsequence
+//brut force
+//tc o(n^2)    sc o(n)
+class Solution {
+  public:
+    int alternatingMaxLength(vector<int>& arr) {                  
+        // Code here
+        int n=arr.size();
+        vector<vector<int>>dp(n, vector<int>(2, 1));
+        int mx=1;
+        for(int i=1; i<n; i++){
+            for(int j=0; j<i; j++){
+                if(arr[i]>arr[j]){
+                    dp[i][0]=max(dp[i][0], dp[j][1]+1);
+                }
+                else if(arr[i]<arr[j]){
+                     dp[i][1]=max(dp[i][1], dp[j][0]+1);
+                }
+            }
+            mx=max(mx, max(dp[i][0], dp[i][1]));
+        }
+        return mx;
+    }
+};
+*/
+/*
+//Longest alternating(inceasing decreasing) subsequence
+//Expected Time Complexity: O(n)
+//Expected Space Complexity: O(1)
+class Solution {
+  public:
+    int alternatingMaxLength(vector<int>& arr) {
+        // Code here
+        int n=arr.size();
+        int mx1=1, mx2=1;
+        for(int i=1; i<n; i++){
+            if(arr[i]>arr[i-1]){
+                mx1=mx2+1;
+            }
+            else if(arr[i]<arr[i-1]){
+                mx2=mx1+1;
+            }
+        }
+        return max(mx1, mx2);
+    }
+};
+*/
+/*
+//Longest subsequence with difference between adjacent elements is 1
+tc o(n^2)    sc o(n)
+class Solution {
+  public:
+    int longestSubseq(int n, vector<int> &a) {
+        // code here                                 
+        int dp[n];
+        for(int i=0; i<n; i++){
+            dp[i]=1;
+        }
+        for(int i=1; i<n; i++){
+            for(int j=0; j<i; j++){
+                if(abs(a[i]-a[j])==1){
+                   dp[i] = max(dp[i], dp[j]+1);
+                }
+            }
+        }
+        int mx=0;
+        for(int i=0; i<n; i++){
+            mx = max(mx, dp[i]);
+        }
+        return mx;
+    }
+};
+*/
+/*
+//Longest subsequence with difference between adjacent elements is 1
+tc o(n)    sc o(n)
+int longestSubseq(int n, vector<int> &a){
+        unordered_map<int, int> mp;
+        int mx=0;
+        for(int i=0; i<n; i++){
+            int l=0;
+            if(mp[a[i]-1]) l=mp[a[i]-1];
+            if(mp[a[i]+1] && mp[a[i]+1]>l) l=mp[a[i]+1];
+            mp[a[i]]=l+1;
+            mx=max(mx, mp[a[i]]);
+        }
+        return mx;
+    }
+*/
+/*
+//Maximum number of balance binary trees possible with given height h
+//tc o(h)   sc o(h)
+class Solution {
+  public:
+    long long int countBT(int h) { 
+        // code here
+        long long int mod=1000000007;
+        int dp[h+1];
+        dp[0]=1;
+        dp[1]=1;
+        for(int i=2; i<=h; i++){
+            dp[i]=(dp[i-1]*(2*dp[i-2]%mod+dp[i-1]%mod))%mod;
+        }
+        return dp[h];
+    }
+};
+*/
+/*
+//Reach a given score with player can score 3, 5 or 10 points
+//tc o(n)   sc o(n)
+class Solution
+{
+    public:
+    // Complete this function
+    long long int count(long long int n)
+    {
+    	// Your code here
+    	vector<int> table(n+1, 0);
+    	table[0]=1;
+    	for(int i=3; i<=n; i++){
+    	    table[i] += table[i-3];
+    	}
+    	for(int i=5; i<=n; i++){
+    	    table[i] += table[i-5];
+    	}	
+    	for(int i=10; i<=n; i++){
+    	    table[i] += table[i-10];
+    	}
+    	
+    	return table[n];
+    }
+};
+*/
+/*
+class Solution{
+public:	
+//Maximum diference 0's and 1's of binary string
+//tc o(s)   sc o(1)
+	int maxSubstring(string S)
+	{
+	    // Your code goes here
+	    int mxtil_i=0;
+	    int mx=-1;
+	    for(int i=0; i<S.length(); i++){
+	        int x = (S[i]=='0')?1:-1;
+	        mxtil_i += x;
+	        if(mxtil_i>mx) mx=mxtil_i;
+	        if(mxtil_i<0) mxtil_i=0;
+	    }
+	    return mx;
+	}
+};
+*/
+/*
+//Permutation coificient
+//Tc (k) sc o(1)
+class Solution{
+    public:
+    int permutationCoeff(int n, int k){
+      int p=1;
+      for(int i=0; i<k; i++){
+          p *= (n-i);
+      }
+      return p;
+    }
+};
+*/
+/*
+//maxSum PairWith Difference LessThan K
+tc o(n*logn)    sc o(n) or o(1)
+class Solution{
+    public
 	        for(int v=0; v<=V; v++){
 	           int notTake=dp[i-1][v];
 	           int take=1e9;
