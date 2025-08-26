@@ -148,20 +148,18 @@ class Solution{
 class Solution
 {
     public:
-    void solve(Node* root, vector<int> &v, int &i){
+    void solve(Node* root, vector<int> &v){
         if(!root) return;
-        solve(root->left, v, i);
+        solve(root->left, v);
         v.push_back(root->data);
-        i++;
-        solve(root->right, v, i);
+        solve(root->right, v);
     }
     
     int kthLargest(Node *root, int K)
     {
         //Your code here
         vector<int>v;
-        int i=0;
-        solve(root, v, i);
+        solve(root, v);
         int n=v.size();
         return v[n-K];
     }
@@ -199,7 +197,7 @@ class Solution
 */
 /*
 //Check tree is valid BST or not
-//tc O(n). sc O(n)
+//brut force: tc O(n). sc O(n)
 
 class Solution {
   public:
@@ -220,8 +218,8 @@ class Solution {
                 return false;
             }
         }
-        return true;
-    }
+        return true;
+    }
 };
 */
 /*
@@ -232,16 +230,16 @@ class Solution {
   public:
    bool solve(Node* root, int min, int max){
        if(!root) return true;
-       if(root->data<=min || root->data>=max){
+       if(root->data<min || root->data>max){
            return false;
        }
-       return solve(root->left, min, root->data) && solve(root->right, root->data, max);               
+       return solve(root->left, min, root->data-1) && solve(root->right, root->data+1, max);               
    }
     // Function to check whether a Binary Tree is BST or not.
     bool isBST(Node* root) {
         // Your code here
         return solve(root, INT_MIN, INT_MAX);
-    }
+    }
 };
 */
 /*
@@ -269,8 +267,8 @@ class Solution {
         ans = -1;
         int i=1;
         solve(root, K, i);
-        return ans;
-    }
+        return ans;
+    }
 };
 */
 /*
@@ -303,7 +301,7 @@ Node *deleteNode(Node *root, int X) {
         return helper(root);
     }
     Node* dummy=root;
-    while(!root){
+    while(root){
         if(root->data>X){
             if(root->left!=nullptr && root->left->data==X){
                 root->left=helper(root->left);
@@ -360,7 +358,7 @@ class Solution {
         if(i>=size || pre[i]>bound){
             return nullptr;
         }
-        Node* node = newNode(pre[i++]);
+        Node* node = new Node(pre[i++]);
         node->left=solve(pre, size, i, node->data);  //leftChild
         node->right=solve(pre, size, i, bound);       //rightChilld
         return node;
@@ -394,8 +392,8 @@ public:
       // your code goes here
       ans=0;
       solve(root, l, h);
-      return ans;
-    }
+      return ans;
+    }
 };
 */
 /*
@@ -418,8 +416,8 @@ public:
       }
       else{
           return getCount(root->left, l, h);
-      }
-    }
+      }
+    }
 };
 */
 /*
@@ -520,6 +518,19 @@ class Solution {
             j++;
         }
     }  
+    
+    Node* solve(vector<Node*> &v, int start, int end){
+        if(start>end) return nullptr;
+        
+        int mid=(start+end)/2;
+        Node* node = new Node(v[mid]);
+        
+        node->left=solve(v, start, mid-1);
+        node->right=solve(v, mid+1, end);
+        
+        return node;
+    }
+    
     // Function to return a list of integers denoting the node
     // values of both the BST in a sorted order.
     vector<int> merge(Node *root1, Node *root2) {
@@ -533,7 +544,8 @@ class Solution {
     	int i=0,j=0;
     	mergeTrees(v, v1, v2, i, j);
     	
-    	return v;
+        int n=v.siz();
+    	return solve(v, 0, n-1);
     }
 };
 */
