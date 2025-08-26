@@ -7,7 +7,7 @@ class Solution{
         if(root == nullptr) return 0;
         int lh=maxDepth(root->left);
         int rh=maxDepth(root->right);
-        
+
         return 1 + max(lh, rh);
     }
 };
@@ -86,14 +86,15 @@ class Solution
     }
     
     void inorder(Node* T, Node* S){
-        if(T!=nullptr){
-            inorder(T->left, S);
-            bool x=match(T, S);
-            if(x==true){
-                ans=x;
-            }
-            inorder(T->right, S);
+        if(T==nullptr) return;
+        
+        inorder(T->left, S);
+        bool x=match(T, S);
+        if(x==true){
+            ans=x;
+            return;
         }
+        inorder(T->right, S);
     }
     //Function to check if S is a subtree of tree T.
     bool isSubTree(Node* T, Node* S) 
@@ -111,7 +112,7 @@ Expected Auxiliary Space: O(Height of the
 class Solution {
   public:
     Node* postorder(Node* node){
-        if(node==nullptr) return nullptr;
+        if(node==nullptr) return nullptr;   //void return; these will also work
         postorder(node->left);
         postorder(node->right);
         Node* temp=node->left;
@@ -122,7 +123,7 @@ class Solution {
     void mirror(Node* node) {
         // code here
         postorder(node);
-    }
+    }
 };
 */
 /*
@@ -203,7 +204,7 @@ class Solution{
     	    }
     	    for(int i=0; i<sz; i++){
     	        ans.push_back(temp[i]);
-    	    } 
+    	    }
     	    bln=!bln;
     	}
     	return ans;
@@ -218,7 +219,6 @@ class Solution{
   public:
     int ans;
     void solve(Node* root, int h, int &mxh){
-        if(!root) return;
         if(ans==0) return;
         if(!root->left && !root->right){
             if(mxh==-1){
@@ -248,7 +248,7 @@ class Solution{
 /*
 //Check tree is hieght balancwd or not
 //Expected time complexity: O(N)
-//Expected auxiliary space: O(h) 
+//Expected auxiliary space: O(h)
 class Solution{
     public:
     int f=1;
@@ -323,7 +323,7 @@ class Solution
         //Your Code here
         if(!r1 && !r2) return true;
         if(!r1 || !r2) return false;
-        return r1->data==r2->data && isIdentical(r1->left, r2->left) && isIdentical(r1->right, r2->right); 
+        return r1->data==r2->data && isIdentical(r1->left, r2->left) && isIdentical(r1->right, r2->right);
     }
 };
 */
@@ -334,7 +334,7 @@ class Solution
 class Solution{
     public:
     int idx=0;
-    
+
     int search(int in[], int start, int end, int key){
         for(int i=start; i<=end; i++){
             if(in[i]==key){
@@ -343,18 +343,21 @@ class Solution{
         }
         return -1;
     }
-    
+
     Node* solve(int in[], int pre[], int start, int end){
         if(start>end) return nullptr;
         Node* node=new Node(pre[idx]);
+         if(start==end){
+             idx++;
+             return node;
+         }
         int pos=search(in, start, end, pre[idx]);
         idx++;
-        if(start==end) return node;
         node->left=solve(in, pre, start, pos-1);
         node->right=solve(in, pre, pos+1, end);
         return node;
     }
-    
+
     Node* buildTree(int in[],int pre[], int n)
     {
         // Code here
@@ -373,7 +376,7 @@ class Solution {
         if(!root) return 0;
         int lh=solve(root->left);
         int rh=solve(root->right);
-        mxd=max(mxd, lh+rh+1);
+        mxd=max(mxd, lh+rh);
         return 1+max(lh, rh);
     }
     // Function to return the diameter of a Binary Tree.
@@ -391,7 +394,7 @@ class Solution {
 class Solution
 {
     public:
-    //Function to return a list of nodes visible from the top view 
+    //Function to return a list of nodes visible from the top view
     //from left to right in Binary Tree.
     vector<int> topView(Node *root)
     {
@@ -401,7 +404,7 @@ class Solution
         map<int, int>mp;
         queue<pair<Node*, int>>q;
         q.push({root, 0});
-        
+
         while(!q.empty()){
             auto it=q.front();
             q.pop();
@@ -417,11 +420,11 @@ class Solution
                 q.push({node->right, line+1});
             }
         }
-        
+
         for(auto it:mp){
             ans.push_back(it.second);
         }
-        
+
         return ans;
     }
 
@@ -434,7 +437,7 @@ class Solution
 class Solution
 {
     public:
-    //Function to return a list of nodes visible from the top view 
+    //Function to return a list of nodes visible from the top view
     //from left to right in Binary Tree.
     vector<int> topView(Node *root)
     {
@@ -444,7 +447,7 @@ class Solution
         map<int, int>mp;
         queue<pair<Node*, int>>q;
         q.push({root, 0});
-        
+
         while(!q.empty()){
             auto it=q.front();
             q.pop();
@@ -452,7 +455,7 @@ class Solution
             int line=it.second;
 
             mp[line]=node->data;
-            
+
             if(node->left){
                 q.push({node->left, line-1});
             }
@@ -460,11 +463,11 @@ class Solution
                 q.push({node->right, line+1});
             }
         }
-        
+
         for(auto it:mp){
             ans.push_back(it.second);
         }
-        
+
         return ans;
     }
 };
@@ -480,23 +483,23 @@ vector<int> diagonal(Node *root)
    queue<Node*>q;
    if(!root) return ans;
    q.push(root);
-   
+
    while(!q.empty()){
        Node* node=q.front();
        q.pop();
-       while(node){ 
+       while(node){
            ans.push_back(node->data);
            if(node->left) q.push(node->left);
            node=node->right;
        }
    }
-   
+
    return ans;
 }
 */
 /*
 //Boundary traversal of bainary tree
-//Expected Time Complexity: O(N). 
+//Expected Time Complexity: O(N).
 //Expected Auxiliary Space: O(Height of the Tree).
 class Solution {
 public:
@@ -517,7 +520,7 @@ public:
             }
         }
     }
-    
+
     void addRightBoundary(Node* root, vector<int> &ans){
         vector<int> temp;
         while(root){
@@ -532,27 +535,27 @@ public:
             ans.push_back(temp[i]);
         }
     }
-    
+
     void addLeafNodes(Node* root, vector<int> &ans){
         if(isLeaf(root)){
             ans.push_back(root->data);
             return;
-        } 
+        }
         if(root->left) addLeafNodes(root->left, ans);
         if(root->right) addLeafNodes(root->right, ans);
     }
-    
+
     vector <int> boundary(Node *root)
     {
         //Your code here
         vector<int>ans;
         if(!root) return ans;
-        
+
         if(!isLeaf(root)) ans.push_back(root->data);
         if(root->left) addLeftBoundary(root->left, ans);
         if(root) addLeafNodes(root, ans);
         if(root->right) addRightBoundary(root->right, ans);
-        
+
         return ans;
     }
 };
@@ -574,16 +577,16 @@ public:
             }
             root->data=sum;
         }
-        
+
         if(i<str.size() && str[i]=='('){
             root->left=new Node(0);
-            i++;            
+            i++;
             solve(root->left, str);
             if(root->left->data==0){
                 root->left=nullptr;
             }
         }
-        
+
         if(i<str.size() && str[i]=='('){
             root->right=new Node(0);
             i++;
@@ -592,7 +595,7 @@ public:
                 root->right=nullptr;
             }
         }
-        
+
         if(i>=str.size() || str[i]==')'){
             i++;
             return;
@@ -618,7 +621,7 @@ class Solution{
 	if(index >= n)
 		return;
 	inorder(A, v, n, 2 * index + 1);
-	
+
 	v.push_back(A[index]);
 	inorder(A, v, n, 2 * index + 2);
 }
@@ -630,7 +633,7 @@ int minSwaps(vector<int> &v)
 	for(int i = 0; i < v.size(); i++){
 		t[i].first = v[i], t[i].second = i;
 	}
-	
+
 	sort(t.begin(), t.end());
 	for(int i = 0; i < t.size(); i++)
 	{
@@ -643,7 +646,7 @@ int minSwaps(vector<int> &v)
 			swap(t[i].first, t[t[i].second].first);
 			swap(t[i].second, t[t[i].second].second);
 		}
-		
+
 		// Second is not equal to i
 		if(i != t[i].second){
 			--i;
@@ -658,8 +661,8 @@ int minSwaps(vector<int> &v)
         inorder(A, v, n, 0);
 	    return minSwaps(v);
     }
-    
-    
+
+
 };
 */
 /*
@@ -673,15 +676,15 @@ class Solution {
         if(!root){
             return "$";
         }
-        
+
         if(!root->left && !root->right){
             string s = to_string(root->data);
             return s;
         }
-       
+
         string s = to_string(root->data) + "," + solve(root->left) + "," + solve(root->right);
         mp[s]++;
-        
+
         return s;
     }
     int dupSub(Node *root) {
@@ -746,14 +749,14 @@ class Solution
     //Function to return the lowest common ancestor in a Binary Tree.
     Node* lca(Node* root ,int n1 ,int n2 )
     {
-       //Your code here 
+       //Your code here
        if(root==nullptr || root->data==n1 || root->data==n2){
            return root;
        }
-       
+
        root->left=lca(root->left, n1, n2);
        root->right=lca(root->right, n1, n2);
-       
+
        if(root->left==nullptr){
            return root->right;
        }
@@ -773,13 +776,13 @@ class Solution
 class Solution{
     public:
     int minDist=0;
-    
+
     int solve(Node* root, int a, int b){
         if(!root) return 0;
-        
+
         int left=solve(root->left, a, b);
         int right=solve(root->right, a, b);
-        
+
         if(left && right){     //LCA
             minDist=left + right;
             return 0;
@@ -818,18 +821,16 @@ int solve(Node* root, int k, int node){
     if (root->data == node) {
         return 1;  // Found the target node
     }
-    
+
     int left=solve(root->left, k, node);
     int right=solve(root->right, k, node);
-    
+
     if (left || right) {
         int distance = max(left, right);
-
         if (distance == k) {
             ans = root->data;  // Found the k-th ancestor
             return 0;  // Stop further exploration
         }
-
         return distance + 1;  // Continue moving up the tree
     }
 
@@ -922,12 +923,12 @@ class Solution {
     int ans=INT_MIN;
     int solve(Node* root){
         if(!root) return 0;
-        
+
         int left=max(0, solve(root->left));
         int right=max(0, solve(root->right));
-        
+
         ans=max(ans, root->data+left+right);
-        
+
         return root->data+max(left, right);
     }
     //Function to return maximum path sum from any node in a tree.
